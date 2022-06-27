@@ -1,6 +1,6 @@
-# ATBD Template
+# ATBD SST
 
-This document describes the algorithm theoretical basis for the x product.
+This document describes the algorithm theoretical basis for the SST product.
 
 
 ```{tableofcontents}

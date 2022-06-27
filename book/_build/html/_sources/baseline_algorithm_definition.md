@@ -29,22 +29,22 @@ Subsection Text
 
 Subsection Text
 
-##### Mathematical description
+### Mathematical description
 
 SubSubsection Text
-##### Input data
-
-SubSubsection Text
-
-##### Output data
+### Input data
 
 SubSubsection Text
 
-##### Auxiliary data
+### Output data
 
 SubSubsection Text
 
-##### Ancillary data
+### Auxiliary data
+
+SubSubsection Text
+
+### Ancillary data
 
 SubSubsection Text
 
