@@ -38,6 +38,7 @@ pip install jupyter-book
 ### install packages needed for the book (this list might grow as we develop the books)
 ```
 conda install -c conda-forge matplotlib numpy
+conda install -c conda-forge sphinxcontrib-mermaid
 ```
 
 ### build the book
