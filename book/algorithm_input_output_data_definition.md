@@ -18,26 +18,39 @@ To obtain independent results, the MMDs are divided into seven subsets each, to 
 - UNCERT_TEST: validation subset for the SST uncertainty retrieval algorithm.
 
 ### AMSR-E orbital data
-For producing a climate data record of PMW SST, the spatially resampled L2A swath data product AMSR-E V12 (Ashcroft et al., 2013), produced by Remote Sensing Systems (RSS) and distributed by NASA’s National Snow and Ice Data Center (NSIDC, https://nsidc.org/data/ae_l2a), is used as input. Here we used the brightness temperatures re-sampled to the 6.9 GHz resolutions. Hence the observations have a resolution footprint of 75 x 43 km, however, the data is distributed as a dataset with a spatial grid resolution of 10 km. Auxiliary data include NWP data from ERA-Interim. The Generalized Bayesian Cloud Screening (GBCS) software package (Mackie et al., 2010) is used to interpolate the NWP data to the satellite raster.
+For producing a climate data record of PMW SST, the spatially resampled L2A swath data product AMSR-E V12 {cite}`Ashcroft2013`, produced by Remote Sensing Systems (RSS) and distributed by NASA’s National Snow and Ice Data Center (NSIDC, https://nsidc.org/data/ae_l2a), is used as input. Here we used the brightness temperatures re-sampled to the 6.9 GHz resolutions. Hence the observations have a resolution footprint of 75 x 43 km, however, the data is distributed as a dataset with a spatial grid resolution of 10 km. Auxiliary data include NWP data from ERA-Interim. The Generalized Bayesian Cloud Screening (GBCS) software package {cite}`Mackie2010` is used to interpolate the NWP data to the satellite raster.
 
 ### AMSR2 orbital data
-The spatially resampled AMSR2 L1R version 2 swath data product: Dataset of Brightness Temperature Modified Using the Antenna Pattern Matching Technique (Maeda et al., 2016) is used for producing the PMW SST CDR. This product contains similar spatially resampled brightness temperatures to the AMSR-E dataset. NWP data from ERA-Interim are used as auxiliary data. As for the AMSR-E processing, the GBCS software package is used to interpolate the auxiliary data to the satellite raster.
+The spatially resampled AMSR2 L1R version 2 swath data product: Dataset of Brightness Temperature Modified Using the Antenna Pattern Matching Technique {cite}`Maeda2016` is used for producing the PMW SST CDR. This product contains similar spatially resampled brightness temperatures to the AMSR-E dataset. NWP data from ERA-Interim are used as auxiliary data. As for the AMSR-E processing, the GBCS software package is used to interpolate the auxiliary data to the satellite raster.
 
 ### Preprocessing
 Preprocessing of the input data is necessary before running the regression model. Different fields need to be calculated depending on the input data used. For AMSR-E and AMSR2, the following fields need to be calculated:
-- Relative angle between satellite azimuth angle and wind direction ($\phi_{REL}$), which is calculated as $\phi_{REL} = \phi_{SAT} - \phi_{WD}$, where $\phi_{SAT}$ is the satellite azimuth angle, relative to north, and $\phi_{WD}$ is the wind direction, relative to north, that the wind is blowing toward.
-- Sun glint angle ($\phi_{SGA}$), which is calculated as $\phi_{SGA} = arccos(sin(\theta_{SOL})\times sin(\theta_{SAT})\times cos(\phi_{REL}+180)+cos(\theta_{SOL})\times cos(\theta_{SAT}))$, where $\theta_{SOL}$ and $\theta_{SAT}$ are the solar zenith angle and satellite zenith angle, respectively, and $\phi_{REL}$ is the relative azimuth angle between solar azimuth angle ($\phi_{SOL}$) and satellite azimuth angle ($\phi_{SAT}$).
+- Relative angle between satellite azimuth angle and wind direction ($\phi_{REL}$), which is calculated as in {eq}`eq_prepro1`
+
+```{math}
+:label: eq_prepro1
+\phi_{REL} = \phi_{SAT} - \phi_{WD}
+```
+where $\phi_{SAT}$ is the satellite azimuth angle, relative to north, and $\phi_{WD}$ is the wind direction, relative to north, that the wind is blowing toward.
+
+- Sun glint angle ($\phi_{SGA}$), which is calculated as in {eq}`eq_prepro2`
+
+```{math}
+:label: eq_prepro2
+\phi_{SGA} = arccos(sin(\theta_{SOL})\times sin(\theta_{SAT})\times cos(\phi_{REL}+180)+cos(\theta_{SOL})\times cos(\theta_{SAT}))
+```
+where $\theta_{SOL}$ and $\theta_{SAT}$ are the solar zenith angle and satellite zenith angle, respectively, and $\phi_{REL}$ is the relative azimuth angle between solar azimuth angle ($\phi_{SOL}$) and satellite azimuth angle ($\phi_{SAT}$).
 
 
 ### Output data
 
 The outputs from the regression retrieval algorithm are:
-- Sea surface temperature (SST_{r,baseline}), in Kelvin.
-- Local systematic uncertainty component (\epsilon_{local}), in Kelvin.
-- Random uncertainty component(\epsilon{rnd}), in Kelvin.
-- Global systematic uncertainty component (\epsilon{global}), in Kelvin.
-- Total SST uncertainty (\epsilon{SSTr}), in Kelvin.
-- Wind speed (WS_{r}), in ms-1.
+- Sea surface temperature ($SST_{r,baseline}$), in Kelvin.
+- Local systematic uncertainty component ($\epsilon_{local}$), in Kelvin.
+- Random uncertainty component($\epsilon{rnd}$), in Kelvin.
+- Global systematic uncertainty component ($\epsilon{global}$), in Kelvin.
+- Total SST uncertainty ($\epsilon{SSTr}$), in Kelvin.
+- Wind speed ($WS_{r}$), in $~m~s^{-1}$.
 - L2P flags.
 - Quality levels.
 
@@ -48,4 +61,3 @@ Subsection text
 ### Ancillary data
 
 Subsection text
-

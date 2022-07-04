@@ -3,6 +3,8 @@
 
 format: jb-book
 root: intro
+options:
+  numbered: true
 chapters:
 - file: abstract
   title: Abstract
@@ -23,7 +25,7 @@ chapters:
 - file: algorithm_input_output_data_definition
   title: Algorithm Input and Output Data Definition (IODD)
 - file: algorithm_performance_assessment
-  title: Algorithm Performance Assessment 
+  title: Algorithm Performance Assessment
 - file: markdown-notebooks
   title: Notebook comments
 - file: notebooks
@@ -32,4 +34,3 @@ chapters:
   title: References (example)
 - file: annex
   title: Annex
-
