@@ -10,4 +10,5 @@ Here follows a glossary, or list of definitions
 | PSD | Product Specification Document |
 | PVP | Product Validation Plan |
 | SST | Sea Surface Temperature |
+| WS  | Wind Speed     | 
 | TB | Brightness Temperature |
