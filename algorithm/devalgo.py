@@ -1,50 +1,71 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Apr 22 09:45:56 2022
+Created  on Fri Apr  8 2022 - @author: ssk
+Updated  on Fri Apr 22 2022 - @author: ssk
+Modified on Tor Jul 28 2022 - @author: ea
 
-@author: ssk
 """
-
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Apr  8 09:35:33 2022
-
-@author: ssk
-"""
-
-# Calculate regression coefficients based on Alerskans et al., 2020,
-# "Construction of a climate data record of sea surface temperature from
-# passive microwave measurements"
-
-
-import os
-import shutil
+# Library imports
+import datetime
+import netCDF4 as nc
 import numpy as np
-import pandas as pd
-import xarray as xr
-import datetime as dt
-from scipy.interpolate import interp1d, interp2d
-import pytz
-from skyfield import api
-from skyfield import almanac
-from sklearn import linear_model
 import matplotlib.pyplot as plt
-import scipy
+import pandas as pd
+import os
+import sklearn
+from sklearn.model_selection import train_test_split 
+from sklearn import linear_model
+import sys
+
+# Set the random seed
+rnseed = 42
+
+# Set project paths
+HOME = os.environ['HOME']
+PROJECT = HOME + "/Projects/CIMR/DEVALGO/ATBD_SST"
+DATA_PATH = PROJECT + "/data"
+COEFF_PATH = PROJECT + "/coeffs"
+
+# Settings
+Nlim = 100
 
 # Citation: see https://scikit-learn.org/stable/about.html#citing-scikit-learn
+
 
 # =========
 # FUNCTIONS
 # =========
+def get_vars2extract(data_type):
+    if data_type == "mmd_all":
+        var_names = ['orbit', 'lat', 'lon', 'solza', 'satza', 'solaz', 'sataz', 'era5_wind_dir', 'ccmp_wind_dir', \
+                     'era5_phi_rel', 'era5_ws', 'ccmp_ws', 'era5_sst', 'era5_tcwv', 'era5_clwt', 'tb6vpol', 'tb6hpol', \
+                     'tb10vpol', 'tb10hpol', 'tb18vpol', 'tb18hpol', 'tb23vpol', 'tb23Hpol', 'tb36vpol', 'tb36hpol', \
+                     'tb89vpol', 'tb89hpol', 'sga', 'sss', 'insitu_sst', 'insitu_time']
+    elif data_type == "mmd":
+        var_names = ['orbit', 'lat', 'lon', 'satza', 'sataz', 'era5_wind_dir', 'era5_phi_rel', 'era5_ws', 'era5_sst', \
+                     'era5_tcwv', 'era5_clwt', 'tb6vpol', 'tb6hpol', 'tb10vpol', 'tb10hpol', 'tb18vpol', 'tb18hpol', \
+                     'tb23vpol', 'tb23hpol', 'tb36vpol', 'tb36hpol', 'tb89vpol', 'tb89hpol', 'sga', 'sss', 'insitu_sst', \
+                     'insitu_time']
+    else:
+        print("Could not parse data type: {}".format(data_type))
+        print("Exiting...!")
+        sys.exit()
+
+    return var_names
+
+
+
 def relative_angle(azimuth, u, v):
     D2R = np.pi/180
-    phi_w = 90 - (np.arctan2(u, v))*D2R
+    #phi_w = 90 - (np.arctan2(u, v))*D2R  # wind to direction
+    phiw = 180 + D2R*np.arctan2(u,v)      # wind from direction
     phi_w[phi_w < 0] = phi_w[phi_w < 0] + 360
     phi_rel = azimuth - phi_w
     phi_rel[phi_rel < 0] = phi_rel[phi_rel < 0] + 360
+
     return phi_rel
+
 
 
 def regression(X,Y):
@@ -52,726 +73,931 @@ def regression(X,Y):
     regr.fit(X, Y)
     intercept = regr.intercept_
     coeffs = regr.coef_
+
     return intercept, coeffs
 
 
-def calculate_coeffs_stage_1_ws(data):
-    # Construct input data, based on Alerskans 2020, eq.1
-    tb_1v   =  data['1vpol'] - 150
-    tb_1v2  = (data['1vpol'] - 150)**2
-    tb_1h   =  data['1hpol'] - 150
-    tb_1h2  = (data['1hpol'] - 150)**2
-    tb_6v   =  data['6vpol'] - 150
-    tb_6v2  = (data['6vpol'] - 150)**2
-    tb_6h   =  data['6hpol'] - 150
-    tb_6h2  = (data['6hpol'] - 150)**2
-    tb_10v  =  data['10vpol'] - 150
-    tb_10v2 = (data['10vpol'] - 150)**2
-    tb_10h  =  data['10hpol'] - 150
-    tb_10h2 = (data['10hpol'] - 150)**2
-    tb_18v  =  data['18vpol'] - 150
-    tb_18v2 = (data['18vpol'] - 150)**2
-    tb_18h  =  data['18hpol'] - 150
-    tb_18h2 = (data['18hpol'] - 150)**2
-    tb_36v  =  data['36vpol'] - 150
-    tb_36v2 = (data['36vpol'] - 150)**2
-    tb_36h  =  data['36hpol'] - 150
-    tb_36h2 = (data['36hpol'] - 150)**2
-    theta   = data['look_angle'] - 55
-    
-    X = np.stack((tb_1v,tb_1v2,tb_1h,tb_1h2,tb_6v,tb_6v2,tb_6h,tb_6h2,tb_10v,tb_10v2,tb_10h,tb_10h2,tb_18v,tb_18v2,tb_18h,tb_18h2,tb_36v,tb_36v2,tb_36h,tb_36h2,theta),axis=1)
-    Y = data['ws']
-    
-    # Calculate linear regression coefficients
-    intercept, coeffs = regression(X,Y)
-    
-    # Save coefficients
-    coeffs_all = np.append(intercept,coeffs)
-    np.save('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_1/coeffs_ws_stage_1.npy',coeffs_all)
+
+def ws_algorithm_selection(data,sensor):
+    nmatchups = data.shape[0]
+    if sensor == 'amsre':
+        # Construct input data for AMSR-E configuration
+        ninput = 21
+        X = np.full((nmatchups,ninput), fill_value=np.nan)
+
+        X[:,0]  =  data['tb6vpol'] - 150
+        X[:,1]  = (data['tb6vpol'] - 150)**2
+        X[:,2]  =  data['tb6hpol'] - 150
+        X[:,3]  = (data['tb6hpol'] - 150)**2
+        X[:,4]  =  data['tb10vpol'] - 150
+        X[:,5]  = (data['tb10vpol'] - 150)**2
+        X[:,6]  =  data['tb10hpol'] - 150
+        X[:,7]  = (data['tb10hpol'] - 150)**2
+        X[:,8]  =  data['tb18vpol'] - 150
+        X[:,9]  = (data['tb18vpol'] - 150)**2
+        X[:,10] =  data['tb18hpol'] - 150
+        X[:,11] = (data['tb18hpol'] - 150)**2
+        X[:,12] =  data['tb23vpol'] - 150
+        X[:,13] = (data['tb23vpol'] - 150)**2
+        X[:,14] =  data['tb23hpol'] - 150
+        X[:,15] = (data['tb23hpol'] - 150)**2
+        X[:,16] =  data['tb36vpol'] - 150
+        X[:,17] = (data['tb36vpol'] - 150)**2
+        X[:,18] =  data['tb36hpol'] - 150
+        X[:,19] = (data['tb36hpol'] - 150)**2
+        X[:,20] = data['look_angle']
+    elif sensor == 'cimr':
+        # Construct input data for CIMR configuration
+        ninput = 21
+        X = np.full((nmatchups,ninput), fill_value=np.nan)
+
+        X[:,0]  =  data['tb1vpol'] - 150
+        X[:,1]  = (data['tb1vpol'] - 150)**2
+        X[:,2]  =  data['tb1hpol'] - 150
+        X[:,3]  = (data['tb1hpol'] - 150)**2
+        X[:,4]  =  data['tb6vpol'] - 150
+        X[:,5]  = (data['tb6vpol'] - 150)**2
+        X[:,6]  =  data['tb6hpol'] - 150
+        X[:,7]  = (data['tb6hpol'] - 150)**2
+        X[:,8]  =  data['tb10vpol'] - 150
+        X[:,9]  = (data['tb10vpol'] - 150)**2
+        X[:,10] =  data['tb10hpol'] - 150
+        X[:,11] = (data['tb10hpol'] - 150)**2
+        X[:,12] =  data['tb18vpol'] - 150
+        X[:,13] = (data['tb18vpol'] - 150)**2
+        X[:,14] =  data['tb18hpol'] - 150
+        X[:,15] = (data['tb18hpol'] - 150)**2
+        X[:,16] =  data['tb36vpol'] - 150
+        X[:,17] = (data['tb36vpol'] - 150)**2
+        X[:,18] =  data['tb36hpol'] - 150
+        X[:,19] = (data['tb36hpol'] - 150)**2
+        X[:,20] = data['look_angle']
+    else:
+        print("Sensor {} not understood.\nExiting...!".format(sensor))
+        sys.exit()
+
+    return X
 
 
-def calculate_coeffs_stage_2_ws(data, WSa):
-    # Attach WSa to data DataFrame
-    data['WSa'] = WSa
-    # Wind speed bins
-    bins_ws = np.arange(0,20,1, dtype=int)
+
+def sst_algorithm_selection(data,sensor):
+    nmatchups = data.shape[0]
+    if sensor == 'amsre':
+        # Construct input data for AMSR-E configuration
+        ninput = 26
+        X = np.full((nmatchups,ninput), fill_value=np.nan)
+
+        X[:,0]  =  data['tb6vpol'] - 150
+        X[:,1]  = (data['tb6vpol'] - 150)**2
+        X[:,2]  =  data['tb6hpol'] - 150
+        X[:,3]  = (data['tb6hpol'] - 150)**2
+        X[:,4]  =  data['tb10vpol'] - 150
+        X[:,5]  = (data['tb10vpol'] - 150)**2
+        X[:,6]  =  data['tb10hpol'] - 150
+        X[:,7]  = (data['tb10hpol'] - 150)**2
+        X[:,8]  =  data['tb18vpol'] - 150
+        X[:,9]  = (data['tb18vpol'] - 150)**2
+        X[:,10] =  data['tb18hpol'] - 150
+        X[:,11] = (data['tb18hpol'] - 150)**2
+        X[:,12] =  data['tb23vpol'] - 150
+        X[:,13] = (data['tb23vpol'] - 150)**2
+        X[:,14] =  data['tb23hpol'] - 150
+        X[:,15] = (data['tb23hpol'] - 150)**2
+        X[:,16] =  data['tb36vpol'] - 150
+        X[:,17] = (data['tb36vpol'] - 150)**2
+        X[:,18] =  data['tb36hpol'] - 150
+        X[:,19] = (data['tb36hpol'] - 150)**2
+        X[:,20] = data['look_angle']
+        X[:,21] = data['WSr']
+        X[:,22] = np.cos(data['era5_phi_rel'])
+        X[:,23] = np.sin(data['era5_phi_rel'])
+        X[:,24] = np.cos(2*data['era5_phi_rel'])
+        X[:,25] = np.sin(2*data['era5_phi_rel'])
+    elif sensor == 'cimr':
+        # Construct input data for AMSR-E configuration
+        ninput = 26
+        X = np.full((nmatchups,ninput), fill_value=np.nan)
+
+        X[:,0]  =  data['tb1vpol'] - 150
+        X[:,1]  = (data['tb1vpol'] - 150)**2
+        X[:,2]  =  data['tb1hpol'] - 150
+        X[:,3]  = (data['tb1hpol'] - 150)**2
+        X[:,4]  =  data['tb6vpol'] - 150
+        X[:,5]  = (data['tb6vpol'] - 150)**2
+        X[:,6]  =  data['tb6hpol'] - 150
+        X[:,7]  = (data['tb6hpol'] - 150)**2
+        X[:,8]  =  data['tb10vpol'] - 150
+        X[:,9]  = (data['tb10vpol'] - 150)**2
+        X[:,10] =  data['tb10hpol'] - 150
+        X[:,11] = (data['tb10hpol'] - 150)**2
+        X[:,12] =  data['tb18vpol'] - 150
+        X[:,13] = (data['tb18vpol'] - 150)**2
+        X[:,14] =  data['tb18hpol'] - 150
+        X[:,15] = (data['tb18hpol'] - 150)**2
+        X[:,16] =  data['tb36vpol'] - 150
+        X[:,17] = (data['tb36vpol'] - 150)**2
+        X[:,18] =  data['tb36hpol'] - 150
+        X[:,19] = (data['tb36hpol'] - 150)**2
+        X[:,20] = data['look_angle']
+        X[:,21] = data['WSr']
+        X[:,22] = np.cos(data['era5_phi_rel'])
+        X[:,23] = np.sin(data['era5_phi_rel'])
+        X[:,24] = np.cos(2*data['era5_phi_rel'])
+        X[:,25] = np.sin(2*data['era5_phi_rel'])
+    else:
+        print("Sensor {} not understood.\nExiting...!".format(sensor))
+        sys.exit()
+
+    return X
+
+
+
+def calculate_coeffs_ws(data,sensor):
+    # Predictors
+    X = ws_algorithm_selection(data,sensor)
+    # Predictand
+    Y = data['era5_ws'].values
+    
+    # the try...continue structure is to account for cases where we don't have data in a particular bin, then the code moves on
+    try:
+        # Calculate linear regression coefficients
+        intercept, coeffs = regression(X,Y)
+        coeffs_all = np.append(intercept,coeffs)
+
+        return coeffs_all
+    except:
+        return np.full((ninput+1), fill_value=np.nan)
+
+
+
+def calculate_coeffs_sst(data,sensor):
+    # Predictors
+    X = sst_algorithm_selection(data,sensor)
+    # Predictand
+    Y = data['insitu_sst'].values
+    
+    # the try...continue structure is to account for cases where we don't have data in a particular bin, then the code moves on
+    try:
+        # Calculate linear regression coefficients
+        intercept, coeffs = regression(X,Y)
+        coeffs_all = np.append(intercept,coeffs)
+
+        return coeffs_all
+    except:
+        return np.full((ninput+1), fill_value=np.nan)
+
+
+
+def retrieve_ws(data,A,sensor):
+    # Settings
+    nmatchups = data.shape[0]
+    # Predictors
+    X = ws_algorithm_selection(data,sensor)
+    # Add input for the offset/intercept
+    X = np.hstack((np.ones((nmatchups,1)),X))
+    # Retrieve WS
+    WS =  np.dot(A,X.T)
+
+    return WS
+
+
+
+def retrieve_sst(data,A,sensor):
+    # Settings
+    nmatchups = data.shape[0]
+    # Predictors
+    X = sst_algorithm_selection(data,sensor)
+    # Add input for the offset/intercept
+    X = np.hstack((np.ones((nmatchups,1)),X))
+    # Retrieve SST
+    SST =  np.dot(A,X.T)
+
+    return SST
+
+
+
+def calculate_coeffs_stage_1_ws(data,sensor,verbose=False):
+    print("\nCalculate WS stage 1 coefficients")
+
+    # Get coefficients
+    coeffs_all = calculate_coeffs_ws(data,sensor)
+
+    if not np.all(np.isnan(coeffs_all)):
+        if verbose:
+            print("Save WS stage 1 coefficients")
+        coeffs_file = COEFF_PATH + "/ws/coeffs_ws_stage_1.npy"
+        np.save(coeffs_file,coeffs_all)
+
+
+
+def retrieve_stage_1_ws(data,sensor):
+    print("\nRetrieve stage 1 WS")
+
+    # Load coefficients
+    coeffs_file = COEFF_PATH + "/ws/coeffs_ws_stage_1.npy"
+    A = np.load(coeffs_file)
+    
+    # Retrieve WS
+    WSa =  retrieve_ws(data,A,sensor)
+
+    return WSa
+
+
+
+def calculate_coeffs_stage_2_ws(data,ws_bins,sensor,verbose=False):
+    print("\nCalculate WS stage 2 coefficients")
+
+    # Settings
+    ws_step = ws_bins[1] - ws_bins[0]
     
     # Loop through bins
-    for bin_ws in bins_ws:
-        for bin_ssta in bins_ssta:
-            # Find the data that belongs to the wind speed bin and SSTa bin
-            data_filt = data.loc[(data['ws'] > bin_ws) & (data['ws'] < bin_ws+1)]
-            
-            # Construct input data, based in Alerskans 2020, eq.5
-            tb_1v   =  data_filt['1vpol'] - 150
-            tb_1v2  = (data_filt['1vpol'] - 150)**2
-            tb_1h   =  data_filt['1hpol'] - 150
-            tb_1h2  = (data_filt['1hpol'] - 150)**2
-            tb_6v   =  data_filt['6vpol'] - 150
-            tb_6v2  = (data_filt['6vpol'] - 150)**2
-            tb_6h   =  data_filt['6hpol'] - 150
-            tb_6h2  = (data_filt['6hpol'] - 150)**2
-            tb_10v  =  data_filt['10vpol'] - 150
-            tb_10v2 = (data_filt['10vpol'] - 150)**2
-            tb_10h  =  data_filt['10hpol'] - 150
-            tb_10h2 = (data_filt['10hpol'] - 150)**2
-            tb_18v  =  data_filt['18vpol'] - 150
-            tb_18v2 = (data_filt['18vpol'] - 150)**2
-            tb_18h  =  data_filt['18hpol'] - 150
-            tb_18h2 = (data_filt['18hpol'] - 150)**2
-            tb_36v  =  data_filt['36vpol'] - 150
-            tb_36v2 = (data_filt['36vpol'] - 150)**2
-            tb_36h  =  data_filt['36hpol'] - 150
-            tb_36h2 = (data_filt['36hpol'] - 150)**2
-            theta   = data_filt['look_angle'] - 55
+    for iws in ws_bins:
+        # Find the data that belongs to the current wind speed bin 
+        mask_sub = ( (data['WSa'].values > iws) & (data['WSa'].values <= iws+ws_step) )
+
+        # Check so that there is enough data
+        if np.sum(mask_sub) > Nlim:
+            data_sub = data.loc[mask_sub]
                 
-            X = np.stack((tb_1v,tb_1v2,tb_1h,tb_1h2,tb_6v,tb_6v2,tb_6h,tb_6h2,tb_10v,tb_10v2,tb_10h,tb_10h2,tb_18v,tb_18v2,tb_18h,tb_18h2,tb_36v,tb_36v2,tb_36h,tb_36h2,theta),axis=1)
-            Y = data_filt['SSTa']
-            
-            # the try...continue structure is to account for cases where we don't have data in a particular bin, then the code moves on
-            try:
-                # Calculate linear regression coefficients
-                intercept, coeffs = regression(X,Y)
-                
-                # Save coefficients
-                coeffs_all = np.append(intercept,coeffs)
-                np.save('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_2/coeffs_ws'+str(bin_ws)+'.npy',coeffs_all)
-            except:
-                continue
+            # Calculate coefficients
+            coeffs_all = calculate_coeffs_ws(data_sub,sensor)
+    
+            if not np.all(np.isnan(coeffs_all)):
+                if verbose:
+                    print("Save WS stage 2 coefficients for wind speed bin {}-{} ms-1".format(iws,iws+1))
+                coeffs_file = COEFF_PATH + "/ws/coeffs_ws_stage_2_wsbin_"+str(iws)+".npy"
+                np.save(coeffs_file,coeffs_all)
 
 
-def calculate_coeffs_stage_1_sst(data):
-    # Latitude and time bins
-    bins_lat = np.arange(-72,84,2, dtype=int)
-    bins_time = ['day', 'night']
+
+def retrieve_stage_2_ws(data,ws_bins,sensor,verbose=False):
+    print("\nRetrieve stage 2 WS")
+
+    # Settings
+    nmatchups = data.shape[0]
+    ws_step = ws_bins[1] - ws_bins[0]
+
+    # Initialize array
+    WSr = np.full((nmatchups), fill_value=np.nan, dtype=np.float32)
+
+    # Loop through bins
+    for iws in ws_bins:
+        if verbose:
+            print("Working on wind speed bin {}".format(iws))
+        # Find the data that belongs to the current wind speed bin 
+        mask_sub = (data['WSa'].values > iws) & (data['WSa'].values <= iws+ws_step)
+
+        # Check so that there is data
+        if np.sum(mask_sub) > 0:
+            idx_sub = np.argwhere(mask_sub)[:,0]
+            data_sub = data.loc[mask_sub]
+            data_sub.reset_index(inplace=True,drop=True)
+    
+            # Load the appropriate coefficient file
+            coeffs_file = COEFF_PATH + "/ws/coeffs_ws_stage_2_wsbin_"+str(iws)+".npy"
+            if os.path.isfile(coeffs_file):
+                B1 = np.load(coeffs_file)
+                isnan_B1 = False
+            else:
+                isnan_B1 = True
+                
+            # If interpolating, find the nearest wind speed bin of our measurement
+            for inear in range(2):
+                if inear == 0:
+                    # Lower limit
+                    iws_near = iws - ws_step
+                    mask_int = (data_sub['WSa'].values < iws + ws_step/2)
+                    if np.sum(mask_int) == 0:
+                        continue
+                    idx_int = np.argwhere(mask_int)[:,0]
+                    data_int = data_sub.loc[mask_int]
+                else:
+                    # Upper limit
+                    iws_near = iws + ws_step
+                    mask_int = (data_sub['WSa'].values >= iws + ws_step/2)
+                    if np.sum(mask_int) == 0:
+                        continue
+                    idx_int = np.argwhere(mask_int)[:,0]
+                    data_int = data_sub.loc[mask_int]
+    
+                # Check if there are coefficients for that bin and load
+                coeffs_file_near = COEFF_PATH + "/ws/coeffs_ws_stage_2_wsbin_"+str(iws_near)+".npy"
+                if os.path.isfile(coeffs_file_near):
+                    B2 = np.load(coeffs_file_near)
+                    isnan_B2 = False
+                elif os.path.isfile(coeffs_file):
+                    isnan_B2 = True
+                    B2 = B1.copy()
+                else:
+                    # No coefficients for current or closest ws bin -> no retrieval
+                    if verbose:
+                        print("Warning: Coefficients do not exist for current wind speed bin {} or closest bin. WS=NaN...!".format(iws))
+                    WSr[idx_sub[idx_int]] = np.nan
+                    continue
+
+                # Retrieve WS
+                WSr_i1 = retrieve_ws(data_int,B1,sensor)
+                WSr_i2 = retrieve_ws(data_int,B2,sensor)
+        
+                # Define interpolation weights
+                w1 = np.abs(data_int['WSa'].values - iws)/ws_step
+                w2 = 1 - w1
+
+                # Reset weights as we don't have either B1 or B2 coefficients
+                if (isnan_B1 | isnan_B2):
+                    if (isnan_B1): w1 = 0.
+                    if (isnan_B2): w2 = 0.
+
+                    wsum = w1 + w2
+                    w1 = w1 / wsum
+                    w2 = w2 / wsum
+
+                # Interpolate between WSr_i1 and WSr_i2
+                WSr_int = WSr_i1 * w1 + WSr_i2 * w2
+    
+                # Assign to the correct WSr elements
+                WSr[idx_sub[idx_int]] = WSr_int.copy()
+
+    return WSr
+
+
+
+def calculate_coeffs_stage_1_sst(data,orb_bins,lat_bins,sensor,verbose=False):
+    print("\nCalculate SST stage 1 coefficients")
+
+    # Settings
+    lat_step = lat_bins[1] - lat_bins[0]
     
     # Loop through bins
-    for bin_lat in bins_lat:
-        for bin_time in bins_time:
-            # Find the data that belong to the latitude bin and time bin
-            data_filt = data.loc[(data['lat'] > bin_lat) & (data['lat'] < bin_lat+2) & (data['bin_time'] == bin_time)]
-            
-            # Construct input data, based on Alerskans 2020, eq.6    
-            tb_1v   =  data_filt['1vpol'] - 150
-            tb_1v2  = (data_filt['1vpol'] - 150)**2
-            tb_1h   =  data_filt['1hpol'] - 150
-            tb_1h2  = (data_filt['1hpol'] - 150)**2
-            tb_6v   =  data_filt['6vpol'] - 150
-            tb_6v2  = (data_filt['6vpol'] - 150)**2
-            tb_6h   =  data_filt['6hpol'] - 150
-            tb_6h2  = (data_filt['6hpol'] - 150)**2
-            tb_10v  =  data_filt['10vpol'] - 150
-            tb_10v2 = (data_filt['10vpol'] - 150)**2
-            tb_10h  =  data_filt['10hpol'] - 150
-            tb_10h2 = (data_filt['10hpol'] - 150)**2
-            tb_18v  =  data_filt['18vpol'] - 150
-            tb_18v2 = (data_filt['18vpol'] - 150)**2
-            tb_18h  =  data_filt['18hpol'] - 150
-            tb_18h2 = (data_filt['18hpol'] - 150)**2
-            tb_36v  =  data_filt['36vpol'] - 150
-            tb_36v2 = (data_filt['36vpol'] - 150)**2
-            tb_36h  =  data_filt['36hpol'] - 150
-            tb_36h2 = (data_filt['36hpol'] - 150)**2
-            theta   = data_filt['look_angle'] - 55
-            WSr = data_filt['WSr']
-            cos_1phiREL = np.cos(data_filt['phi_rel'])
-            sin_1phiREL = np.sin(data_filt['phi_rel'])
-            cos_2phiREL = np.cos(2*data_filt['phi_rel'])
-            sin_2phiREL = np.sin(2*data_filt['phi_rel'])
-            
-            X = np.stack((tb_1v,tb_1v2,tb_1h,tb_1h2,tb_6v,tb_6v2,tb_6h,tb_6h2,tb_10v,tb_10v2,tb_10h,tb_10h2,tb_18v,tb_18v2,tb_18h,tb_18h2,tb_36v,tb_36v2,tb_36h,tb_36h2,theta,WSr,cos_1phiREL,sin_1phiREL,cos_2phiREL,sin_2phiREL),axis=1)
-            Y = data_filt['sst_ref']
-            
-            # Calculate linear regression coefficients
-            intercept, coeffs = regression(X,Y)
-            
-            # Save coefficients
-            coeffs_all = np.append(intercept,coeffs)
-            np.save('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_1/coeffs_lat'+str(bin_lat)+'_'+bin_time+'.npy',coeffs_all)
+    for iorb in orb_bins:
+        for ilat in lat_bins:
+            if verbose:
+                print("Working on orbit bin {} and latitude bin {}.".format(iorb,ilat))
+            # Find the data that belongs to the current wind speed bin - remove nan values
+            mask_sub = ( (data['lat'].values > ilat) & (data['lat'].values <= ilat+lat_step) & (data['orbit'].values == iorb) & \
+                         ~np.isnan(data['WSr'].values) )
+
+            # Check so that there is enough data
+            if np.sum(mask_sub) > Nlim:
+                data_sub = data.loc[mask_sub]
+    
+                # Calculate coefficients
+                coeffs_all = calculate_coeffs_sst(data_sub,sensor)
+    
+                if not np.all(np.isnan(coeffs_all)):
+                    if verbose:
+                        print("Save SST stage 1 coefficients for obrit bin {} and latitude bin {}-{} deg".format(iorb,ilat,ilat+1))
+                    coeffs_file = COEFF_PATH + "/sst/coeffs_sst_stage_1_orbbin_"+str(iorb)+"_latbin_"+str(ilat)+".npy"
+                    np.save(coeffs_file,coeffs_all)
 
 
-def calculate_coeffs_stage_2(data, SSTa):
-    # Attach SSTa to data DataFrame
-    data['SSTa'] = SSTa
-    # Remove all lines with SSTa = NaN
-    data = data[data['SSTa'].notna()]
-    # Wind speed bins: 0-20 m/s, 2 m/s bins
-    bins_ws = np.arange(0,10,2, dtype=int)
-    # SSTa bins where we have data: -2 - 34 C, 2 C bins
-    bins_ssta = np.range(-2,36,2, dtype=int)
+
+def retrieve_stage_1_sst(data,orb_bins,lat_bins,sensor,verbose=False):
+    print("\nRetrieve stage 1 SST")
+
+    # Settings
+    nmatchups = data.shape[0]
+    orb_step = orb_bins[1] - orb_bins[0]
+    lat_step = lat_bins[1] - lat_bins[0]
+
+    # Initialize array
+    SSTa = np.full((nmatchups), fill_value=np.nan, dtype=np.float32)
+
+    # Loop through bins
+    for iorb in orb_bins:
+        for ilat in lat_bins:
+            if verbose:
+                print("Working on orbit bin {} and latitude bin {}.".format(iorb,ilat))
+            # Find the data that belongs to the current orbit and latitude bin 
+            mask_sub = ( (data['lat'].values > ilat) & (data['lat'].values <= ilat+lat_step) & (data['orbit'].values == iorb) )
+
+            # Check so that there is data
+            if np.sum(mask_sub) > 0:
+                idx_sub = np.argwhere( mask_sub )[:,0]
+                data_sub = data.loc[ mask_sub ]
+                data_sub.reset_index(inplace=True,drop=True)
+    
+                # Load the appropriate coefficient file
+                coeffs_file = COEFF_PATH + "/sst/coeffs_sst_stage_1_orbbin_"+str(iorb)+"_latbin_"+str(ilat)+".npy"
+                if os.path.isfile(coeffs_file):
+                    C1 = np.load(coeffs_file)
+                    isnan_C1 = False
+                else:
+                    isnan_C1 = True
+                    
+                # If interpolating (only latitude), find the nearest latitude bin of our measurement
+                for inear in range(2):
+                    if inear == 0:
+                        # Lower limit
+                        ilat_near = ilat - lat_step
+                        mask_int = (data_sub['lat'].values <  ilat + lat_step/2)
+                        if np.sum(mask_int) == 0:
+                            continue
+                        idx_int = np.argwhere(mask_int)[:,0]
+                        data_int = data_sub.loc[mask_int]
+                    else:
+                        # Upper limit
+                        ilat_near = ilat + lat_step
+                        mask_int = (data_sub['lat'].values >=  ilat + lat_step/2)
+                        if np.sum(mask_int) == 0:
+                            continue
+                        idx_int = np.argwhere(mask_int)[:,0]
+                        data_int = data_sub.loc[mask_int]
+        
+                    # Check if there are coefficients for that bin and load
+                    coeffs_file_near = COEFF_PATH + "/sst/coeffs_sst_stage_1_orbbin_"+str(iorb)+"_latbin_"+str(ilat_near)+".npy"
+                    if os.path.isfile(coeffs_file_near):
+                        C2 = np.load(coeffs_file_near)
+                        isnan_C2 = False
+                    elif os.path.isfile(coeffs_file):
+                        C2 = C1.copy()
+                        isnan_C2 = True
+                    else:
+                        # No coefficients for current or closest ws bin -> no retrieval
+                        if verbose:
+                            print("Warning: Coefficients do not exist for current orbit {} and latitude bin {} or closest bin. SST=NaN...!".format(iorb,ilat))
+                        SSTa[idx_sub[idx_int]] = np.nan
+                        continue
+
+                    # Retrieve SST
+                    SSTa_i1 = retrieve_sst(data_int,C1,sensor)
+                    SSTa_i2 = retrieve_sst(data_int,C2,sensor)
+            
+                    # Define interpolation weights
+                    w1 = np.abs(data_int['lat'].values - ilat)/lat_step
+                    w2 = 1 - w1
+
+                    # Reset weights as we don't have either C1 or C2 coefficients
+                    if (isnan_C1 | isnan_C2):
+                        if (isnan_C1): w1 = 0.
+                        if (isnan_C2): w2 = 0.
+
+                        wsum = w1 + w2
+                        w1 = w1 / wsum
+                        w2 = w2 / wsum
+
+                    # Interpolate between SSTa_i1 and SSTa_i2
+                    SSTa_int = SSTa_i1 * w1 + SSTa_i2 * w2
+        
+                    # Assign to the correct SSTa elements
+                    SSTa[idx_sub[idx_int]] = SSTa_int.copy()
+
+    return SSTa
+
+
+
+def calculate_coeffs_stage_2_sst(data,ws_bins,sst_bins,sensor,verbose=False):
+    print("\nCalculate SST stage 2 coefficients")
+
+    # Settings
+    ws_step = ws_bins[1] - ws_bins[0]
+    sst_step = sst_bins[1] - sst_bins[0]
     
     # Loop through bins
-    for bin_ws in bins_ws:
-        for bin_ssta in bins_ssta:
-            # Find the data that belongs to the wind speed bin and SSTa bin
-            data_filt = data.loc[(data['ws'] > bin_ws) & (data['ws'] < bin_ws+2) & (data['SSTa'] > bin_ssta) & (data['SSTa'] < bin_ssta+2)]
-            
-            # Construct input data, based in Alerskans 2020, eq.10
-            tb_1v   =  data_filt['1vpol'] - 150
-            tb_1v2  = (data_filt['1vpol'] - 150)**2
-            tb_1h   =  data_filt['1hpol'] - 150
-            tb_1h2  = (data_filt['1hpol'] - 150)**2
-            tb_6v   =  data_filt['6vpol'] - 150
-            tb_6v2  = (data_filt['6vpol'] - 150)**2
-            tb_6h   =  data_filt['6hpol'] - 150
-            tb_6h2  = (data_filt['6hpol'] - 150)**2
-            tb_10v  =  data_filt['10vpol'] - 150
-            tb_10v2 = (data_filt['10vpol'] - 150)**2
-            tb_10h  =  data_filt['10hpol'] - 150
-            tb_10h2 = (data_filt['10hpol'] - 150)**2
-            tb_18v  =  data_filt['18vpol'] - 150
-            tb_18v2 = (data_filt['18vpol'] - 150)**2
-            tb_18h  =  data_filt['18hpol'] - 150
-            tb_18h2 = (data_filt['18hpol'] - 150)**2
-            tb_36v  =  data_filt['36vpol'] - 150
-            tb_36v2 = (data_filt['36vpol'] - 150)**2
-            tb_36h  =  data_filt['36hpol'] - 150
-            tb_36h2 = (data_filt['36hpol'] - 150)**2
-            theta   = data_filt['look_angle'] - 55
-            WSr = data_filt['WSr']
-            cos_1phiREL = np.cos(data_filt['phi_rel'])
-            sin_1phiREL = np.sin(data_filt['phi_rel'])
-            cos_2phiREL = np.cos(2*data_filt['phi_rel'])
-            sin_2phiREL = np.sin(2*data_filt['phi_rel'])
-            
-            X = np.stack((tb_1v,tb_1v2,tb_1h,tb_1h2,tb_6v,tb_6v2,tb_6h,tb_6h2,tb_10v,tb_10v2,tb_10h,tb_10h2,tb_18v,tb_18v2,tb_18h,tb_18h2,tb_36v,tb_36v2,tb_36h,tb_36h2,theta,WSr,cos_1phiREL,sin_1phiREL,cos_2phiREL,sin_2phiREL),axis=1)
-            Y = data_filt['SSTa']
-            
-            # the try...continue structure is to account for cases where we don't have data in a particular bin, then the code moves on
-            try:
-                # Calculate linear regression coefficients
-                intercept, coeffs = regression(X,Y)
-                
-                # Save coefficients
-                coeffs_all = np.append(intercept,coeffs)
-                np.save('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_2/coeffs_ws'+str(bin_ws)+'_temp'+str(int(bin_ssta - 273.15))+'.npy',coeffs_all)
-            except:
-                continue
+    for iws in ws_bins:
+        for isst in sst_bins:
+            if verbose:
+                print("Working on wind speed bin {} and sst bin {}.".format(iws,isst))
+            # Find the data that belongs to the current wind speed bin - remove nan values
+            mask_sub = ( (data['WSr'].values > iws) & (data['WSr'].values <= iws+ws_step) & \
+                         (data['SSTa'].values > (isst+273.15)) & (data['SSTa'].values <= (isst+sst_step+273.15)) & \
+                         ~np.isnan(data['WSr'].values) & ~np.isnan(data['SSTa'].values) )
+
+            # Check so that there is enough data
+            if np.sum(mask_sub) > Nlim:
+                data_sub = data.loc[ mask_sub ]
+    
+                # Calculate coefficients
+                coeffs_all = calculate_coeffs_sst(data_sub,sensor)
+    
+                if not np.all(np.isnan(coeffs_all)):
+                    if verbose:
+                        print("Save SST stage 2 coefficients for wind speed bin {}-{} ms-1 and sst bin {}-{} degC".format(iws,iws+1,isst,isst+1))
+                    coeffs_file = COEFF_PATH + "/sst/coeffs_sst_stage_2_wsbin_"+str(iws)+"_sstbin_"+str(isst)+".npy"
+                    np.save(coeffs_file,coeffs_all)
 
 
-def create_mdb_regression_ready():
-    path_in = '/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/data_matchup/'
-    # Load matchup database
-    # ---------------------
-    # EMIRAD
-    data = pd.read_csv(path_in+'emirad_matchup_data_with_sim_mdb.txt')
-    data['time'] = pd.to_datetime(data['time'])
+
+def retrieve_stage_2_sst(data,ws_bins,sst_bins,sensor,verbose=False):
+    print("\nRetrieve stage 2 SST")
+
+    # Settings
+    nmatchups = data.shape[0]
+    ws_step = ws_bins[1] - ws_bins[0]
+    sst_step = sst_bins[1] - sst_bins[0]
+
+    # Number of input to the retrieval algorithm
+    nsst_input = 27
+
+    # Initialize array
+    SSTr = np.full((nmatchups), fill_value=np.nan, dtype=np.float32)
+
+    # Loop through bins
+    for iws in ws_bins:
+        for isst in sst_bins:
+            if verbose:
+                print("Working on wind speed bin {} and sst bin {}.".format(iws,isst))
+            # Find the data that belongs to the current orbit and latitude bin 
+            mask_sub = ( (data['WSr'].values > iws) & (data['WSr'].values <= iws+ws_step) & \
+                         (data['SSTa'].values > (isst+273.15)) & (data['SSTa'].values <= (isst+sst_step+273.15)) )
+
+            # Check so that there is data
+            if np.sum(mask_sub) > 0:
+                idx_sub = np.argwhere( mask_sub )[:,0]
+                data_sub = data.loc[ mask_sub ]
+                data_sub.reset_index(inplace=True,drop=True)
     
-    # ISAR
-    data_isar = xr.open_dataset('/home/ssk/isar_19_matchup_data_mdb.nc', decode_times=False)
-    data['sst'] = data_isar.sea_surface_temperature.data
-    dates = data_isar.time.data
-    date_ref = []
-    for date in dates:
-        date_ref.append(dt.datetime.fromtimestamp(date+347151600))
-    
-    # Calculate relative angles
-    data['phi_rel'] = np.asarray(relative_angle(data['azimuth'],data['era5_u10'],data['era5_v10']))
-    data['ws'] = np.asarray(np.sqrt(data['era5_u10']**2 + data['era5_v10']**2))
-    
-    # Add empty column to put time flags
-    data['bin_time'] = ''
-    
-    # Needed to use the Skyfield library
-    ts = api.load.timescale()
-    eph = api.load('de421.bsp')
-    
-    # Loop through observations and flag them depending on daytime / nighttime
-    for i in np.arange(len(data)):
-        ilat = data['lat'][i]
-        ilon = data['lon'][i]
-        itime = data['time'][i]
-        itime = itime.replace(tzinfo=pytz.UTC)
-        # The following lines follow the example of https://rhodesmill.org/skyfield/almanac.html#sunrise-and-sunset
-        bluffton = api.wgs84.latlon(ilat, ilon)
-        t0 = ts.utc(itime.year, itime.month, itime.day, 0, 0, 0)
-        t1 = ts.utc(itime.year, itime.month, itime.day, 23, 59, 59)
-        t, y = almanac.find_discrete(t0, t1, almanac.sunrise_sunset(eph, bluffton))
-        if itime >= pd.to_datetime(t[1].utc_iso()) or itime <= pd.to_datetime(t[0].utc_iso()):
-            data['bin_time'][i] = 'night' # 0
-        else:
-            data['bin_time'][i] = 'day' # 1
-    
-    data.to_csv('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/data_matchup/emirad_matchup_data_REGRESSION_READY.txt', index=False)
-    return data
+                # Load the appropriate coefficient file
+                coeffs_file = COEFF_PATH + "/sst/coeffs_sst_stage_2_wsbin_"+str(iws)+"_sstbin_"+str(isst)+".npy"
+                if os.path.isfile(coeffs_file):
+                    D11 = np.load(coeffs_file)
+                    isnan_D11 = False
+                else:
+                    D11 = np.full((nsst_input), fill_value=np.nan)
+                    isnan_D11 = True
+
+                # If interpolating (both ws and sst), find the nearest ws and sst bins of our measurement
+                for inear in range(4):
+                    if inear == 0:
+                        # iws-1 & isst-1 limit
+                        iws_near = iws - ws_step
+                        isst_near = isst - sst_step
+                        mask_int = ( (data_sub['WSr'].values < iws + ws_step/2) & (data_sub['SSTa'].values < (isst + sst_step/2 + 273.15)) )
+                        if np.sum(mask_int) == 0:
+                            continue
+                        idx_int = np.argwhere(mask_int)[:,0]
+                        data_int = data_sub.loc[mask_int]
+                    elif inear == 1:
+                        # iws+1 & isst-1 limit
+                        iws_near = iws + ws_step
+                        isst_near = isst - sst_step
+                        mask_int = ( (data_sub['WSr'].values >= iws + ws_step/2) & (data_sub['SSTa'].values < (isst + sst_step/2 + 273.15)) )
+                        if np.sum(mask_int) == 0:
+                            continue
+                        idx_int = np.argwhere(mask_int)[:,0]
+                        data_int = data_sub.loc[mask_int]
+                    elif inear == 2:
+                        # iws-1 & isst+1 limit
+                        iws_near = iws - ws_step
+                        isst_near = isst + sst_step
+                        mask_int = ( (data_sub['WSr'].values < iws + ws_step/2) & (data_sub['SSTa'].values >= (isst + sst_step/2 + 273.15)) )
+                        if np.sum(mask_int) == 0:
+                            continue
+                        idx_int = np.argwhere(mask_int)[:,0]
+                        data_int = data_sub.loc[mask_int]
+                    elif inear == 3:
+                        # iws+1 & isst+1 limit
+                        iws_near = iws + ws_step
+                        isst_near = isst + sst_step
+                        mask_int = ( (data_sub['WSr'].values >= iws + ws_step/2) & (data_sub['SSTa'].values >= (isst + sst_step/2 + 273.15)) )
+                        if np.sum(mask_int) == 0:
+                            continue
+                        idx_int = np.argwhere(mask_int)[:,0]
+                        data_int = data_sub.loc[mask_int]
+        
+                    # Check if there are coefficients for the surrounding bins and load
+                    # --iws & isst_near
+                    coeffs_file_near1 = COEFF_PATH + "/sst/coeffs_sst_stage_2_wsbin_"+str(iws)+"_sstbin_"+str(isst_near)+".npy"
+                    if os.path.isfile(coeffs_file_near1):
+                        D21 = np.load(coeffs_file_near1)
+                        isnan_D21 = False
+                    elif os.path.isfile(coeffs_file):
+                        D21 = D11.copy()
+                        isnan_D21 = True
+                    else:
+                        D21 = np.full((nsst_input), fill_value=np.nan)
+                        isnan_D21 = True
+                    # --iws_near & isst
+                    coeffs_file_near2 = COEFF_PATH + "/sst/coeffs_sst_stage_2_wsbin_"+str(iws_near)+"_sstbin_"+str(isst)+".npy"
+                    if os.path.isfile(coeffs_file_near2):
+                        D12 = np.load(coeffs_file_near2)
+                        isnan_D12 = False
+                    elif os.path.isfile(coeffs_file):
+                        D12 = D11.copy()
+                        isnan_D12 = True
+                    else:
+                        D12 = np.full((nsst_input), fill_value=np.nan)
+                        isnan_D12 = True
+                    # --iws_near & isst_near
+                    coeffs_file_near3 = COEFF_PATH + "/sst/coeffs_sst_stage_2_wsbin_"+str(iws_near)+"_sstbin_"+str(isst_near)+".npy"
+                    if os.path.isfile(coeffs_file_near3):
+                        D22 = np.load(coeffs_file_near3)
+                        isnan_D22 = False
+                    elif os.path.isfile(coeffs_file):
+                        D22 = D11.copy()
+                        isnan_D22 = True
+                    else:
+                        D22 = np.full((nsst_input), fill_value=np.nan)
+                        isnan_D22 = True
+
+                    if ( (not os.path.isfile(coeffs_file)) & (not os.path.isfile(coeffs_file_near1)) & (not os.path.isfile(coeffs_file_near2)) & (not os.path.isfile(coeffs_file_near3)) ):
+                        # No coefficients for current or closest bins -> no retrieval
+                        if verbose:
+                            print("Warning: Coefficients do not exist for current wind speed bin {} and sst bin {} or closest bins. SST=NaN...!".format(iws,isst))
+                        SSTr[idx_sub[idx_int]] = np.nan
+                        continue
+        
+                    # Retrieve SST
+                    SSTr_i11 = retrieve_sst(data_int,D11,sensor)
+                    SSTr_i21 = retrieve_sst(data_int,D21,sensor)
+                    SSTr_i12 = retrieve_sst(data_int,D12,sensor)
+                    SSTr_i22 = retrieve_sst(data_int,D22,sensor)
+
+                    # Define interpolation weights
+                    alpha = np.abs(data_int['SSTa'].values - (isst + 273.15))/sst_step
+                    beta  = np.abs(data_int['WSr'].values - iws)/ws_step
+                    w11 = (1 - alpha)*(1 - beta)
+                    w21 = alpha*(1 - beta)
+                    w12 = (1 - alpha)*beta
+                    w22 = alpha*beta
+
+                    # Reset weights as we don't have either D11, D21, D12 or D22 coefficients
+                    if (isnan_D11 | isnan_D21 | isnan_D12 | isnan_D22):
+                        if (isnan_D11): w11 = 0.
+                        if (isnan_D21): w21 = 0.
+                        if (isnan_D12): w12 = 0.
+                        if (isnan_D22): w22 = 0.
+
+                        wsum = w11 + w21 + w12 + w22
+                        w11 = w11 / wsum
+                        w21 = w21 / wsum
+                        w12 = w12 / wsum
+                        w22 = w22 / wsum
+
+                    # Interpolate between SSTr_i1, SSTr_i2, SSTr_i3 and SSTr_i4
+                    SSTr_int = w11 * SSTr_i11 + w21 * SSTr_i21 + w12 * SSTr_i12 + w22 * SSTr_i22
+
+                    # Assign to the correct SSTr elements
+                    SSTr[idx_sub[idx_int]] = SSTr_int.copy()
+
+    return SSTr
 
 
-def plot_data(data,SSTr):
-    plt.figure()
-    plt.plot_date(data['time'], data['sst'], label='ISAR')
-    plt.plot_date(data['time'], SSTr, label='EMIRAD')
-    plt.xlabel('Date')
-    plt.ylabel('Sea surface temperature (K)')
-    plt.legend()
-    plt.grid(which='both')
-    plt.title('observations vs. retrievals')
+
+def calculate_coeffs_global_sst(data,sensor,verbose=False):
+    print("\nCalculate SST global coefficients")
+
+    # Exclude WSr nans
+    data_sub = data.dropna(axis=0)
+
+    # Get coefficients
+    coeffs_all = calculate_coeffs_sst(data_sub,sensor)
+
+    if not np.all(np.isnan(coeffs_all)):
+        if verbose:
+            print("Save SST global coefficients")
+        coeffs_file = COEFF_PATH + "/sst/coeffs_sst_global.npy"
+        np.save(coeffs_file,coeffs_all)
+
+
+
+def retrieve_global_sst(data,sensor):
+    print("\nRetrieve global SST")
+
+    # Load coefficients
+    coeffs_file = COEFF_PATH + "/sst/coeffs_sst_global.npy"
+    A = np.load(coeffs_file)
+    
+    # Retrieve WS
+    SSTr =  retrieve_sst(data,A,sensor)
+
+    return SSTr
+
 
 
 def print_stats(data,SSTr):
-    dif_mean = np.nanmean(SSTr - data['sst'])
-    dif_std = np.nanstd(SSTr - data['sst'])
-    dif_rmse = np.sqrt(np.nanmean((SSTr - data['sst'])**2))
+    dif_mean = np.nanmean(SSTr - data['insitu_sst'])
+    dif_std = np.nanstd(SSTr - data['insitu_sst'])
+    dif_rmse = np.sqrt(np.nanmean((SSTr - data['insitu_sst'])**2))
     
-    print('MW retrievals - IR observations')
+    print('MW retrievals - drifter observations')
     print('-------------------------------')
-    print('Mean: ' + str(round(dif_mean,2)))
-    print('St.d: ' + str(round(dif_std,2)))
-    print('RMSE: ' + str(round(dif_rmse,2)))
+    print('Mean: ' + str(round(dif_mean,4)))
+    print('St.d: ' + str(round(dif_std,4)))
+    print('RMSE: ' + str(round(dif_rmse,4)))
 
 
-# =============================================================================
-# LOAD DATA - LOAD DATA - LOAD DATA - LOAD DATA - LOAD DATA - LOAD DATA - LOAD 
-# =============================================================================
-path_coef = '/net/isilon/ifs/arch/home/ea/Toshiba_backup/mmd/mmd06c_post_processed/PMW_regression/PMWR_wspd_sst/Parameters/'
+def plot_scatter_data(data):
+    fig1, ax1 = plt.subplots()
+    ax1.scatter(data['insitu_sst']-273.15,data['SSTa']-273.15)
+    ax1.plot([-3,40],[-3,40], linestyle='-', color='k', linewidth=1.2)
+    ax1.set_title('1st-stage SST')
+    ax1.set_xlabel('in situ SST ($^{\circ}$C)')
+    ax1.set_ylabel('PMW SST ($^{\circ}$C)')
+#    ax1.set_xlim([-2, 34])
+#    ax1.set_ylim([-2, 34])
+
+    fig2, ax2 = plt.subplots()
+    ax2.scatter(data['insitu_sst']-273.15,data['SSTr']-273.15)
+    ax2.plot([-3,40],[-3,40], linestyle='-', color='k', linewidth=1.2)
+    ax2.set_title('2nd-stage SST')
+    ax2.set_xlabel('in situ SST ($^{\circ}$C)')
+    ax2.set_ylabel('PMW SST ($^{\circ}$C)')
+#    ax2.set_xlim([-2, 34])
+#    ax2.set_ylim([-2, 34])
+
+    fig3, ax3 = plt.subplots()
+    ax3.scatter(data['insitu_sst']-273.15,data['SSTr_global']-273.15)
+    ax3.plot([-3,40],[-3,40], linestyle='-', color='k', linewidth=1.2)
+    ax3.set_title('global SST')
+    ax3.set_xlabel('in situ SST ($^{\circ}$C)')
+    ax3.set_ylabel('PMW SST ($^{\circ}$C)')
+#    ax3.set_xlim([-2, 34])
+#    ax3.set_ylim([-2, 34])
+
+    plt.show()
 
 
-# # Delete all coefficients
-# folders = ['/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_1/',
-#            '/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_2/']
-# for folder in folders:
-#     for filename in os.listdir(folder):
-#         file_path = os.path.join(folder, filename)
-#         try:
-#             if os.path.isfile(file_path) or os.path.islink(file_path):
-#                 os.unlink(file_path)
-#             elif os.path.isdir(file_path):
-#                 shutil.rmtree(file_path)
-#         except Exception as e:
-#             print('Failed to delete %s. Reason: %s' % (file_path, e))
-
-# Create regression ready database
-# --------------------------------
-data = create_mdb_regression_ready()
-
-# Load regression ready database
-# ------------------------------
-data = pd.read_csv('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/data_matchup/emirad_matchup_data_REGRESSION_READY.txt')
-data['emirad_c_time'] = pd.to_datetime(data['emirad_c_time'])
-
-# =============================================================================
-# MULTIPLE LINEAR REGRESSION - MULTIPLE LINEAR REGRESSION - MULTIPLE LINEAR REG
-# =============================================================================
-# Wind speed retrieval - stage 1
-# ------------------------------
-# Calculate coefficients
-calculate_coeffs_stage_1_ws(data)
-
-# Load coefficients
-A = np.load('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_1/coeffs_ws_stage_1.npy')
-
-# Calculate WSa
-WSa = A[0]                              + \
-    A[1]  *  (data['1vpol'] - 150)      + \
-    A[2]  * ((data['1vpol'] - 150)**2)  + \
-    A[3]  *  (data['1hpol'] - 150)      + \
-    A[4]  * ((data['1hpol'] - 150)**2)  + \
-    A[5]  *  (data['6vpol'] - 150)      + \
-    A[6]  * ((data['6vpol'] - 150)**2)  + \
-    A[7]  *  (data['6hpol'] - 150)      + \
-    A[8]  * ((data['6hpol'] - 150)**2)  + \
-    A[9]  *  (data['10vpol'] - 150)     + \
-    A[10] * ((data['10vpol'] - 150)**2) + \
-    A[11] *  (data['10hpol'] - 150)     + \
-    A[12] * ((data['10hpol'] - 150)**2) + \
-    A[13] *  (data['18vpol'] - 150)     + \
-    A[14] * ((data['18vpol'] - 150)**2) + \
-    A[15] *  (data['18hpol'] - 150)     + \
-    A[16] * ((data['18hpol'] - 150)**2) + \
-    A[17] *  (data['36vpol'] - 150      + \
-    A[18] * ((data['36vpol'] - 150)**2) + \
-    A[19] *  (data['36hpol'] - 150)     + \
-    A[20] * ((data['36hpol'] - 150)**2) + \
-    A[21] *  (data['look_angle'] - 55)
 
 
-# Wind speed retrieval - stage 2
-# ------------------------------
-# Calculate coefficients
-calculate_coeffs_stage_2_ws(data, WSa)
 
-# Calculate WSr
-WSr = []
 
-# Loop through all observations
-for i in np.arange(len(data)):
-    # Find the wind speed bin that the observation belongs to
-    bin_ws = int(np.floor(data['ws'][i]))
+# =============#
+# MAIN PROGRAM #
+# =============#
+if __name__ == "__main__":
+    # =====================================================#
+    # SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS #
+    # =====================================================#
+    derive_stage_1_ws_coeffs = True
+    derive_stage_2_ws_coeffs = True
+    derive_stage_1_sst_coeffs = True
+    derive_stage_2_sst_coeffs = True
+    derive_global_sst_coeffs = True
+    plot_timeseries = False
+    plot_scatter = False
     
-    # Load the appropriate coefficient file
-    B1 = np.load('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_2/coeffs_ws'+str(bin_ws)+'.npy')
+    # =============================================================================
+    # LOAD DATA - LOAD DATA - LOAD DATA - LOAD DATA - LOAD DATA - LOAD DATA - LOAD 
+    # =============================================================================
+    # Load MMD data from regression
+    #-------------------------------
+    # Settings
+    sensor = "amsr2"
+    mmd_type = "6b"
+    data_type = "mmd"
+    year = 2015
 
-    # Find the nearest latitude bin of our measurement
-    if data['ws'][i] >= bin_ws+0.5:
-        bin_ws_near = bin_lat+1
-    else:
-        bin_ws_near = bin_lat-1 
-
-    # Check if there are coefficients for that bin and load
-    if os.path.isfile('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_1/coeffs_lat'+str(bin_ws+2)+'.npy'):
-        B2 = np.load('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_1/coeffs_lat'+str(bin_ws+2)+'.npy')
-    else:
-        WSr_i = np.nan
-        # Append to list
-        WSr.append(WSr_i)
-        continue
-
-    WSr_i1 = B1[0]                                         + \
-             B1[1]  *  (data['1vpol'] - 150)               + \
-             B1[2]  * ((data['1vpol'] - 150)**2)           + \
-             B1[3]  *  (data['1hpol'] - 150)               + \
-             B1[4]  * ((data['1hpol'] - 150)**2)           + \
-             B1[5]  *  (data['6vpol'] - 150)               + \
-             B1[6]  * ((data['6vpol'] - 150)**2)           + \
-             B1[7]  *  (data['6hpol'] - 150)               + \
-             B1[8]  * ((data['6hpol'] - 150)**2)           + \
-             B1[9]  *  (data['10vpol'] - 150)              + \
-             B1[10] * ((data['10vpol'] - 150)**2)          + \
-             B1[11] *  (data['10hpol'] - 150)              + \
-             B1[12] * ((data['10hpol'] - 150)**2)          + \
-             B1[13] *  (data['18vpol'] - 150)              + \
-             B1[14] * ((data['18vpol'] - 150)**2)          + \
-             B1[15] *  (data['18hpol'] - 150)              + \
-             B1[16] * ((data['18hpol'] - 150)**2)          + \
-             B1[17] *  (data['36vpol'] - 150               + \
-             B1[18] * ((data['36vpol'] - 150)**2)          + \
-             B1[19] *  (data['36hpol'] - 150)              + \
-             B1[20] * ((data['36hpol'] - 150)**2)          + \
-             B1[21] *  (data['look_angle'] - 55)
-
-    WSr_i2 = B2[0]                                         + \
-             B2[1]  *  (data['1vpol'] - 150)               + \
-             B2[2]  * ((data['1vpol'] - 150)**2)           + \
-             B2[3]  *  (data['1hpol'] - 150)               + \
-             B2[4]  * ((data['1hpol'] - 150)**2)           + \
-             B2[5]  *  (data['6vpol'] - 150)               + \
-             B2[6]  * ((data['6vpol'] - 150)**2)           + \
-             B2[7]  *  (data['6hpol'] - 150)               + \
-             B2[8]  * ((data['6hpol'] - 150)**2)           + \
-             B2[9]  *  (data['10vpol'] - 150)              + \
-             B2[10] * ((data['10vpol'] - 150)**2)          + \
-             B2[11] *  (data['10hpol'] - 150)              + \
-             B2[12] * ((data['10hpol'] - 150)**2)          + \
-             B2[13] *  (data['18vpol'] - 150)              + \
-             B2[14] * ((data['18vpol'] - 150)**2)          + \
-             B2[15] *  (data['18hpol'] - 150)              + \
-             B2[16] * ((data['18hpol'] - 150)**2)          + \
-             B2[17] *  (data['36vpol'] - 150               + \
-             B2[18] * ((data['36vpol'] - 150)**2)          + \
-             B2[19] *  (data['36hpol'] - 150)              + \
-             B2[20] * ((data['36hpol'] - 150)**2)          + \
-             B2[21] *  (data['look_angle'] - 55)
-
-    # Apply linear interpolation to get the WSr value
-    f_interp = interp1d([bin_ws+0.5,bin_ws_near+1], [WSr_i1,WSr_i2])
-    WSr_i = f_interp(data['ws'][i])
+    # Wind speed bins
+    ws_bins = np.arange(0,20,1, dtype=int)
+    # Latitude bins
+    lat_bins = np.arange(-72,84,2, dtype=int)
+    # Orbit bins
+    orb_bins = np.arange(0,2,1, dtype=int)
+    # SST bins
+    sst_bins = np.arange(-2,36,2, dtype=int)
     
-    # Append to list
-    WSr.append(WSr_i)
-
-# Convert list to numpy array
-WSr = np.asarray(WSr)
+    # Get variable names
+    var_names = get_vars2extract(data_type)
     
-# Add retrieved wind speeds to dataframe
-data['WSr'] = WSr
-
-
-# SST retrieval - stage 1
-# -----------------------
-# Calculate coefficients
-calculate_coeffs_stage_1_sst(data)
-
-# Calculate SSTa
-SSTa = []
-
-# Loop through all observations
-for i in np.arange(len(data)):
-    # Find the latitude bin that our measurement belongs to
-    bin_lat = int(np.floor(data['lat'][i] / 2) * 2)  
+    # Data
+    data_file = DATA_PATH + "MMD" + mmd_type + "_drifter_" + str(year) + ".nc"
+    ncid = nc.Dataset(data_file, mode='r', format="NETCDF4_CLASSIC")
     
-    # Find the time bin the measurement belongs to
-    bin_time = data['bin_time'][i]
+    # Number of matchups
+    nmatchups = ncid.dimensions['matchups'].size
     
-    # Load the appropriate coefficient file
-    C1 = np.load('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_1/coeffs_lat'+str(bin_lat)+'_'+bin_time+'.npy')
+    # Get the data
+    data = pd.DataFrame(index=np.arange(nmatchups))
+    for ivar,var_name in enumerate(var_names):
+        data[var_name] = ncid[var_name][:]
     
-    # Find the nearest latitude bin of our measurement
-    if data['lat'][i] > bin_lat+1:
-        bin_lat_near = bin_lat+2
-    else:
-        bin_lat_near = bin_lat-2
-        
-    # Check if there are coefficients for that bin and load
-    if os.path.isfile('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_1/coeffs_lat'+str(bin_lat+2)+'_'+bin_time+'.npy'):
-        C2 = np.load('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_1/coeffs_lat'+str(bin_lat+2)+'_'+bin_time+'.npy')
-    else:
-        SSTa_i = np.nan
-        # Append to list
-        SSTa.append(SSTa_i)
-        continue
-
-    SSTa_i1 = C1[0]                                     + \
-              C1[1]  *  (data_filt['1vpol'] - 150)      + \
-              C1[2]  * ((data_filt['1vpol'] - 150)**2)  + \
-              C1[3]  *  (data_filt['1hpol'] - 150)      + \
-              C1[4]  * ((data_filt['1hpol'] - 150)**2)  + \
-              C1[5]  *  (data_filt['6vpol'] - 150)      + \
-              C1[6]  * ((data_filt['6vpol'] - 150)**2)  + \
-              C1[7]  *  (data_filt['6hpol'] - 150)      + \
-              C1[8]  * ((data_filt['6hpol'] - 150)**2)  + \
-              C1[9]  *  (data_filt['10vpol'] - 150)     + \
-              C1[10] * ((data_filt['10vpol'] - 150)**2) + \
-              C1[11] *  (data_filt['10hpol'] - 150 )    + \
-              C1[12] * ((data_filt['10hpol'] - 150)**2) + \
-              C1[13] *  (data_filt['18vpol'] - 150)     + \
-              C1[14] * ((data_filt['18vpol'] - 150)**2) + \
-              C1[15] *  (data_filt['18hpol'] - 150)     + \
-              C1[16] * ((data_filt['18hpol'] - 150)**2) + \
-              C1[17] *  (data_filt['36vpol'] - 150)     + \
-              C1[18] * ((data_filt['36vpol'] - 150)**2) + \
-              C1[19] *  (data_filt['36hpol'] - 150)     + \
-              C1[20] * ((data_filt['36hpol'] - 150)**2) + \
-              C1[21] *  (data_filt['look_angle'] - 55)  + \
-              C1[22] * data_filt['WSr']                 + \
-              C1[23] * np.cos(data_filt['phi_rel'])     + \
-              C1[24] * np.sin(data_filt['phi_rel'])     + \
-              C1[25] * np.cos(2*data_filt['phi_rel'])   + \
-              C1[26] * np.sin(2*data_filt['phi_rel'])   + \
+    # Close the netCDF file
+    ncid.close()
     
-    SSTa_i1 = C2[0]                                     + \
-              C2[1]  *  (data_filt['1vpol'] - 150)      + \
-              C2[2]  * ((data_filt['1vpol'] - 150)**2)  + \
-              C2[3]  *  (data_filt['1hpol'] - 150)      + \
-              C2[4]  * ((data_filt['1hpol'] - 150)**2)  + \
-              C2[5]  *  (data_filt['6vpol'] - 150)      + \
-              C2[6]  * ((data_filt['6vpol'] - 150)**2)  + \
-              C2[7]  *  (data_filt['6hpol'] - 150)      + \
-              C2[8]  * ((data_filt['6hpol'] - 150)**2)  + \
-              C2[9]  *  (data_filt['10vpol'] - 150)     + \
-              C2[10] * ((data_filt['10vpol'] - 150)**2) + \
-              C2[11] *  (data_filt['10hpol'] - 150 )    + \
-              C2[12] * ((data_filt['10hpol'] - 150)**2) + \
-              C2[13] *  (data_filt['18vpol'] - 150)     + \
-              C2[14] * ((data_filt['18vpol'] - 150)**2) + \
-              C2[15] *  (data_filt['18hpol'] - 150)     + \
-              C2[16] * ((data_filt['18hpol'] - 150)**2) + \
-              C2[17] *  (data_filt['36vpol'] - 150)     + \
-              C2[18] * ((data_filt['36vpol'] - 150)**2) + \
-              C2[19] *  (data_filt['36hpol'] - 150)     + \
-              C2[20] * ((data_filt['36hpol'] - 150)**2) + \
-              C2[21] *  (data_filt['look_angle'] - 55)  + \
-              C2[22] * data_filt['WSr']                 + \
-              C2[23] * np.cos(data_filt['phi_rel'])     + \
-              C2[24] * np.sin(data_filt['phi_rel'])     + \
-              C2[25] * np.cos(2*data_filt['phi_rel'])   + \
-              C2[26] * np.sin(2*data_filt['phi_rel'])   + \
-
-    # Apply linear interpolation to get the SSTa value
-    f_interp = interp1d([bin_lat+1,bin_lat_near+1], [SSTa_i1,SSTa_i2])
-    SSTa_i = f_interp(data['lat'][i])
     
-    # Append to list
-    SSTa.append(SSTa_i)
-
-# Convert list to numpy array
-SSTa = np.asarray(SSTa)
-
-
-# SST retrieval - stage 2
-# -----------------------
-# # Calculate coefficients
-calculate_coeffs_stage_2(data,SSTa)
-
-# Calculate SSTr
-SSTr = []
-
-# Loop through all observations
-for i in np.arange(len(data)):
+    # Process the data
+    data['insitu_datetime'] = pd.to_datetime(data['insitu_time'],unit='s')
+    data['look_angle'] = data['satza'] - 55.
     
-    if np.isnan(SSTa[i]):
-        SSTr_i = np.nan
-        SSTr.append(SSTr_i)
-        continue
     
-    # Find the wind speed bin that our measurement belongs to
-    bin_ws = int(np.floor(data['ws'][i] / 2) * 2)
+    # Filter the data
+    # -Remove nans
+    data.dropna(axis=0,inplace=True)
     
-    # Find the SSTa bin the measurement belongs to
-    bin_ssta = int(np.floor((SSTa[i] - 273.15) / 2) * 2)
     
-    # Load the appropriate coefficient file
-    D1 = np.load('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_2/coeffs_ws'+str(bin_ws)+'_temp'+str(bin_ssta)+'.npy')
-
-    # Find the nearest wind speed bin
-    if data['ws'][i] > bin_ws+1:
-        bin_ws_near = bin_ws+2
-    else:
-        bin_ws_near = bin_ws-2 
+    # Divide the data into train and test data
+    data_train, data_test = train_test_split(data, test_size=0.3, random_state=rnseed)
+    data_train.reset_index(inplace=True)
+    data_test.reset_index(inplace=True)
     
-    # Find the nearest SSTa bin
-    if SSTa[i] > bin_ssta+1:
-        bin_ssta_near = bin_ssta+2
-    else:
-        bin_ssta_near = bin_ssta-2 
     
-    # Check if there are coefficients for that bin and load
-    if os.path.isfile('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_1/coeffs_ws'+str(bin_ws+2)+'_temp'+str(bin_ssta)+'.npy'):
-        D2 = np.load('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_1/coeffs_ws'+str(bin_ws+2)+'_temp'+str(bin_ssta)+'.npy')
-    else:
-        SSTr_i = np.nan
-        # Append to list
-        SSTr.append(SSTr_i)
-        continue
+    # =============================================================================
+    # MULTIPLE LINEAR REGRESSION - MULTIPLE LINEAR REGRESSION - MULTIPLE LINEAR REG
+    # =============================================================================
     
-    # Check if there are coefficients for that bin and load
-    if os.path.isfile('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_1/coeffs_ws'+str(bin_ws)+'_temp'+str(bin_ssta+2)+'.npy'):
-        D3 = np.load('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_1/coeffs_ws'+str(bin_ws)+'_temp'+str(bin_ssta+2)+'.npy')
-    else:
-        SSTr_i = np.nan
-        # Append to list
-        SSTr.append(SSTr_i)
-        continue
+    #============#
+    # WIND SPEED #
+    #============#
+    # ------------------------------
+    # Wind speed retrieval - Stage 1
+    # ------------------------------
+    # Calculate coefficients
+    if derive_stage_1_ws_coeffs:
+        calculate_coeffs_stage_1_ws(data_train,sensor)
     
-    # Check if there are coefficients for that bin and load
-    if os.path.isfile('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_1/coeffs_ws'+str(bin_ws+2)+'_temp'+str(bin_ssta+2)+'.npy'):
-        D4 = np.load('/data/users/ssk/SHIPS4SST/phase_2/mw_ir_campaign_2021/data/retrieval_coeffs/stage_1/coeffs_ws'+str(bin_ws+2)+'_temp'+str(bin_ssta+2)+'.npy')
-    else:
-        SSTr_i = np.nan
-        # Append to list
-        SSTr.append(SSTr_i)
-        continue
+    # Retrieve WSa
+    WSa = retrieve_stage_1_ws(data_train,sensor)
+    data_train['WSa'] = WSa
+    WSa = retrieve_stage_1_ws(data_test,sensor)
+    data_test['WSa'] = WSa
     
-    if TB_data_type == 'obs':   
-        SSTr_i1 = D1[0]                                     + \
-              D1[1]  *  (data_filt['1vpol'] - 150)      + \
-              D1[2]  * ((data_filt['1vpol'] - 150)**2)  + \
-              D1[3]  *  (data_filt['1hpol'] - 150)      + \
-              D1[4]  * ((data_filt['1hpol'] - 150)**2)  + \
-              D1[5]  *  (data_filt['6vpol'] - 150)      + \
-              D1[6]  * ((data_filt['6vpol'] - 150)**2)  + \
-              D1[7]  *  (data_filt['6hpol'] - 150)      + \
-              D1[8]  * ((data_filt['6hpol'] - 150)**2)  + \
-              D1[9]  *  (data_filt['10vpol'] - 150)     + \
-              D1[10] * ((data_filt['10vpol'] - 150)**2) + \
-              D1[11] *  (data_filt['10hpol'] - 150 )    + \
-              D1[12] * ((data_filt['10hpol'] - 150)**2) + \
-              D1[13] *  (data_filt['18vpol'] - 150)     + \
-              D1[14] * ((data_filt['18vpol'] - 150)**2) + \
-              D1[15] *  (data_filt['18hpol'] - 150)     + \
-              D1[16] * ((data_filt['18hpol'] - 150)**2) + \
-              D1[17] *  (data_filt['36vpol'] - 150)     + \
-              D1[18] * ((data_filt['36vpol'] - 150)**2) + \
-              D1[19] *  (data_filt['36hpol'] - 150)     + \
-              D1[20] * ((data_filt['36hpol'] - 150)**2) + \
-              D1[21] *  (data_filt['look_angle'] - 55)  + \
-              D1[22] * data_filt['WSr']                 + \
-              D1[23] * np.cos(data_filt['phi_rel'])     + \
-              D1[24] * np.sin(data_filt['phi_rel'])     + \
-              D1[25] * np.cos(2*data_filt['phi_rel'])   + \
-              D1[26] * np.sin(2*data_filt['phi_rel'])   + \
-                  
-        SSTr_i2 = D2[0]                                     + \
-              D2[1]  *  (data_filt['1vpol'] - 150)      + \
-              D2[2]  * ((data_filt['1vpol'] - 150)**2)  + \
-              D2[3]  *  (data_filt['1hpol'] - 150)      + \
-              D2[4]  * ((data_filt['1hpol'] - 150)**2)  + \
-              D2[5]  *  (data_filt['6vpol'] - 150)      + \
-              D2[6]  * ((data_filt['6vpol'] - 150)**2)  + \
-              D2[7]  *  (data_filt['6hpol'] - 150)      + \
-              D2[8]  * ((data_filt['6hpol'] - 150)**2)  + \
-              D2[9]  *  (data_filt['10vpol'] - 150)     + \
-              D2[10] * ((data_filt['10vpol'] - 150)**2) + \
-              D2[11] *  (data_filt['10hpol'] - 150 )    + \
-              D2[12] * ((data_filt['10hpol'] - 150)**2) + \
-              D2[13] *  (data_filt['18vpol'] - 150)     + \
-              D2[14] * ((data_filt['18vpol'] - 150)**2) + \
-              D2[15] *  (data_filt['18hpol'] - 150)     + \
-              D2[16] * ((data_filt['18hpol'] - 150)**2) + \
-              D2[17] *  (data_filt['36vpol'] - 150)     + \
-              D2[18] * ((data_filt['36vpol'] - 150)**2) + \
-              D2[19] *  (data_filt['36hpol'] - 150)     + \
-              D2[20] * ((data_filt['36hpol'] - 150)**2) + \
-              D2[21] *  (data_filt['look_angle'] - 55)  + \
-              D2[22] * data_filt['WSr']                 + \
-              D2[23] * np.cos(data_filt['phi_rel'])     + \
-              D2[24] * np.sin(data_filt['phi_rel'])     + \
-              D2[25] * np.cos(2*data_filt['phi_rel'])   + \
-              D2[26] * np.sin(2*data_filt['phi_rel'])   + \
-                  
-        SSTr_i3 = D3[0]                                     + \
-              D3[1]  *  (data_filt['1vpol'] - 150)      + \
-              D3[2]  * ((data_filt['1vpol'] - 150)**2)  + \
-              D3[3]  *  (data_filt['1hpol'] - 150)      + \
-              D3[4]  * ((data_filt['1hpol'] - 150)**2)  + \
-              D3[5]  *  (data_filt['6vpol'] - 150)      + \
-              D3[6]  * ((data_filt['6vpol'] - 150)**2)  + \
-              D3[7]  *  (data_filt['6hpol'] - 150)      + \
-              D3[8]  * ((data_filt['6hpol'] - 150)**2)  + \
-              D3[9]  *  (data_filt['10vpol'] - 150)     + \
-              D3[10] * ((data_filt['10vpol'] - 150)**2) + \
-              D3[11] *  (data_filt['10hpol'] - 150 )    + \
-              D3[12] * ((data_filt['10hpol'] - 150)**2) + \
-              D3[13] *  (data_filt['18vpol'] - 150)     + \
-              D3[14] * ((data_filt['18vpol'] - 150)**2) + \
-              D3[15] *  (data_filt['18hpol'] - 150)     + \
-              D3[16] * ((data_filt['18hpol'] - 150)**2) + \
-              D3[17] *  (data_filt['36vpol'] - 150)     + \
-              D3[18] * ((data_filt['36vpol'] - 150)**2) + \
-              D3[19] *  (data_filt['36hpol'] - 150)     + \
-              D3[20] * ((data_filt['36hpol'] - 150)**2) + \
-              D3[21] *  (data_filt['look_angle'] - 55)  + \
-              D3[22] * data_filt['WSr']                 + \
-              D3[23] * np.cos(data_filt['phi_rel'])     + \
-              D3[24] * np.sin(data_filt['phi_rel'])     + \
-              D3[25] * np.cos(2*data_filt['phi_rel'])   + \
-              D3[26] * np.sin(2*data_filt['phi_rel'])   + \
-                  
-        SSTr_i4 = D4[0]                                     + \
-              D4[1]  *  (data_filt['1vpol'] - 150)      + \
-              D4[2]  * ((data_filt['1vpol'] - 150)**2)  + \
-              D4[3]  *  (data_filt['1hpol'] - 150)      + \
-              D4[4]  * ((data_filt['1hpol'] - 150)**2)  + \
-              D4[5]  *  (data_filt['6vpol'] - 150)      + \
-              D4[6]  * ((data_filt['6vpol'] - 150)**2)  + \
-              D4[7]  *  (data_filt['6hpol'] - 150)      + \
-              D4[8]  * ((data_filt['6hpol'] - 150)**2)  + \
-              D4[9]  *  (data_filt['10vpol'] - 150)     + \
-              D4[10] * ((data_filt['10vpol'] - 150)**2) + \
-              D4[11] *  (data_filt['10hpol'] - 150 )    + \
-              D4[12] * ((data_filt['10hpol'] - 150)**2) + \
-              D4[13] *  (data_filt['18vpol'] - 150)     + \
-              D4[14] * ((data_filt['18vpol'] - 150)**2) + \
-              D4[15] *  (data_filt['18hpol'] - 150)     + \
-              D4[16] * ((data_filt['18hpol'] - 150)**2) + \
-              D4[17] *  (data_filt['36vpol'] - 150)     + \
-              D4[18] * ((data_filt['36vpol'] - 150)**2) + \
-              D4[19] *  (data_filt['36hpol'] - 150)     + \
-              D4[20] * ((data_filt['36hpol'] - 150)**2) + \
-              D4[21] *  (data_filt['look_angle'] - 55)  + \
-              D4[22] * data_filt['WSr']                 + \
-              D4[23] * np.cos(data_filt['phi_rel'])     + \
-              D4[24] * np.sin(data_filt['phi_rel'])     + \
-              D4[25] * np.cos(2*data_filt['phi_rel'])   + \
-              D4[26] * np.sin(2*data_filt['phi_rel'])   + \
     
-    # Bilinear interpolation
-    f_interp2 = interp2d([bin_ws+1,bin_ws_near+1,bin_ws+1,bin_ws_near+1], [bin_ssta+1,bin_ssta+1,bin_ssta_near+1,bin_ssta_near+1], [SSTr_i1,SSTr_i2,SSTr_i3,SSTr_i4])
-    SSTr_i = f_interp2(data['ws'][i],SSTa[i])
+    # ------------------------------
+    # Wind speed retrieval - Stage 2
+    # ------------------------------
     
-    # Append to list
-    SSTr.append(SSTr_i)
+    # Calculate coefficients
+    if derive_stage_2_ws_coeffs:
+        calculate_coeffs_stage_2_ws(data_train,ws_bins,sensor)
+    
+    # Retrieve WSr
+    WSr = retrieve_stage_2_ws(data_train,ws_bins,sensor)
+    data_train['WSr'] = WSr
+    WSr = retrieve_stage_2_ws(data_test,ws_bins,sensor)
+    data_test['WSr'] = WSr
+    
+    
+    
+    #=========================#
+    # SEA SURFACE TEMPERATURE #
+    #=========================#
+    # -----------------------
+    # SST retrieval - Stage 1
+    # -----------------------
+    
+    # Calculate coefficients
+    if derive_stage_1_sst_coeffs:
+        calculate_coeffs_stage_1_sst(data_train,orb_bins,lat_bins,sensor)
+    
+    # Retrieve SSTa
+    SSTa = retrieve_stage_1_sst(data_train,orb_bins,lat_bins,sensor)
+    data_train['SSTa'] = SSTa
+    SSTa = retrieve_stage_1_sst(data_test,orb_bins,lat_bins,sensor)
+    data_test['SSTa'] = SSTa
+    
+    
+    # -----------------------
+    # SST retrieval - Stage 2
+    # -----------------------
+    
+    # Calculate coefficients
+    if derive_stage_2_sst_coeffs:
+        calculate_coeffs_stage_2_sst(data_train,ws_bins,sst_bins,sensor)
+    
+    # Retrieve SSTr
+    SSTr = retrieve_stage_2_sst(data_train,ws_bins,sst_bins,sensor)
+    data_train['SSTr'] = SSTr
+    SSTr = retrieve_stage_2_sst(data_test,ws_bins,sst_bins,sensor)
+    data_test['SSTr'] = SSTr
+    
+    
+    # -----------------------
+    # SST retrieval - Global
+    # -----------------------
+    # Calculate coefficients
+    if derive_global_sst_coeffs:
+        calculate_coeffs_global_sst(data_train,sensor)
+    
+    # Retrieve SSTr
+    SSTr = retrieve_global_sst(data_train,sensor)
+    data_train['SSTr_global'] = SSTr
+    SSTr = retrieve_global_sst(data_test,sensor)
+    data_test['SSTr_global'] = SSTr
 
-# Convert list to numpy array
-SSTr = np.asarray(SSTr)
 
 
-# Plot mw retrievals together with ISAR observations
-plot_data(data,SSTr)
+    #======================================================#
+    # ANALYSIS - ANALYSIS - ANALYSIS - ANALYSIS - ANALYSIS #
+    #======================================================#
+    # Only use the common data
+    good_data = ( (~np.isnan(data_train['SSTa'].values)) & (~np.isnan(data_train['SSTa'].values)) & (~np.isnan(data_train['SSTr_global'].values)) )
+    data_train = data_train.loc[good_data,:]
+    data_train.reset_index(inplace=True,drop=True)
+    good_data = ( (~np.isnan(data_test['SSTa'].values)) & (~np.isnan(data_test['SSTa'].values)) & (~np.isnan(data_test['SSTr_global'].values)) )
+    data_test = data_test.loc[good_data,:]
+    data_test.reset_index(inplace=True,drop=True)
 
-# Print statistics
-print_stats(data,SSTr)
+    # Print statistics
+    print("\nTRAIN DATASET\n===============================")
+    print("1-stage SST retrieval")
+    print_stats(data_train,data_train['SSTa'])
+    print("\n2-stage SST retrieval")
+    print_stats(data_train,data_train['SSTr'])
+    print("\nGlobal SST retrieval")
+    print_stats(data_train,data_train['SSTr_global'])
+    print("\nTEST DATASET\n===============================")
+    print("1-stage SST retrieval")
+    print_stats(data_test,data_test['SSTa'])
+    print("\n2-stage SST retrieval")
+    print_stats(data_test,data_test['SSTr'])
+    print("\nGlobal SST retrieval")
+    print_stats(data_test,data_test['SSTr_global'])
 
 
-
-
-
-
+    # Plot retrieved vs in situ SST
+    if plot_scatter:
+        plot_scatter_data(data_train)
+    
+    
+    
