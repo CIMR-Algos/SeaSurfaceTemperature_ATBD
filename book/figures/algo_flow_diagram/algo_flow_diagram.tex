@@ -1,0 +1,239 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PACLKAGES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass{article}
+\usepackage[top=3.5cm,bottom=3.3cm,left=2.3cm,right=2.3cm]{geometry}
+\usepackage{fancyhdr}       % Customising the header and footer
+\usepackage{titlesec}       % Customising title, font, etc. for sections,
+                            % subsections etc.
+
+\usepackage[english]{babel}
+
+\usepackage{amsmath,amssymb,amsfonts}
+%\numberwithin{equation}{subsection}     % Different numbering for different subsections
+
+
+\usepackage{float}              % Including figures, tables, etc.
+\usepackage{subcaption}         % For subfigures
+\usepackage{graphicx}           % Enhanced support for graphics
+\usepackage[update,prepend]{epstopdf}           % Converting figures from eps to pdf
+
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{array}              % For extended column definitions
+\usepackage{color, colortbl}    % Coloring + coloring for tables
+\usepackage{xcolor}
+\usepackage[section]{placeins}  % Control float placement
+\usepackage{rotating}           % For rotating e.g. figures and tables
+\usepackage[font=footnotesize,labelfont=bf]{caption} % Caption settings
+\usepackage{tikz}               % Enable drawing of figures
+\usepackage{varwidth}
+\usetikzlibrary{matrix,positioning,shapes,arrows.meta}
+\tikzset{>={Latex[length=1.7mm,width=1.8mm]}}
+
+\usepackage[hidelinks,pdfpagelayout=TwoPageRight]{hyperref}
+\usepackage[all]{hypcap}
+\usepackage[round,authoryear]{natbib}
+\bibliographystyle{apalike}
+
+\usepackage[T1]{fontenc}                % Defines the font (need it for working properly
+                                        % with accented characters)
+\usepackage{latexsym}                   % Adds a few more additional characters
+\usepackage{lipsum}                     % Dummy text
+\usepackage{wasysym}                    % Additional symbols
+%\usepackage{libertine}
+\usepackage{lmodern}
+
+
+\usepackage{url}                        % Line break and formatting of urls
+\urlstyle{same}                         % Set the url font to the same as the document
+\usepackage{pdfsync}                    % Allows synch between latex source and pdf output
+\usepackage{pdfpages}                   % Include external pdf documents
+\usepackage{pdfpages}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% NEW COMMANDS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% compresslist
+\newcommand{\compresslist}{\setlength{\itemsep}{1.0pt}
+                           \setlength{\parskip}{0.0pt}
+                           \setlength{\parsep }{0.0pt}
+                           \setlength{\topsep }{0.0pt}
+                          }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% COLORS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{darkred}{RGB}{171,23,23}
+\definecolor{darkgreen}{RGB}{0,153,0}
+\definecolor{darkblue}{RGB}{0,0,204}
+\definecolor{darkpurple}{RGB}{102,0,104}
+\definecolor{orange}{RGB}{252,144,4}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SECTIONS LAYOUT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% How to format titles (chapter, section, subsection, etc
+% \titleformat{<command>}[<shape>]{<format>}{<label>}{<sep>}{<before-code>}[<after-code>]
+% Section format for information page
+\titleformat{\section}%
+            {\bfseries\fontsize{17pt}{20pt}\selectfont}%
+            {\thesection}%
+            {4mm}%
+            {}%
+            [\vspace{2mm}]
+\newcommand{\sectionbreak}{\vspace{5mm}}
+% Subsection format
+\titleformat{\subsection}%
+            {\bfseries\fontsize{14pt}{17pt}\selectfont}%
+            {\thesubsection}%
+            {4mm}%
+            {}%
+            []
+% Subsubsection format
+\titleformat{\subsubsection}%
+            {\bfseries\fontsize{12pt}{14.5pt}\selectfont}%
+            {\thesubsubsection}%
+            {4mm}%
+            {}%
+            []
+
+% Set counting
+\setcounter{section}{0}     % Start the section counting on 1
+\setcounter{secnumdepth}{4} % Set the subsection depth as 3 (i.e. 3 "decimals").
+\setcounter{tocdepth}{2}
+
+
+% Remove footer
+\pagestyle{empty}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TITLE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\centering
+\scalebox{0.6}{
+    \begin{tikzpicture}[yscale=-1]
+      % Input data
+      \node[rectangle, draw, thick, fill=darkred, text=white, text width=6.0cm, align=center, font={\Large\bfseries}, minimum height=2.5cm, rounded corners=0.6cm] (in) at (0,0)
+          {Read:\vspace{-5pt}
+           \begin{itemize}\compresslist
+               \item CIMR orbital data
+               \item Auxiliary data
+           \end{itemize}
+          };
+      % WS1-stage
+      \node[rectangle, draw, thick, fill=darkgreen,text=white, align=center,font={\Large\bfseries}, minimum width=6.4cm, minimum height=2.0cm, rounded corners=0.6cm] (ws1) at (0,3.5)
+          {WS retrieval 1st stage:\\Global algorithm};
+      % Regression coefficients, A
+      \node[rectangle, draw, thick, fill=darkblue, text=white, align=center, font={\Large\bfseries}, minimum width=1.5cm, minimum height=1.0cm, rounded corners=0.4cm] (A) at (-5.2,3.5) {$\boldsymbol{\mathrm{A}}$};
+      % Arrows
+      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (in) -- (ws1);
+      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (A) -- (ws1);
+      % WS2-stage
+      \node[rectangle, draw, thick, fill=darkgreen,text=white, align=center,font={\Large\bfseries}, minimum width=6.8cm, minimum height=2.0cm, rounded corners=0.6cm] (ws2) at (0,7)
+          {WS retrieval 2nd stage:\\Localized WS algorithms};
+      % Regression coefficients, B
+      \node[rectangle, draw, thick, fill=darkblue, text=white, align=center, font={\Large\bfseries}, minimum width=1.5cm, minimum height=1.0cm, rounded corners=0.4cm] (B) at (-5.2,7) {$\boldsymbol{\mathrm{B}}$};
+      % Arrows
+      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (ws1) -- (ws2);
+      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (B) -- (ws2);
+      % SST
+      \node[rectangle, draw, thick, fill=darkgreen,text=white, align=center,font={\Large\bfseries}, minimum width=5.4cm, minimum height=2.0cm, rounded corners=0.6cm] (sst) at (0,10.5)
+          {SST retrieval:\\Global algorithm};
+      % Regression coefficients, B
+      \node[rectangle, draw, thick, fill=darkblue, text=white, align=center, font={\Large\bfseries}, minimum width=1.5cm, minimum height=1.0cm, rounded corners=0.4cm] (C) at (-5.2,10.5) {$\boldsymbol{\mathrm{C}}$};
+      % Arrows
+      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (ws2) -- (sst);
+      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (C) -- (sst);
+      % Output
+      \node[rectangle, draw, thick, fill=darkpurple, text=white, text width=4.5cm, align=center, font={\Large\bfseries}, minimum height=2.6cm, rounded corners=0.6cm] (out) at (0,14)
+          {Output data:\vspace{-5pt}
+          \begin{itemize}\compresslist
+              \item $\boldsymbol{\mathrm{WS_r}}$
+              \item $\boldsymbol{\mathrm{SST_r}}$
+          \end{itemize}
+          };
+      % Arrows
+      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (sst) -- (out);
+
+    \end{tikzpicture}
+}
+
+\newpage\clearpage
+
+
+\centering
+\scalebox{0.6}{
+    \begin{tikzpicture}[yscale=-1]
+      % Input data - CIMR orbital data
+      \node[rectangle, draw, thick, fill=darkred, text=white, text width=4.0cm, align=center, font={\Large\bfseries}, minimum height=1.5cm, rounded corners=0.4cm] (cimr_data) at (-2.5,0)
+          {CIMR\\orbital data};
+      % Input data - Ancillary data
+      \node[rectangle, draw, thick, fill=darkred, text=white, text width=4.0cm, align=center, font={\Large\bfseries}, minimum height=1.5cm, rounded corners=0.4cm] (anc_data) at (2.5,0)
+          {Ancillary data};
+      % Input data - Integrated OEM data
+      \node[rectangle, draw, thick, fill=darkred, text=white, text width=4.0cm, align=center, font={\Large\bfseries}, minimum height=1.5cm, rounded corners=0.4cm] (oem_data) at (7.5,0)
+          {Integrated OEM data};
+      % Choice of wind speed input - retrieval
+      \node[rectangle, draw, thick, fill=orange, text=white, text width=6.0cm, align=center, font={\Large\bfseries}, minimum height=1.0cm, rounded corners=0.1cm] (ws_input_retrieval) at (0,3.0)
+          {ws\_input = retrieval?};
+      % Choice of wind speed input - OEM
+      \node[rectangle, draw, thick, fill=orange, text=white, text width=5.2cm, align=center, font={\Large\bfseries}, minimum height=1.0cm, rounded corners=0.1cm] (ws_input_oem) at (7.5,3.0)
+          {ws\_input = OEM?};
+      % WS1-stage
+      \node[rectangle, draw, thick, fill=darkgreen,text=white, align=center,font={\Large\bfseries}, minimum width=6.4cm, minimum height=2.0cm, rounded corners=0.6cm] (ws1) at (0,5.5)
+          {WS retrieval 1st stage:\\Global algorithm};
+      % Regression coefficients, A
+      \node[rectangle, draw, thick, fill=darkblue, text=white, align=center, font={\Large\bfseries}, minimum width=1.5cm, minimum height=1.0cm, rounded corners=0.4cm] (A) at (-5.2,5.5) {$\boldsymbol{\mathrm{A}}$};
+      % Arrows
+      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (cimr_data) -- (ws_input_retrieval);
+      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (anc_data) -- (ws_input_retrieval);
+      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (ws_input_retrieval) -- (ws1) node[midway, anchor=west] {{\Large\textbf{YES}}};
+      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (oem_data) -- (ws_input_oem);
+      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (A) -- (ws1);
+      % WS2-stage
+      \node[rectangle, draw, thick, fill=darkgreen,text=white, align=center,font={\Large\bfseries}, minimum width=6.8cm, minimum height=2.0cm, rounded corners=0.6cm] (ws2) at (0,8.5)
+          {WS retrieval 2nd stage:\\Localized WS algorithms};
+      % Regression coefficients, B
+      \node[rectangle, draw, thick, fill=darkblue, text=white, align=center, font={\Large\bfseries}, minimum width=1.5cm, minimum height=1.0cm, rounded corners=0.4cm] (B) at (-5.2,8.5) {$\boldsymbol{\mathrm{B}}$};
+      % Arrows
+      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (ws1) -- (ws2);
+      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (B) -- (ws2);
+      % SST
+      \node[rectangle, draw, thick, fill=darkgreen,text=white, align=center,font={\Large\bfseries}, minimum width=5.4cm, minimum height=2.0cm, rounded corners=0.6cm] (sst) at (0,11.5)
+          {SST retrieval:\\Global algorithm};
+      % Regression coefficients, C
+      \node[rectangle, draw, thick, fill=darkblue, text=white, align=center, font={\Large\bfseries}, minimum width=1.5cm, minimum height=1.0cm, rounded corners=0.4cm] (C) at (-5.2,11.5) {$\boldsymbol{\mathrm{C}}$};
+      % Arrows
+      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (ws2) -- (sst);
+      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (C) -- (sst);
+%      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (ws_input_retrieval) to [out=180,in=200] (sst);
+      \draw[black,  shorten >= 4pt,line width=0.5mm,-latex] (ws_input_retrieval.east) -- ++(1.0,0)  |- (sst)  node[pos=0.23,anchor=west] {{\Large\textbf{NO}}};
+      \draw[black, shorten >= 4pt, line width=0.5mm,-latex] (ws_input_oem.south) -- ++(0,0.0)  |- (sst)  node[pos=0.212,anchor=west] {{\Large\textbf{YES}}};
+      % Output
+      \node[rectangle, draw, thick, fill=darkpurple, text=white, text width=5.0cm, align=center, font={\Large\bfseries}, minimum height=2.6cm, rounded corners=0.6cm] (out) at (0,16)
+          {Output data:\vspace{-5pt}
+          \begin{itemize}\compresslist
+              \item $\boldsymbol{\mathrm{WS_r}}$ (optional)
+              \item $\boldsymbol{\mathrm{SST_r}}$
+          \end{itemize}
+          };
+      % Arrows
+      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (sst) -- (out);
+
+    \end{tikzpicture}
+}
+
+\end{document}
