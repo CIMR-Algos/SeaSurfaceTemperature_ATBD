@@ -5,6 +5,3 @@
 # Python and notebook specifics
 __pycache__/
 .ipynb_checkpoints/
-
-# Jupyter book specifics
-_build

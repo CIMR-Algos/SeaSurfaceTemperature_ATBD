@@ -1,0 +1,1912 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>SST retrieval algorithm v 0 &#8212; ATBD SST</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="References" href="references.html" />
+    <link rel="prev" title="Algorithm Performance Assessment (Version 2 ATBD)" href="algorithm_performance_assessment.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="_static/logo.jpg" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">ATBD SST</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    ATBD SST
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="abstract.html">
+   Abstract
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="applicable_ref_docs.html">
+   Applicable and Reference Documents
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="acronyms.html">
+   Acronyms
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="definitions.html">
+   Definitions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="introduction_purpose_scope.html">
+   Introduction, purpose and scope
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="background_justification_algorithm.html">
+   Background and justification of selected algorithm
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="L2_product_definition.html">
+   Level-2 product definition
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="baseline_algorithm_definition.html">
+   Baseline Algorithm Definition
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="algorithm_input_output_data_definition.html">
+   Algorithm Input and Output Data Definition (IODD)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="algorithm_performance_assessment.html">
+   Algorithm Performance Assessment (Version 2 ATBD)
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Notebook SST Retrieval Algorithm
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="references.html">
+   References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="annex.html">
+   Annex
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/CIMR-Algos/ATBD-SST/master?urlpath=tree/docs/ATBD_SST_retrieval_algorithm.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/CIMR-Algos/ATBD-SST"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/ATBD_SST_retrieval_algorithm.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#introduction">
+   Introduction
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#imports-and-parameter-settings">
+   Imports and parameter settings
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#read-input-data">
+   Read input data
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#data-pre-processing">
+     Data pre-processing
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#retrieval-definition">
+   Retrieval definition
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#general-functions">
+     General functions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#stage-1-wind-speed-retrieval-algorithm">
+     Stage 1 wind speed retrieval algorithm
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#stage-2-wind-speed-retrieval-algorithm">
+     Stage 2 wind speed retrieval algorithm
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#sst-retrieval-algorithm">
+     SST retrieval algorithm
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#derivation-of-regression-coefficients">
+     Derivation of regression coefficients
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#performance-analysis">
+     Performance analysis
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#analysis-functions">
+       Analysis functions
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#retrievals">
+       Retrievals
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>SST retrieval algorithm v 0</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#introduction">
+   Introduction
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#imports-and-parameter-settings">
+   Imports and parameter settings
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#read-input-data">
+   Read input data
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#data-pre-processing">
+     Data pre-processing
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#retrieval-definition">
+   Retrieval definition
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#general-functions">
+     General functions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#stage-1-wind-speed-retrieval-algorithm">
+     Stage 1 wind speed retrieval algorithm
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#stage-2-wind-speed-retrieval-algorithm">
+     Stage 2 wind speed retrieval algorithm
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#sst-retrieval-algorithm">
+     SST retrieval algorithm
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#derivation-of-regression-coefficients">
+     Derivation of regression coefficients
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#performance-analysis">
+     Performance analysis
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#analysis-functions">
+       Analysis functions
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#retrievals">
+       Retrievals
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="sst-retrieval-algorithm-v-0">
+<h1>SST retrieval algorithm v 0<a class="headerlink" href="#sst-retrieval-algorithm-v-0" title="Permalink to this headline">#</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">#</a></h2>
+<p>The retrieval algorithm is based on the regression retrieval algorithm developed in Alerskans et al., (2020). It consists of a global SST retrieval algorithm, which uses brightness temperatures and anciliary, such as wind speed. The wind speed information can be obtained from either the integrated OEM retrieval or anciliary data. In addition, an optional wind speed retriveal algorithm, based on the 2-stage retrieval algorithm developed in Alerskans et al., (2020) is included here.</p>
+<p>As a first version, the algorithm is developed and regression coefficients are derived using data from the ESA CCI Multisensor Matchup Dataset (MMD), which includes PMW observations from AMSR2 and anciliary data from the ERA5 reanalysis. A CIMR-like channel combination is used, following Nielsen-Englyst et al., (2021), which includes the following channels; 6.9, 10.6, 18.7 and 36.5 GHz (vertical and horizontal polarizations).</p>
+</section>
+<section id="imports-and-parameter-settings">
+<h2>Imports and parameter settings<a class="headerlink" href="#imports-and-parameter-settings" title="Permalink to this headline">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Library imports</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">netCDF4</span> <span class="k">as</span> <span class="nn">nc</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">linear_model</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+
+<span class="c1"># Set the random seed</span>
+<span class="n">rnseed</span> <span class="o">=</span> <span class="mi">42</span>
+
+<span class="c1"># Set project paths</span>
+<span class="n">HOME</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;HOME&#39;</span><span class="p">]</span>
+<span class="n">PROJECT</span> <span class="o">=</span> <span class="n">HOME</span> <span class="o">+</span> <span class="s2">&quot;/Projects/CIMR/DEVALGO/ATBD_SST&quot;</span>
+<span class="n">DATA_PATH</span> <span class="o">=</span> <span class="n">PROJECT</span> <span class="o">+</span> <span class="s2">&quot;/data&quot;</span>
+<span class="n">COEFF_PATH</span> <span class="o">=</span> <span class="n">PROJECT</span> <span class="o">+</span> <span class="s2">&quot;/coeffs&quot;</span>
+
+
+<span class="c1"># Data source and algorithm settings</span>
+<span class="n">channel_comb</span> <span class="o">=</span> <span class="s2">&quot;cimr_like&quot;</span>   <span class="c1"># channel combination</span>
+<span class="n">ws_input</span> <span class="o">=</span> <span class="s2">&quot;retrieval&quot;</span>       <span class="c1">#&quot;retreieval&quot;: ws retrieval, &quot;oe&quot;: consistent OEM input, &quot;nwp&quot;: anciliary data input</span>
+<span class="n">data_type</span> <span class="o">=</span> <span class="s2">&quot;mmd&quot;</span>
+<span class="n">mmd_type</span> <span class="o">=</span> <span class="s2">&quot;6b&quot;</span>
+<span class="n">year</span> <span class="o">=</span> <span class="mi">2015</span>
+
+<span class="c1"># Settings</span>
+<span class="n">Nlim</span> <span class="o">=</span> <span class="mi">100</span>    <span class="c1"># Minimum number of matchups required for robust coefficients</span>
+<span class="c1"># Wind speed</span>
+<span class="n">ws_min</span><span class="p">,</span> <span class="n">ws_max</span><span class="p">,</span> <span class="n">dws</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span> <span class="c1"># Minimum, maximum and step wind speed</span>
+<span class="n">ws_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ws_min</span><span class="p">,</span><span class="n">ws_max</span><span class="p">,</span><span class="n">dws</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="c1"># Latitude</span>
+<span class="n">lat_min</span><span class="p">,</span> <span class="n">lat_max</span><span class="p">,</span> <span class="n">dlat</span> <span class="o">=</span> <span class="o">-</span><span class="mi">72</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">2</span> <span class="c1"># Minimum, maximum and step latitude</span>
+<span class="n">lat_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">lat_min</span><span class="p">,</span><span class="n">lat_max</span><span class="p">,</span><span class="n">dlat</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="c1"># SST</span>
+<span class="n">sst_min</span><span class="p">,</span> <span class="n">sst_max</span><span class="p">,</span> <span class="n">dsst</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">2</span> <span class="c1"># Minimum, maximum and step SST</span>
+<span class="n">sst_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">sst_min</span><span class="p">,</span><span class="n">sst_max</span><span class="p">,</span><span class="n">dsst</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="c1"># Orbit</span>
+<span class="n">orb_asc</span><span class="p">,</span> <span class="n">orb_desc</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="c1"># Ascending and descending orbit</span>
+<span class="n">orb_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">orb_asc</span><span class="p">,</span> <span class="n">orb_desc</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="read-input-data">
+<h2>Read input data<a class="headerlink" href="#read-input-data" title="Permalink to this headline">#</a></h2>
+<p>Read input data for the derivation of coefficients and subsequent retrieval of SST (and wind speed, if desired)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Data</span>
+<span class="n">data_file</span> <span class="o">=</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="s2">&quot;/MMD&quot;</span> <span class="o">+</span> <span class="n">mmd_type</span> <span class="o">+</span> <span class="s2">&quot;_drifter_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span>
+<span class="n">ncid</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">data_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;NETCDF4_CLASSIC&quot;</span><span class="p">)</span>
+
+<span class="c1"># Number of matchups</span>
+<span class="n">nmatchups</span> <span class="o">=</span> <span class="n">ncid</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;matchups&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+
+<span class="c1"># Variable names</span>
+<span class="n">var_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;orbit&#39;</span><span class="p">,</span> <span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="s1">&#39;satza&#39;</span><span class="p">,</span> <span class="s1">&#39;sataz&#39;</span><span class="p">,</span> <span class="s1">&#39;era5_wind_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;era5_phi_rel&#39;</span><span class="p">,</span> <span class="s1">&#39;era5_ws&#39;</span><span class="p">,</span> <span class="s1">&#39;era5_sst&#39;</span><span class="p">,</span> \
+             <span class="s1">&#39;era5_tcwv&#39;</span><span class="p">,</span> <span class="s1">&#39;era5_clwt&#39;</span><span class="p">,</span> <span class="s1">&#39;tb6vpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb6hpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb10vpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb10hpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb18vpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb18hpol&#39;</span><span class="p">,</span> \
+             <span class="s1">&#39;tb23vpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb23hpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb36vpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb36hpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb89vpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb89hpol&#39;</span><span class="p">,</span> <span class="s1">&#39;sga&#39;</span><span class="p">,</span> <span class="s1">&#39;sss&#39;</span><span class="p">,</span> <span class="s1">&#39;insitu_sst&#39;</span><span class="p">,</span> \
+             <span class="s1">&#39;insitu_time&#39;</span><span class="p">]</span>
+<span class="c1"># Get the data</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nmatchups</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">ivar</span><span class="p">,</span><span class="n">var_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">var_names</span><span class="p">):</span>
+    <span class="n">data</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ncid</span><span class="p">[</span><span class="n">var_name</span><span class="p">][:]</span>
+
+<span class="c1"># Close the netCDF file</span>
+<span class="n">ncid</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c1"># Print the first 10 rows of the dataframe to check the content</span>
+<span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>orbit</th>
+      <th>lat</th>
+      <th>lon</th>
+      <th>satza</th>
+      <th>sataz</th>
+      <th>era5_wind_dir</th>
+      <th>era5_phi_rel</th>
+      <th>era5_ws</th>
+      <th>era5_sst</th>
+      <th>era5_tcwv</th>
+      <th>...</th>
+      <th>tb23vpol</th>
+      <th>tb23hpol</th>
+      <th>tb36vpol</th>
+      <th>tb36hpol</th>
+      <th>tb89vpol</th>
+      <th>tb89hpol</th>
+      <th>sga</th>
+      <th>sss</th>
+      <th>insitu_sst</th>
+      <th>insitu_time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>56.424183</td>
+      <td>169.638947</td>
+      <td>54.849998</td>
+      <td>158.089996</td>
+      <td>22.596886</td>
+      <td>135.493118</td>
+      <td>17.837044</td>
+      <td>275.812103</td>
+      <td>5.054865</td>
+      <td>...</td>
+      <td>204.360001</td>
+      <td>141.500000</td>
+      <td>215.039993</td>
+      <td>156.619995</td>
+      <td>240.199997</td>
+      <td>197.949997</td>
+      <td>116.580383</td>
+      <td>32.953888</td>
+      <td>275.850006</td>
+      <td>1.420118e+09</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0</td>
+      <td>56.424183</td>
+      <td>169.638947</td>
+      <td>54.849998</td>
+      <td>158.089996</td>
+      <td>22.297323</td>
+      <td>135.792679</td>
+      <td>17.917061</td>
+      <td>275.812103</td>
+      <td>5.006155</td>
+      <td>...</td>
+      <td>204.360001</td>
+      <td>141.500000</td>
+      <td>215.039993</td>
+      <td>156.619995</td>
+      <td>240.199997</td>
+      <td>197.949997</td>
+      <td>116.580383</td>
+      <td>32.953888</td>
+      <td>275.850006</td>
+      <td>1.420121e+09</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0</td>
+      <td>56.424183</td>
+      <td>169.638947</td>
+      <td>54.849998</td>
+      <td>158.089996</td>
+      <td>22.000429</td>
+      <td>136.089569</td>
+      <td>17.997564</td>
+      <td>275.812103</td>
+      <td>4.957446</td>
+      <td>...</td>
+      <td>204.360001</td>
+      <td>141.500000</td>
+      <td>215.039993</td>
+      <td>156.619995</td>
+      <td>240.199997</td>
+      <td>197.949997</td>
+      <td>116.580383</td>
+      <td>32.953888</td>
+      <td>275.950012</td>
+      <td>1.420125e+09</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0</td>
+      <td>56.507004</td>
+      <td>169.711227</td>
+      <td>54.849998</td>
+      <td>158.149994</td>
+      <td>21.776829</td>
+      <td>136.373169</td>
+      <td>18.030928</td>
+      <td>275.812103</td>
+      <td>4.892839</td>
+      <td>...</td>
+      <td>204.429993</td>
+      <td>141.729996</td>
+      <td>215.179993</td>
+      <td>156.940002</td>
+      <td>240.350006</td>
+      <td>198.529999</td>
+      <td>116.591286</td>
+      <td>32.961517</td>
+      <td>275.950012</td>
+      <td>1.420129e+09</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0</td>
+      <td>56.507004</td>
+      <td>169.711227</td>
+      <td>54.849998</td>
+      <td>158.149994</td>
+      <td>21.900801</td>
+      <td>136.249207</td>
+      <td>17.832052</td>
+      <td>275.812103</td>
+      <td>4.750621</td>
+      <td>...</td>
+      <td>204.429993</td>
+      <td>141.729996</td>
+      <td>215.179993</td>
+      <td>156.940002</td>
+      <td>240.350006</td>
+      <td>198.529999</td>
+      <td>116.591286</td>
+      <td>32.961517</td>
+      <td>275.950012</td>
+      <td>1.420132e+09</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0</td>
+      <td>56.507004</td>
+      <td>169.711227</td>
+      <td>54.849998</td>
+      <td>158.149994</td>
+      <td>22.027569</td>
+      <td>136.122437</td>
+      <td>17.633261</td>
+      <td>275.812103</td>
+      <td>4.608402</td>
+      <td>...</td>
+      <td>204.429993</td>
+      <td>141.729996</td>
+      <td>215.179993</td>
+      <td>156.940002</td>
+      <td>240.350006</td>
+      <td>198.529999</td>
+      <td>116.591286</td>
+      <td>32.961517</td>
+      <td>275.950012</td>
+      <td>1.420136e+09</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0</td>
+      <td>56.507004</td>
+      <td>169.711227</td>
+      <td>54.849998</td>
+      <td>158.149994</td>
+      <td>22.157227</td>
+      <td>135.992767</td>
+      <td>17.434559</td>
+      <td>275.812103</td>
+      <td>4.466184</td>
+      <td>...</td>
+      <td>204.429993</td>
+      <td>141.729996</td>
+      <td>215.179993</td>
+      <td>156.940002</td>
+      <td>240.350006</td>
+      <td>198.529999</td>
+      <td>116.591286</td>
+      <td>32.961517</td>
+      <td>275.950012</td>
+      <td>1.420139e+09</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0</td>
+      <td>29.255737</td>
+      <td>147.076981</td>
+      <td>54.840000</td>
+      <td>204.860001</td>
+      <td>133.625061</td>
+      <td>71.234932</td>
+      <td>9.008652</td>
+      <td>294.177734</td>
+      <td>11.436308</td>
+      <td>...</td>
+      <td>211.240005</td>
+      <td>150.160004</td>
+      <td>214.990005</td>
+      <td>151.309998</td>
+      <td>252.539993</td>
+      <td>212.449997</td>
+      <td>135.669388</td>
+      <td>34.794151</td>
+      <td>294.250000</td>
+      <td>1.420114e+09</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0</td>
+      <td>29.255737</td>
+      <td>147.076981</td>
+      <td>54.840000</td>
+      <td>204.860001</td>
+      <td>132.959351</td>
+      <td>71.900642</td>
+      <td>8.651184</td>
+      <td>294.177734</td>
+      <td>11.510617</td>
+      <td>...</td>
+      <td>211.240005</td>
+      <td>150.160004</td>
+      <td>214.990005</td>
+      <td>151.309998</td>
+      <td>252.539993</td>
+      <td>212.449997</td>
+      <td>135.669388</td>
+      <td>34.794151</td>
+      <td>294.250000</td>
+      <td>1.420117e+09</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>0</td>
+      <td>29.255737</td>
+      <td>147.076981</td>
+      <td>54.840000</td>
+      <td>204.860001</td>
+      <td>132.236359</td>
+      <td>72.623634</td>
+      <td>8.294987</td>
+      <td>294.177734</td>
+      <td>11.584927</td>
+      <td>...</td>
+      <td>211.240005</td>
+      <td>150.160004</td>
+      <td>214.990005</td>
+      <td>151.309998</td>
+      <td>252.539993</td>
+      <td>212.449997</td>
+      <td>135.669388</td>
+      <td>34.794151</td>
+      <td>294.250000</td>
+      <td>1.420121e+09</td>
+    </tr>
+  </tbody>
+</table>
+<p>10 rows × 27 columns</p>
+</div></div></div>
+</div>
+<section id="data-pre-processing">
+<h3>Data pre-processing<a class="headerlink" href="#data-pre-processing" title="Permalink to this headline">#</a></h3>
+<p>Pre-processing of data includes:</p>
+<ul class="simple">
+<li><p>Quality control (currently only checks for NaNs as an initial QC already has been perfromed)</p></li>
+<li><p>Definition of new variables</p></li>
+<li><p>Splitting of the dataset into a train and test dataset</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Process the data</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;insitu_datetime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;insitu_time&#39;</span><span class="p">],</span><span class="n">unit</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;look_angle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;satza&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mf">55.</span>
+
+<span class="c1"># Filter the data</span>
+<span class="c1"># --Remove nans</span>
+<span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Divide the data into train and test data</span>
+<span class="n">data_train</span><span class="p">,</span> <span class="n">data_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">rnseed</span><span class="p">)</span>
+<span class="n">data_train</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">data_test</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="retrieval-definition">
+<h2>Retrieval definition<a class="headerlink" href="#retrieval-definition" title="Permalink to this headline">#</a></h2>
+<p>The main algorithm is a model for retrieving SST, which is based on the regression model developed in Alerskans et al., (2020). It uses CIMR brightness temperatures (<span class="math notranslate nohighlight">\(T_B\)</span>), Earth incidence angle (<span class="math notranslate nohighlight">\(\theta_{EIA}\)</span>), wind speed (WS) and the relative angle between wind direction and satellite azimuth angle (<span class="math notranslate nohighlight">\(\phi_{rel}\)</span>)</p>
+<div class="math notranslate nohighlight">
+\[SST_{r} = c_{0} + \sum_{i=1}^{N_{ch}} (c_{1i} t_{i} + c_{2i} t^{2}_{i} ) + c_{3} \theta + c_{4} WS + \sum_{j=1}^{2} [c_{5j} \cos (j \phi_{rel}) + c_{6j} \sin (j \phi_{rel}) ],\]</div>
+<p>where <span class="math notranslate nohighlight">\(t_{i} = T_{Bi}-150\)</span>, <span class="math notranslate nohighlight">\(\theta = \theta_{EIA} - 55\)</span> and <span class="math notranslate nohighlight">\(c_0\)</span> - <span class="math notranslate nohighlight">\(c_6\)</span> are regression coefficients.</p>
+<p>The wind speed input to the SST retrieval algorithm can come from different sources, where the main option is to use the retrieved wind speed from the integrated OEM retrieval. Optionally, anciliary wind speed data can be used. As and additional option, wind speed can be retrieved using a 2-stage retrieval algorithm based on the retrieval developed in Alerskans et al., (2020). Here, CIMR brightness temperatures and Earth incidence angle would be used to retrieved wind speed in two stages. In the first step, a global algorithm is used:</p>
+<div class="math notranslate nohighlight">
+\[WS_{a} = a_{0} + \sum_{i=1}^{N_{ch}} (a_{1i} t_{i} + a_{2i} t^{2}_{i} ) + a_{3} \theta,\]</div>
+<p>whereas in the second step, localized wind speed algorithms based on the first-step retrieved wind speed, <span class="math notranslate nohighlight">\(WS_a\)</span> is used to developed individual retrieval algorithms for fixed wind speed intervals:</p>
+<div class="math notranslate nohighlight">
+\[WS_{r} = b_{0} + \sum_{i=1}^{N_{ch}} (b_{1i} t_{i} + b_{2i} t^{2}_{i} ) + b_{3} \theta.\]</div>
+<section id="general-functions">
+<h3>General functions<a class="headerlink" href="#general-functions" title="Permalink to this headline">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">regression</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform linear regression and obtain the regression coefficients (intercept + slope)</span>
+<span class="sd">     </span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    X: 2D float array</span>
+<span class="sd">        predictors</span>
+<span class="sd">    Y: 2D float array</span>
+<span class="sd">        predictand</span>
+<span class="sd">     </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    intercept: 1D float array</span>
+<span class="sd">        intercept</span>
+<span class="sd">    coeffs: 1D float array</span>
+<span class="sd">        slope</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">regr</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">LinearRegression</span><span class="p">()</span>
+    <span class="n">regr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+    <span class="n">intercept</span> <span class="o">=</span> <span class="n">regr</span><span class="o">.</span><span class="n">intercept_</span>
+    <span class="n">coeffs</span> <span class="o">=</span> <span class="n">regr</span><span class="o">.</span><span class="n">coef_</span>
+
+    <span class="k">return</span> <span class="n">intercept</span><span class="p">,</span> <span class="n">coeffs</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">ws_algorithm_selection</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Select WS algorithm based on the chosen channel combination</span>
+<span class="sd">     </span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    data: pandas DataFrame</span>
+<span class="sd">        dataset</span>
+<span class="sd">    channel_comb: str</span>
+<span class="sd">        choice of channel combination</span>
+<span class="sd">     </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    X: 2D float array</span>
+<span class="sd">        algorithm input variables</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nmatchups</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">channel_comb</span> <span class="o">==</span> <span class="s1">&#39;cimr_like&#39;</span><span class="p">:</span>
+        <span class="c1"># Construct input data for AMSR2 CIMR-like configuration</span>
+        <span class="n">ninput</span> <span class="o">=</span> <span class="mi">17</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">nmatchups</span><span class="p">,</span><span class="n">ninput</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">5</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">6</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">7</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">8</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">9</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">11</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">12</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">13</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">15</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">16</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;look_angle&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">channel_comb</span> <span class="o">==</span> <span class="s1">&#39;cimr&#39;</span><span class="p">:</span>
+        <span class="c1"># Construct input data for CIMR configuration</span>
+        <span class="n">ninput</span> <span class="o">=</span> <span class="mi">21</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">nmatchups</span><span class="p">,</span><span class="n">ninput</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb1vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb1vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb1hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb1hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">5</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">6</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">7</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">8</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">9</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">11</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">12</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">13</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">15</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">16</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">17</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">18</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">19</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">20</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;look_angle&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Channel combination </span><span class="si">{}</span><span class="s2"> not understood.</span><span class="se">\n</span><span class="s2">Exiting...!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">channel_comb</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">X</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sst_algorithm_selection</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Select SST algorithm based on the chosen channel combination</span>
+<span class="sd">     </span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    data: pandas DataFrame</span>
+<span class="sd">        dataset</span>
+<span class="sd">    channel_comb: str</span>
+<span class="sd">        choice of channel combination</span>
+<span class="sd">     </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    X: 2D float array</span>
+<span class="sd">        algorithm input variables</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nmatchups</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">channel_comb</span> <span class="o">==</span> <span class="s1">&#39;cimr_like&#39;</span><span class="p">:</span>
+        <span class="c1"># Construct input data for AMSR-E configuration</span>
+        <span class="n">ninput</span> <span class="o">=</span> <span class="mi">22</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">nmatchups</span><span class="p">,</span><span class="n">ninput</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">5</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">6</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">7</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">8</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">9</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">11</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">12</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">13</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">15</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">16</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;look_angle&#39;</span><span class="p">]</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">17</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;WSr&#39;</span><span class="p">]</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">18</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;era5_phi_rel&#39;</span><span class="p">])</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">19</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;era5_phi_rel&#39;</span><span class="p">])</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">20</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;era5_phi_rel&#39;</span><span class="p">])</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">21</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;era5_phi_rel&#39;</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">channel_comb</span> <span class="o">==</span> <span class="s1">&#39;cimr&#39;</span><span class="p">:</span>
+        <span class="c1"># Construct input data for AMSR-E configuration</span>
+        <span class="n">ninput</span> <span class="o">=</span> <span class="mi">26</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">nmatchups</span><span class="p">,</span><span class="n">ninput</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb1vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb1vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb1hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb1hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">5</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">6</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">7</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">8</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">9</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">11</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">12</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">13</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">15</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">16</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">17</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">18</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">19</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">20</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;look_angle&#39;</span><span class="p">]</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">21</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;WSr&#39;</span><span class="p">]</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">22</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;era5_phi_rel&#39;</span><span class="p">])</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">23</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;era5_phi_rel&#39;</span><span class="p">])</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">24</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;era5_phi_rel&#39;</span><span class="p">])</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">25</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;era5_phi_rel&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Channel combination </span><span class="si">{}</span><span class="s2"> not understood.</span><span class="se">\n</span><span class="s2">Exiting...!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">channel_comb</span><span class="p">))</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">X</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calculate_coeffs_ws</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform regression of wind speed</span>
+<span class="sd">     </span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    data: pandas DataFrame</span>
+<span class="sd">        dataset</span>
+<span class="sd">    channel_comb: str</span>
+<span class="sd">        choice of channel combination</span>
+<span class="sd">     </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coeffs_all: 1D float array</span>
+<span class="sd">        regression coefficients</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Predictors</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">ws_algorithm_selection</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+    <span class="c1"># Predictand</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;era5_ws&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+    <span class="c1"># the try...continue structure is to account for cases where we don&#39;t have data in a particular bin, then the code moves on</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Calculate linear regression coefficients</span>
+        <span class="n">intercept</span><span class="p">,</span> <span class="n">coeffs</span> <span class="o">=</span> <span class="n">regression</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">)</span>
+        <span class="n">coeffs_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">intercept</span><span class="p">,</span><span class="n">coeffs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">coeffs_all</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">ninput</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calculate_coeffs_sst</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform regression of SST</span>
+<span class="sd">     </span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    data: pandas DataFrame</span>
+<span class="sd">        dataset</span>
+<span class="sd">    channel_comb: str</span>
+<span class="sd">        choice of channel combination</span>
+<span class="sd">     </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    coeffs_all: 1D float array</span>
+<span class="sd">        regression coefficients</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Predictors</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">sst_algorithm_selection</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+    <span class="c1"># Predictand</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;insitu_sst&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+    <span class="c1"># the try...continue structure is to account for cases where we don&#39;t have data in a particular bin, then the code moves on</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Calculate linear regression coefficients</span>
+        <span class="n">intercept</span><span class="p">,</span> <span class="n">coeffs</span> <span class="o">=</span> <span class="n">regression</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">)</span>
+        <span class="n">coeffs_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">intercept</span><span class="p">,</span><span class="n">coeffs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">coeffs_all</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">ninput</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">retrieve_ws</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform WS retrieval</span>
+<span class="sd">     </span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    data: pandas DataFrame</span>
+<span class="sd">        dataset</span>
+<span class="sd">     A: 1D float array</span>
+<span class="sd">         regression coefficients</span>
+<span class="sd">    channel_comb: str </span>
+<span class="sd">        choice of channel combination</span>
+<span class="sd">     </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    WS: 1D float array</span>
+<span class="sd">        retirved wind speed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Settings</span>
+    <span class="n">nmatchups</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># Predictors</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">ws_algorithm_selection</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+    <span class="c1"># Add input for the offset/intercept</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">nmatchups</span><span class="p">,</span><span class="mi">1</span><span class="p">)),</span><span class="n">X</span><span class="p">))</span>
+    <span class="c1"># Retrieve WS</span>
+    <span class="n">WS</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">WS</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">retrieve_sst</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform SST retrieval</span>
+<span class="sd">     </span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    data: pandas DataFrame</span>
+<span class="sd">        dataset</span>
+<span class="sd">     A: 1D float array</span>
+<span class="sd">         regression coefficients</span>
+<span class="sd">    channel_comb: str</span>
+<span class="sd">        choice of channel combination</span>
+<span class="sd">     </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    SST: 1D float array</span>
+<span class="sd">        retirved SST</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Settings</span>
+    <span class="n">nmatchups</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># Predictors</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">sst_algorithm_selection</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+    <span class="c1"># Add input for the offset/intercept</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">nmatchups</span><span class="p">,</span><span class="mi">1</span><span class="p">)),</span><span class="n">X</span><span class="p">))</span>
+    <span class="c1"># Retrieve SST</span>
+    <span class="n">SST</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">X</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">SST</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="stage-1-wind-speed-retrieval-algorithm">
+<h3>Stage 1 wind speed retrieval algorithm<a class="headerlink" href="#stage-1-wind-speed-retrieval-algorithm" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>Derivation of 1st-stage wind speed regression coefficients</p></li>
+<li><p>Retrieval of 1st-stage wind speed</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calculate_coeffs_stage_1_ws</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Derivation of stage 1 wind speed regression coefficients.</span>
+<span class="sd">    Global coefficients (i.e. based on the whole dataset) is derived.</span>
+<span class="sd">     </span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    data: pandas DataFrame</span>
+<span class="sd">        dataset</span>
+<span class="sd">    channel_comb: str</span>
+<span class="sd">        choice fo channel combination</span>
+<span class="sd">    verbose: logical</span>
+<span class="sd">        logical for verbosity of function</span>
+<span class="sd">     </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Calculate WS stage 1 coefficients&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Get coefficients</span>
+    <span class="n">coeffs_all</span> <span class="o">=</span> <span class="n">calculate_coeffs_ws</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">coeffs_all</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Save WS stage 1 coefficients&quot;</span><span class="p">)</span>
+        <span class="n">coeffs_file</span> <span class="o">=</span> <span class="n">COEFF_PATH</span> <span class="o">+</span> <span class="s2">&quot;/ws/coeffs_ws_stage_1.npy&quot;</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">coeffs_file</span><span class="p">,</span><span class="n">coeffs_all</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">retrieve_stage_1_ws</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieval of global stage 1 wind speeds.</span>
+<span class="sd">     </span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    data: pandas DataFrame</span>
+<span class="sd">        dataset</span>
+<span class="sd">    channel_comb: str</span>
+<span class="sd">        choice of channel combination</span>
+<span class="sd">     </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    WSa: 1D float array</span>
+<span class="sd">        retrieved wind speed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Retrieve stage 1 WS&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Load coefficients</span>
+    <span class="n">coeffs_file</span> <span class="o">=</span> <span class="n">COEFF_PATH</span> <span class="o">+</span> <span class="s2">&quot;/ws/coeffs_ws_stage_1.npy&quot;</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">coeffs_file</span><span class="p">)</span>
+
+    <span class="c1"># Retrieve WS</span>
+    <span class="n">WSa</span> <span class="o">=</span>  <span class="n">retrieve_ws</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">WSa</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="stage-2-wind-speed-retrieval-algorithm">
+<h3>Stage 2 wind speed retrieval algorithm<a class="headerlink" href="#stage-2-wind-speed-retrieval-algorithm" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>Derivation of 2nd-stage wind speed regression coefficients</p></li>
+<li><p>Retrieval of 2nd-stage wind speed</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calculate_coeffs_stage_2_ws</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">ws_bins</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Derivation of stage 2 wind speed regression coefficients.</span>
+<span class="sd">    Localized coeffients for specified wind speed intervals are derived.</span>
+<span class="sd">    The wind speed intervals are based on the 1st-stage retrieved wind speed.</span>
+<span class="sd">     </span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    data: pandas DataFrame</span>
+<span class="sd">        dataset</span>
+<span class="sd">    ws_bins: 1D float array</span>
+<span class="sd">        wind speed bin intervals</span>
+<span class="sd">    channel_comb: str</span>
+<span class="sd">        choice of channel combination</span>
+<span class="sd">    verbose: logical</span>
+<span class="sd">        logical for verbosity of function</span>
+<span class="sd">     </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Calculate WS stage 2 coefficients&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Settings</span>
+    <span class="n">ws_step</span> <span class="o">=</span> <span class="n">ws_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ws_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Loop through bins</span>
+    <span class="k">for</span> <span class="n">iws</span> <span class="ow">in</span> <span class="n">ws_bins</span><span class="p">:</span>
+        <span class="c1"># Find the data that belongs to the current wind speed bin </span>
+        <span class="n">mask_sub</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;WSa&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;</span> <span class="n">iws</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;WSa&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="n">iws</span><span class="o">+</span><span class="n">ws_step</span><span class="p">)</span> <span class="p">)</span>
+
+        <span class="c1"># Check so that there is enough data</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask_sub</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">Nlim</span><span class="p">:</span>
+            <span class="n">data_sub</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_sub</span><span class="p">]</span>
+
+            <span class="c1"># Calculate coefficients</span>
+            <span class="n">coeffs_all</span> <span class="o">=</span> <span class="n">calculate_coeffs_ws</span><span class="p">(</span><span class="n">data_sub</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">coeffs_all</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Save WS stage 2 coefficients for wind speed bin </span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2"> ms-1&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">iws</span><span class="p">,</span><span class="n">iws</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+                <span class="n">coeffs_file</span> <span class="o">=</span> <span class="n">COEFF_PATH</span> <span class="o">+</span> <span class="s2">&quot;/ws/coeffs_ws_stage_2_wsbin_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">iws</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.npy&quot;</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">coeffs_file</span><span class="p">,</span><span class="n">coeffs_all</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">retrieve_stage_2_ws</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">ws_bins</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieval of local stage 2 wind speeds.</span>
+<span class="sd">     </span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    data: pandas DataFrame</span>
+<span class="sd">        dataset</span>
+<span class="sd">    ws_bins: 1D float array</span>
+<span class="sd">        wind speed bins for localized algoritm</span>
+<span class="sd">    channel_comb: str</span>
+<span class="sd">        choice of channel combination</span>
+<span class="sd">     </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    WSr: 1D float array</span>
+<span class="sd">        retrieved wind speed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Retrieve stage 2 WS&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Settings</span>
+    <span class="n">nmatchups</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ws_step</span> <span class="o">=</span> <span class="n">ws_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ws_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Initialize array</span>
+    <span class="n">WSr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">nmatchups</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="c1"># Loop through bins</span>
+    <span class="k">for</span> <span class="n">iws</span> <span class="ow">in</span> <span class="n">ws_bins</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Working on wind speed bin </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">iws</span><span class="p">))</span>
+        <span class="c1"># Find the data that belongs to the current wind speed bin </span>
+        <span class="n">mask_sub</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;WSa&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;</span> <span class="n">iws</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;WSa&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;=</span> <span class="n">iws</span><span class="o">+</span><span class="n">ws_step</span><span class="p">)</span>
+
+        <span class="c1"># Check so that there is data</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask_sub</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">idx_sub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">mask_sub</span><span class="p">)[:,</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">data_sub</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_sub</span><span class="p">]</span>
+            <span class="n">data_sub</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># Load the appropriate coefficient file</span>
+            <span class="n">coeffs_file</span> <span class="o">=</span> <span class="n">COEFF_PATH</span> <span class="o">+</span> <span class="s2">&quot;/ws/coeffs_ws_stage_2_wsbin_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">iws</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.npy&quot;</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">coeffs_file</span><span class="p">):</span>
+                <span class="n">B1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">coeffs_file</span><span class="p">)</span>
+                <span class="n">isnan_B1</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">isnan_B1</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># If interpolating, find the nearest wind speed bin of our measurement</span>
+            <span class="k">for</span> <span class="n">inear</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">inear</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># Lower limit</span>
+                    <span class="n">iws_near</span> <span class="o">=</span> <span class="n">iws</span> <span class="o">-</span> <span class="n">ws_step</span>
+                    <span class="n">mask_int</span> <span class="o">=</span> <span class="p">(</span><span class="n">data_sub</span><span class="p">[</span><span class="s1">&#39;WSa&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;</span> <span class="n">iws</span> <span class="o">+</span> <span class="n">ws_step</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask_int</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">idx_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">mask_int</span><span class="p">)[:,</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">data_int</span> <span class="o">=</span> <span class="n">data_sub</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_int</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Upper limit</span>
+                    <span class="n">iws_near</span> <span class="o">=</span> <span class="n">iws</span> <span class="o">+</span> <span class="n">ws_step</span>
+                    <span class="n">mask_int</span> <span class="o">=</span> <span class="p">(</span><span class="n">data_sub</span><span class="p">[</span><span class="s1">&#39;WSa&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;=</span> <span class="n">iws</span> <span class="o">+</span> <span class="n">ws_step</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask_int</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">idx_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">mask_int</span><span class="p">)[:,</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">data_int</span> <span class="o">=</span> <span class="n">data_sub</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_int</span><span class="p">]</span>
+
+                <span class="c1"># Check if there are coefficients for that bin and load</span>
+                <span class="n">coeffs_file_near</span> <span class="o">=</span> <span class="n">COEFF_PATH</span> <span class="o">+</span> <span class="s2">&quot;/ws/coeffs_ws_stage_2_wsbin_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">iws_near</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.npy&quot;</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">coeffs_file_near</span><span class="p">):</span>
+                    <span class="n">B2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">coeffs_file_near</span><span class="p">)</span>
+                    <span class="n">isnan_B2</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">coeffs_file</span><span class="p">):</span>
+                    <span class="n">isnan_B2</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">B2</span> <span class="o">=</span> <span class="n">B1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># No coefficients for current or closest ws bin -&gt; no retrieval</span>
+                    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: Coefficients do not exist for current wind speed bin </span><span class="si">{}</span><span class="s2"> or closest bin. WS=NaN...!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">iws</span><span class="p">))</span>
+                    <span class="n">WSr</span><span class="p">[</span><span class="n">idx_sub</span><span class="p">[</span><span class="n">idx_int</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Retrieve WS</span>
+                <span class="n">WSr_i1</span> <span class="o">=</span> <span class="n">retrieve_ws</span><span class="p">(</span><span class="n">data_int</span><span class="p">,</span><span class="n">B1</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+                <span class="n">WSr_i2</span> <span class="o">=</span> <span class="n">retrieve_ws</span><span class="p">(</span><span class="n">data_int</span><span class="p">,</span><span class="n">B2</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+
+                <span class="c1"># Define interpolation weights</span>
+                <span class="n">w1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">data_int</span><span class="p">[</span><span class="s1">&#39;WSa&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="n">iws</span><span class="p">)</span><span class="o">/</span><span class="n">ws_step</span>
+                <span class="n">w2</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">w1</span>
+
+                <span class="c1"># Reset weights as we don&#39;t have either B1 or B2 coefficients</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">isnan_B1</span> <span class="o">|</span> <span class="n">isnan_B2</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">isnan_B1</span><span class="p">):</span> <span class="n">w1</span> <span class="o">=</span> <span class="mf">0.</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">isnan_B2</span><span class="p">):</span> <span class="n">w2</span> <span class="o">=</span> <span class="mf">0.</span>
+
+                    <span class="n">wsum</span> <span class="o">=</span> <span class="n">w1</span> <span class="o">+</span> <span class="n">w2</span>
+                    <span class="n">w1</span> <span class="o">=</span> <span class="n">w1</span> <span class="o">/</span> <span class="n">wsum</span>
+                    <span class="n">w2</span> <span class="o">=</span> <span class="n">w2</span> <span class="o">/</span> <span class="n">wsum</span>
+
+                <span class="c1"># Interpolate between WSr_i1 and WSr_i2</span>
+                <span class="n">WSr_int</span> <span class="o">=</span> <span class="n">WSr_i1</span> <span class="o">*</span> <span class="n">w1</span> <span class="o">+</span> <span class="n">WSr_i2</span> <span class="o">*</span> <span class="n">w2</span>
+
+                <span class="c1"># Assign to the correct WSr elements</span>
+                <span class="n">WSr</span><span class="p">[</span><span class="n">idx_sub</span><span class="p">[</span><span class="n">idx_int</span><span class="p">]]</span> <span class="o">=</span> <span class="n">WSr_int</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">WSr</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="sst-retrieval-algorithm">
+<h3>SST retrieval algorithm<a class="headerlink" href="#sst-retrieval-algorithm" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>Derivation of SST regression coefficients</p></li>
+<li><p>Retrieval of SST</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calculate_coeffs_global_sst</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Derivation of SST coefficients.</span>
+<span class="sd">    Global coeffients (i.e. based on the whole dataset) are derived.</span>
+<span class="sd">     </span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    data: pandas DataFrame</span>
+<span class="sd">        dataset</span>
+<span class="sd">    channel_comb: str</span>
+<span class="sd">        choice of channel combination</span>
+<span class="sd">    verbose: logical</span>
+<span class="sd">        logical for verbosity of function</span>
+<span class="sd">     </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Calculate SST global coefficients&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Exclude WSr nans</span>
+    <span class="n">data_sub</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Get coefficients</span>
+    <span class="n">coeffs_all</span> <span class="o">=</span> <span class="n">calculate_coeffs_sst</span><span class="p">(</span><span class="n">data_sub</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">coeffs_all</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Save SST global coefficients&quot;</span><span class="p">)</span>
+        <span class="n">coeffs_file</span> <span class="o">=</span> <span class="n">COEFF_PATH</span> <span class="o">+</span> <span class="s2">&quot;/sst/coeffs_sst_global.npy&quot;</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">coeffs_file</span><span class="p">,</span><span class="n">coeffs_all</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">retrieve_global_sst</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieval of global SSTs.</span>
+<span class="sd">     </span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    data: pandas DataFrame</span>
+<span class="sd">        dataset</span>
+<span class="sd">    channel_comb: str</span>
+<span class="sd">        choice of channel combination</span>
+<span class="sd">     </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    SSTr: 1D float array</span>
+<span class="sd">        retrieved SST</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Retrieve global SST&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Load coefficients</span>
+    <span class="n">coeffs_file</span> <span class="o">=</span> <span class="n">COEFF_PATH</span> <span class="o">+</span> <span class="s2">&quot;/sst/coeffs_sst_global.npy&quot;</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">coeffs_file</span><span class="p">)</span>
+
+    <span class="c1"># Retrieve SST</span>
+    <span class="n">SSTr</span> <span class="o">=</span>  <span class="n">retrieve_sst</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">SSTr</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="derivation-of-regression-coefficients">
+<h3>Derivation of regression coefficients<a class="headerlink" href="#derivation-of-regression-coefficients" title="Permalink to this headline">#</a></h3>
+<p>Here, regression coefficients for the SST retrieval algorithm is derived.
+In addition, if the option is set to use retrieved wind speed in the SST algorithm, the 1st- and 2nd-stage wind speed coefficients are retrieved here as well.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Settings</span>
+<span class="n">derive_stage_1_ws_coeffs</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">derive_stage_2_ws_coeffs</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">derive_global_sst_coeffs</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<span class="k">if</span> <span class="n">ws_input</span> <span class="o">==</span> <span class="s2">&quot;retrieval&quot;</span><span class="p">:</span>
+    <span class="c1"># ------------------------------</span>
+    <span class="c1"># Wind speed retrieval - Stage 1</span>
+    <span class="c1"># ------------------------------</span>
+    <span class="c1"># Calculate coefficients</span>
+    <span class="k">if</span> <span class="n">derive_stage_1_ws_coeffs</span><span class="p">:</span>
+        <span class="n">calculate_coeffs_stage_1_ws</span><span class="p">(</span><span class="n">data_train</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+
+    <span class="c1"># Retrieve WSa</span>
+    <span class="n">WSa</span> <span class="o">=</span> <span class="n">retrieve_stage_1_ws</span><span class="p">(</span><span class="n">data_train</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+    <span class="n">data_train</span><span class="p">[</span><span class="s1">&#39;WSa&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">WSa</span>
+
+    
+<span class="k">if</span> <span class="n">ws_input</span> <span class="o">==</span> <span class="s2">&quot;retrieval&quot;</span><span class="p">:</span>
+    <span class="c1"># ------------------------------</span>
+    <span class="c1"># Wind speed retrieval - Stage 2</span>
+    <span class="c1"># ------------------------------</span>
+    <span class="c1"># Calculate coefficients</span>
+    <span class="k">if</span> <span class="n">derive_stage_2_ws_coeffs</span><span class="p">:</span>
+        <span class="n">calculate_coeffs_stage_2_ws</span><span class="p">(</span><span class="n">data_train</span><span class="p">,</span><span class="n">ws_bins</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+
+    <span class="c1"># Retrieve WSr</span>
+    <span class="n">WSr</span> <span class="o">=</span> <span class="n">retrieve_stage_2_ws</span><span class="p">(</span><span class="n">data_train</span><span class="p">,</span><span class="n">ws_bins</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+    <span class="n">data_train</span><span class="p">[</span><span class="s1">&#39;WSr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">WSr</span>
+
+<span class="k">elif</span> <span class="n">ws_input</span> <span class="o">==</span> <span class="s2">&quot;oe&quot;</span><span class="p">:</span>
+    <span class="c1"># Input from the integrated OEM retrieval - not implemented yet</span>
+    <span class="k">pass</span>
+
+<span class="k">elif</span> <span class="n">ws_input</span> <span class="o">==</span> <span class="s2">&quot;nwp&quot;</span><span class="p">:</span>
+    <span class="c1"># Input from NWP ERA5 data</span>
+    <span class="n">data_train</span><span class="p">[</span><span class="s1">&#39;WSr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_train</span><span class="p">[</span><span class="s1">&#39;era5_ws&#39;</span><span class="p">]</span>
+
+    
+<span class="c1"># -----------------------</span>
+<span class="c1"># SST retrieval - Global</span>
+<span class="c1"># -----------------------</span>
+<span class="c1"># Calculate coefficients</span>
+<span class="k">if</span> <span class="n">derive_global_sst_coeffs</span><span class="p">:</span>
+    <span class="n">calculate_coeffs_global_sst</span><span class="p">(</span><span class="n">data_train</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+
+<span class="c1">## Retrieve SSTr</span>
+<span class="c1">#SSTr = retrieve_global_sst(data_train,channel_comb)</span>
+<span class="c1">#data_train[&#39;SSTr_global&#39;] = SSTr</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;...Done!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculate WS stage 1 coefficients
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieve stage 1 WS
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculate WS stage 2 coefficients
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieve stage 2 WS
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculate SST global coefficients
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>...Done!
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="performance-analysis">
+<h3>Performance analysis<a class="headerlink" href="#performance-analysis" title="Permalink to this headline">#</a></h3>
+<p>Use the test dataset to retrieve SST and evaluate the performance of the retrieval algorithm.</p>
+<section id="analysis-functions">
+<h4>Analysis functions<a class="headerlink" href="#analysis-functions" title="Permalink to this headline">#</a></h4>
+<p>Define functions used for evaluating the performance of the algorithm.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">print_stats</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">SSTr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Print the overall perfromance metrics for the SST retrieval algorithm.</span>
+
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    data: pandas DataFrame</span>
+<span class="sd">        dataset</span>
+<span class="sd">    SSTr: 1D float array</span>
+<span class="sd">        retrieved SST</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Prints output</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dif_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">SSTr</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;insitu_sst&#39;</span><span class="p">])</span>
+    <span class="n">dif_mae</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">SSTr</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;insitu_sst&#39;</span><span class="p">]))</span>
+    <span class="n">dif_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">SSTr</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;insitu_sst&#39;</span><span class="p">])</span>
+    <span class="n">dif_rmse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">((</span><span class="n">SSTr</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;insitu_sst&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;PMW retrievals - drifter observations&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-------------------------------------&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mean: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">dif_mean</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39; K.&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;MAE:  &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">dif_mae</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39; K.&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;St.d: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">dif_std</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39; K.&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;RMSE: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">dif_rmse</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39; K.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_scatter_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">pmin_sst</span><span class="p">,</span><span class="n">pmax_sst</span><span class="p">,</span><span class="n">pdsst</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Scatterplot of retrieved SST (y-axis) vs. drifter in situ SST (x-axis).</span>
+<span class="sd">     </span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    data: pandas DataFrame</span>
+<span class="sd">        dataset</span>
+<span class="sd">    pmin_sst: float</span>
+<span class="sd">        SST min (x- and y-min) limits for plot</span>
+<span class="sd">    pmax_sst: float</span>
+<span class="sd">        SST max (x- and y-max) limits for plot</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Outputs a figure</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;insitu_sst&#39;</span><span class="p">]</span><span class="o">-</span><span class="mf">273.15</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;SSTr_global&#39;</span><span class="p">]</span><span class="o">-</span><span class="mf">273.15</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">pmin_sst</span><span class="p">,</span><span class="n">pmax_sst</span><span class="p">],[</span><span class="n">pmin_sst</span><span class="p">,</span><span class="n">pmax_sst</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;in situ SST ($^{\circ}$C)&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;retrieved PMW SST ($^{\circ}$C)&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="n">pmin_sst</span><span class="p">,</span> <span class="n">pmax_sst</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="n">pmin_sst</span><span class="p">,</span> <span class="n">pmax_sst</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">pmin_sst</span><span class="p">,</span><span class="n">pmax_sst</span><span class="o">+</span><span class="n">pdsst</span><span class="p">,</span><span class="n">pdsst</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">pmin_sst</span><span class="p">,</span><span class="n">pmax_sst</span><span class="o">+</span><span class="n">pdsst</span><span class="p">,</span><span class="n">pdsst</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">pmin_sst</span><span class="p">,</span><span class="n">pmax_sst</span><span class="o">+</span><span class="n">pdsst</span><span class="p">,</span><span class="n">pdsst</span><span class="p">),</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">pmin_sst</span><span class="p">,</span><span class="n">pmax_sst</span><span class="o">+</span><span class="n">pdsst</span><span class="p">,</span><span class="n">pdsst</span><span class="p">),</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="retrievals">
+<h4>Retrievals<a class="headerlink" href="#retrievals" title="Permalink to this headline">#</a></h4>
+<p>Retrieve wind speed (if this option is set) and SST</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># WS data</span>
+<span class="k">if</span> <span class="n">ws_input</span> <span class="o">==</span> <span class="s2">&quot;retrieval&quot;</span><span class="p">:</span>
+    <span class="c1"># Retrieve WSa</span>
+    <span class="n">WSa</span> <span class="o">=</span> <span class="n">retrieve_stage_1_ws</span><span class="p">(</span><span class="n">data_test</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+    <span class="n">data_test</span><span class="p">[</span><span class="s1">&#39;WSa&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">WSa</span>
+    <span class="c1"># Retrieve WSr</span>
+    <span class="n">WSr</span> <span class="o">=</span> <span class="n">retrieve_stage_2_ws</span><span class="p">(</span><span class="n">data_test</span><span class="p">,</span><span class="n">ws_bins</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+    <span class="n">data_test</span><span class="p">[</span><span class="s1">&#39;WSr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">WSr</span>
+<span class="k">elif</span> <span class="n">ws_input</span> <span class="o">==</span> <span class="s2">&quot;oe&quot;</span><span class="p">:</span>
+    <span class="c1"># Not implemented yet</span>
+    <span class="k">pass</span>
+<span class="k">elif</span> <span class="n">ws_input</span> <span class="o">==</span> <span class="s2">&quot;nwp&quot;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERA5 WS input&quot;</span><span class="p">)</span>
+    <span class="n">data_test</span><span class="p">[</span><span class="s1">&#39;WSr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_test</span><span class="p">[</span><span class="s1">&#39;era5_ws&#39;</span><span class="p">]</span>
+    
+<span class="c1"># Retrieve SSTr</span>
+<span class="n">SSTr</span> <span class="o">=</span> <span class="n">retrieve_global_sst</span><span class="p">(</span><span class="n">data_test</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+<span class="n">data_test</span><span class="p">[</span><span class="s1">&#39;SSTr_global&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SSTr</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieve stage 1 WS
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieve stage 2 WS
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieve global SST
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Only use the common data, i.e. remove any NaNs</span>
+<span class="n">good_data</span> <span class="o">=</span> <span class="p">(</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data_test</span><span class="p">[</span><span class="s1">&#39;SSTr_global&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="p">)</span>
+<span class="n">data_test</span> <span class="o">=</span> <span class="n">data_test</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">good_data</span><span class="p">,:]</span>
+<span class="n">data_test</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">TEST DATASET - Global SST retrieval&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;======================================&quot;</span><span class="p">)</span>
+<span class="n">print_stats</span><span class="p">(</span><span class="n">data_test</span><span class="p">,</span><span class="n">data_test</span><span class="p">[</span><span class="s1">&#39;SSTr_global&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>TEST DATASET - Global SST retrieval
+======================================
+PMW retrievals - drifter observations
+-------------------------------------
+Mean: 0.0 K.
+MAE:  0.555 K.
+St.d: 0.748 K.
+RMSE: 0.748 K.
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot scatter plot of retrieved vs in situ SST</span>
+<span class="n">pmin_sst</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span>
+<span class="n">pmax_sst</span> <span class="o">=</span> <span class="mi">45</span>
+<span class="n">pdsst</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">plot_scatter_data</span><span class="p">(</span><span class="n">data_test</span><span class="p">,</span><span class="n">pmin_sst</span><span class="p">,</span><span class="n">pmax_sst</span><span class="p">,</span><span class="n">pdsst</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/ATBD_SST_retrieval_algorithm_35_0.png" src="_images/ATBD_SST_retrieval_algorithm_35_0.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="algorithm_performance_assessment.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Algorithm Performance Assessment (Version 2 ATBD)</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="references.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">References</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By CIMR Devalgo<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

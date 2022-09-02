@@ -1,0 +1,403 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Abstract &#8212; ATBD SST</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Applicable and reference documents" href="applicable_ref_docs.html" />
+    <link rel="prev" title="ATBD SST" href="intro.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="_static/logo.jpg" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">ATBD SST</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    ATBD SST
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Abstract
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="applicable_ref_docs.html">
+   Applicable and Reference Documents
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="acronyms.html">
+   Acronyms
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="definitions.html">
+   Definitions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="introduction_purpose_scope.html">
+   Introduction, purpose and scope
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="background_justification_algorithm.html">
+   Background and justification of selected algorithm
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="L2_product_definition.html">
+   Level-2 product definition
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="baseline_algorithm_definition.html">
+   Baseline Algorithm Definition
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="algorithm_input_output_data_definition.html">
+   Algorithm Input and Output Data Definition (IODD)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="algorithm_performance_assessment.html">
+   Algorithm Performance Assessment (Version 2 ATBD)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="ATBD_SST_retrieval_algorithm.html">
+   Notebook SST Retrieval Algorithm
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="references.html">
+   References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="annex.html">
+   Annex
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/CIMR-Algos/ATBD-SST"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/abstract.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Abstract</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="abstract">
+<h1>Abstract<a class="headerlink" href="#abstract" title="Permalink to this headline">#</a></h1>
+<p>Sea surface temperature (SST) is an essential climate variable <span id="id1">[<a class="reference internal" href="references.html#id6" title="Stephan Bojinski, Michel Verstraete, Thomas C. Peterson, Carolin Richter, Adrian Simmons, and Michael Zemp. The concept of essential climate variables in support of climate research, applications, and policy. Bulletin of the American Meteorological Society, 95(9):1431 - 1443, 2014. URL: https://journals.ametsoc.org/view/journals/bams/95/9/bams-d-13-00047.1.xml, doi:10.1175/BAMS-D-13-00047.1.">Bojinski <em>et al.</em>, 2014</a>]</span> that is crucial for a wide range of applications, such as e.g. input to numerical weather prediction (NWP) models <span id="id2">[<a class="reference internal" href="references.html#id7" title="Bruce Brasnett and Dorina Surcel Colan. Assimilating retrievals of sea surface temperature from viirs and amsr2. Journal of Atmospheric and Oceanic Technology, 33(2):361–375, 2016.">Brasnett and Colan, 2016</a>, <a class="reference internal" href="references.html#id9" title="D.B. Chelton and F.J. Wentz. Global microwave satellite observations of sea surface temperature for numerical weather prediction and climate research. Bulletin of the American Meteorological Society, 2005. doi:10.1175/BAMS-86-8-1097.">Chelton and Wentz, 2005</a>]</span> and ocean models <span id="id3">[<a class="reference internal" href="references.html#id22" title="P-Y Le Traon, David Antoine, Abderrahim Bentamy, H Bonekamp, LA Breivik, Bertrand Chapron, G Corlett, G Dibarboure, P DiGiacomo, C Donlon, and others. Use of satellite observations for operational oceanography: recent achievements and future prospects. Journal of Operational Oceanography, 8(sup1):s12–s27, 2015.">Le Traon <em>et al.</em>, 2015</a>, <a class="reference internal" href="references.html#id23" title="Xi Liang, Qinghua Yang, Lars Nerger, Svetlana N Losa, Biao Zhao, Fei Zheng, Lin Zhang, and Lixin Wu. Assimilating copernicus sst data into a pan-arctic ice–ocean coupled model with a local seik filter. Journal of Atmospheric and Oceanic Technology, 34(9):1985–1999, 2017.">Liang <em>et al.</em>, 2017</a>]</span>, for understanding air-sea interactions <span id="id4">[<a class="reference internal" href="references.html#id33" title="AK Monzikova, VN Kudryavtsev, N Reul, and B Chapron. On the upper ocean response to tropical cyclones: satellite microwave observation. In 2017 Progress in Electromagnetics Research Symposium-Fall (PIERS-FALL), 2437–2444. IEEE, 2017.">Monzikova <em>et al.</em>, 2017</a>, <a class="reference internal" href="references.html#id36" title="Jue Ning, Qing Xu, Tao Wang, and Shuangshang Zhang. Upper ocean response to super typhoon soudelor revealed by different sst products. In IGARSS 2018-2018 IEEE International Geoscience and Remote Sensing Symposium, 6063–6066. IEEE, 2018.">Ning <em>et al.</em>, 2018</a>]</span> and monitoring the climate <span id="id5">[<a class="reference internal" href="references.html#id29" title="Christopher J Merchant, Owen Embury, Claire E Bulgin, Thomas Block, Gary K Corlett, Emma Fiedler, Simon A Good, Jonathan Mittaz, Nick A Rayner, David Berry, and others. Satellite-based time-series of sea-surface temperature since 1981 for climate applications. Scientific data, 6(1):1–18, 2019.">Merchant <em>et al.</em>, 2019</a>]</span>. Observations of SST from infrared (IR) satellites have been available since the early 1980’s, however these observations are affected by atmospheric aerosols and limited to clear-sky conditions <span id="id6">[<a class="reference internal" href="references.html#id29" title="Christopher J Merchant, Owen Embury, Claire E Bulgin, Thomas Block, Gary K Corlett, Emma Fiedler, Simon A Good, Jonathan Mittaz, Nick A Rayner, David Berry, and others. Satellite-based time-series of sea-surface temperature since 1981 for climate applications. Scientific data, 6(1):1–18, 2019.">Merchant <em>et al.</em>, 2019</a>, <a class="reference internal" href="references.html#id39" title="R.W. Reynolds, N.A. Rayner, T.M. Smith, D.C. Stokes, and W. Wang. An improved in situ and satellite sst analysis for climate. Journal of Climate, 15:1609-1625, 2002.">Reynolds <em>et al.</em>, 2002</a>, <a class="reference internal" href="references.html#id42" title="J. Vázquez-Cuervo, E.M. Armstrong, and A. Harris. The effect of aerosols and clouds on the retrieval of infrared sea surface temperatures. Journal of Climate, 17:3921-3933, 2004.">Vázquez-Cuervo <em>et al.</em>, 2004</a>]</span>. Passive microwave (PMW) observations of SST are important and complementary alternatives as they are not affected by non-precipitating clouds and the effect from aerosols is negligible <span id="id7">[<a class="reference internal" href="references.html#id41" title="Fawwaz T Ulaby, Richard K Moore, and Adrian K Fung. Microwave remote sensing: active and passive. volume 1-microwave remote sensing fundamentals and radiometry. 1981.">Ulaby <em>et al.</em>, 1981</a>, <a class="reference internal" href="references.html#id43" title="F.J. Wentz, C. Gentemann, D. Smith, and D. Chelton. Satellite measurements of sea surface temperature through clouds. Science, 2000. doi:10.1126/science.288.5467.847.">Wentz <em>et al.</em>, 2000</a>, <a class="reference internal" href="references.html#id12" title="C. Donlon, N. Rayner, I. Robinson, D.J.S. Poulter, K.S. Casey, J. Vazquez-Cuervo, E. Armstrong, A. Bingham, O. Arino, C. Gentemann, D. May, P. LeBorgne, J.-F. Piollé, I. Barton, H. Beggs, C.J. Merchant, S. Heinz, A. Harris, G. Wick, B. Emery, P. Minnett, R. Evans, D. Llewellyn-Jones, C. Mutlow, R.W. Reynolds, and H. Kawamura. The global ocean data assimilation experiment high-resolution sea surface temperature pilot project. Bulletin of the American Meteorological Society, 88:1197-1213, 8 2007. URL: http://journals.ametsoc.org/doi/abs/10.1175/BAMS-88-8-1197, doi:10.1175/BAMS-88-8-1197.">Donlon <em>et al.</em>, 2007</a>]</span>.</p>
+<p>This algorithm theoretical basis document (ATBD) describes the algorithm for the retrieval of SST from the Copernicus Imaging Microwave Radiometer (CIMR). The algorithm consists of a statistically-based regression retrieval for SST and an optionoal regression-based retrieval for wind speed (WS).</p>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="intro.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">ATBD SST</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="applicable_ref_docs.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Applicable and reference documents</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By CIMR Devalgo<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

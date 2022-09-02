@@ -1,0 +1,543 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>References &#8212; ATBD SST</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Annex" href="annex.html" />
+    <link rel="prev" title="SST retrieval algorithm v 0" href="ATBD_SST_retrieval_algorithm.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="_static/logo.jpg" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">ATBD SST</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    ATBD SST
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="abstract.html">
+   Abstract
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="applicable_ref_docs.html">
+   Applicable and Reference Documents
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="acronyms.html">
+   Acronyms
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="definitions.html">
+   Definitions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="introduction_purpose_scope.html">
+   Introduction, purpose and scope
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="background_justification_algorithm.html">
+   Background and justification of selected algorithm
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="L2_product_definition.html">
+   Level-2 product definition
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="baseline_algorithm_definition.html">
+   Baseline Algorithm Definition
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="algorithm_input_output_data_definition.html">
+   Algorithm Input and Output Data Definition (IODD)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="algorithm_performance_assessment.html">
+   Algorithm Performance Assessment (Version 2 ATBD)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="ATBD_SST_retrieval_algorithm.html">
+   Notebook SST Retrieval Algorithm
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="annex.html">
+   Annex
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/CIMR-Algos/ATBD-SST"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/references.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>References</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="references">
+<h1>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h1>
+<div class="docutils container" id="id1">
+<dl class="citation">
+<dt class="label" id="id6"><span class="brackets">1</span></dt>
+<dd><p>Stephan Bojinski, Michel Verstraete, Thomas C. Peterson, Carolin Richter, Adrian Simmons, and Michael Zemp. The concept of essential climate variables in support of climate research, applications, and policy. <em>Bulletin of the American Meteorological Society</em>, 95(9):1431 – 1443, 2014. URL: <a class="reference external" href="https://journals.ametsoc.org/view/journals/bams/95/9/bams-d-13-00047.1.xml">https://journals.ametsoc.org/view/journals/bams/95/9/bams-d-13-00047.1.xml</a>, <a class="reference external" href="https://doi.org/10.1175/BAMS-D-13-00047.1">doi:10.1175/BAMS-D-13-00047.1</a>.</p>
+</dd>
+<dt class="label" id="id7"><span class="brackets">2</span></dt>
+<dd><p>Bruce Brasnett and Dorina Surcel Colan. Assimilating retrievals of sea surface temperature from viirs and amsr2. <em>Journal of Atmospheric and Oceanic Technology</em>, 33(2):361–375, 2016.</p>
+</dd>
+<dt class="label" id="id9"><span class="brackets">3</span></dt>
+<dd><p>D.B. Chelton and F.J. Wentz. Global microwave satellite observations of sea surface temperature for numerical weather prediction and climate research. <em>Bulletin of the American Meteorological Society</em>, 2005. <a class="reference external" href="https://doi.org/10.1175/BAMS-86-8-1097">doi:10.1175/BAMS-86-8-1097</a>.</p>
+</dd>
+<dt class="label" id="id22"><span class="brackets">4</span></dt>
+<dd><p>P-Y Le Traon, David Antoine, Abderrahim Bentamy, H Bonekamp, LA Breivik, Bertrand Chapron, G Corlett, G Dibarboure, P DiGiacomo, C Donlon, and others. Use of satellite observations for operational oceanography: recent achievements and future prospects. <em>Journal of Operational Oceanography</em>, 8(sup1):s12–s27, 2015.</p>
+</dd>
+<dt class="label" id="id23"><span class="brackets">5</span></dt>
+<dd><p>Xi Liang, Qinghua Yang, Lars Nerger, Svetlana N Losa, Biao Zhao, Fei Zheng, Lin Zhang, and Lixin Wu. Assimilating copernicus sst data into a pan-arctic ice–ocean coupled model with a local seik filter. <em>Journal of Atmospheric and Oceanic Technology</em>, 34(9):1985–1999, 2017.</p>
+</dd>
+<dt class="label" id="id33"><span class="brackets">6</span></dt>
+<dd><p>AK Monzikova, VN Kudryavtsev, N Reul, and B Chapron. On the upper ocean response to tropical cyclones: satellite microwave observation. In <em>2017 Progress in Electromagnetics Research Symposium-Fall (PIERS-FALL)</em>, 2437–2444. IEEE, 2017.</p>
+</dd>
+<dt class="label" id="id36"><span class="brackets">7</span></dt>
+<dd><p>Jue Ning, Qing Xu, Tao Wang, and Shuangshang Zhang. Upper ocean response to super typhoon soudelor revealed by different sst products. In <em>IGARSS 2018-2018 IEEE International Geoscience and Remote Sensing Symposium</em>, 6063–6066. IEEE, 2018.</p>
+</dd>
+<dt class="label" id="id29"><span class="brackets">8</span></dt>
+<dd><p>Christopher J Merchant, Owen Embury, Claire E Bulgin, Thomas Block, Gary K Corlett, Emma Fiedler, Simon A Good, Jonathan Mittaz, Nick A Rayner, David Berry, and others. Satellite-based time-series of sea-surface temperature since 1981 for climate applications. <em>Scientific data</em>, 6(1):1–18, 2019.</p>
+</dd>
+<dt class="label" id="id39"><span class="brackets">9</span></dt>
+<dd><p>R.W. Reynolds, N.A. Rayner, T.M. Smith, D.C. Stokes, and W. Wang. An improved in situ and satellite sst analysis for climate. <em>Journal of Climate</em>, 15:1609–1625, 2002.</p>
+</dd>
+<dt class="label" id="id42"><span class="brackets">10</span></dt>
+<dd><p>J. Vázquez-Cuervo, E.M. Armstrong, and A. Harris. The effect of aerosols and clouds on the retrieval of infrared sea surface temperatures. <em>Journal of Climate</em>, 17:3921–3933, 2004.</p>
+</dd>
+<dt class="label" id="id41"><span class="brackets">11</span></dt>
+<dd><p>Fawwaz T Ulaby, Richard K Moore, and Adrian K Fung. Microwave remote sensing: active and passive. volume 1-microwave remote sensing fundamentals and radiometry. 1981.</p>
+</dd>
+<dt class="label" id="id43"><span class="brackets">12</span></dt>
+<dd><p>F.J. Wentz, C. Gentemann, D. Smith, and D. Chelton. Satellite measurements of sea surface temperature through clouds. <em>Science</em>, 2000. <a class="reference external" href="https://doi.org/10.1126/science.288.5467.847">doi:10.1126/science.288.5467.847</a>.</p>
+</dd>
+<dt class="label" id="id12"><span class="brackets">13</span></dt>
+<dd><p>C. Donlon, N. Rayner, I. Robinson, D.J.S. Poulter, K.S. Casey, J. Vazquez-Cuervo, E. Armstrong, A. Bingham, O. Arino, C. Gentemann, D. May, P. LeBorgne, J.-F. Piollé, I. Barton, H. Beggs, C.J. Merchant, S. Heinz, A. Harris, G. Wick, B. Emery, P. Minnett, R. Evans, D. Llewellyn-Jones, C. Mutlow, R.W. Reynolds, and H. Kawamura. The global ocean data assimilation experiment high-resolution sea surface temperature pilot project. <em>Bulletin of the American Meteorological Society</em>, 88:1197–1213, 8 2007. URL: <a class="reference external" href="http://journals.ametsoc.org/doi/abs/10.1175/BAMS-88-8-1197">http://journals.ametsoc.org/doi/abs/10.1175/BAMS-88-8-1197</a>, <a class="reference external" href="https://doi.org/10.1175/BAMS-88-8-1197">doi:10.1175/BAMS-88-8-1197</a>.</p>
+</dd>
+<dt class="label" id="id24"><span class="brackets">14</span></dt>
+<dd><p>Richard G Lipes. Description of seasat radiometer status and results. <em>Journal of Geophysical Research: Oceans</em>, 87(C5):3385–3395, 1982.</p>
+</dd>
+<dt class="label" id="id31"><span class="brackets">15</span></dt>
+<dd><p>AS Milman and TT Wilheit. Sea surface temperatures from the scanning multichannel microwave radiometer on nimbus 7. <em>Journal of Geophysical Research: Oceans</em>, 90(C6):11631–11641, 1985.</p>
+</dd>
+<dt class="label" id="id21"><span class="brackets">16</span></dt>
+<dd><p>Christian Kummerow, William Barnes, Toshiaki Kozu, James Shiue, and Joanne Simpson. The tropical rainfall measuring mission (TRMM) sensor package. <em>Journal of atmospheric and oceanic technology</em>, 15(3):809–817, 1998.</p>
+</dd>
+<dt class="label" id="id46"><span class="brackets">17</span></dt>
+<dd><p>Frank J Wentz. A 17-yr climate record of environmental parameters derived from the tropical rainfall measuring mission (trmm) microwave imager. <em>Journal of Climate</em>, 28(17):6882–6902, 2015.</p>
+</dd>
+<dt class="label" id="id20"><span class="brackets">18</span></dt>
+<dd><p>Toneo Kawanishi, Toshihiro Sezai, Yasuyuki Ito, Keiji Imaoka, Toshiaki Takeshima, Yoshio Ishido, Akira Shibata, Masaharu Miura, Hiroyuki Inahata, and Roy W Spencer. The Advanced Microwave Scanning Radiometer for the Earth Observing System (AMSR-E), NASDA's contribution to the EOS for global energy and water cycle studies. <em>IEEE Transactions on Geoscience and Remote Sensing</em>, 41(2):184–194, 2003.</p>
+</dd>
+<dt class="label" id="id19"><span class="brackets">19</span></dt>
+<dd><p>K Imaoka, M Kachi, M Kasahara, N Ito, K Nakagawa, and T Oki. Instrument performance and calibration of amsr-e and amsr2. <em>International archives of the photogrammetry, remote sensing and spatial information science</em>, 38(8):13–18, 2010.</p>
+</dd>
+<dt class="label" id="id44"><span class="brackets">20</span></dt>
+<dd><p>F.J. Wentz and T. Meissner. Algorithm Theoretical Basis Document (ATBD): AMSR Ocean Algorithm. 2000. Version 2, RSS Tech. Proposal 121599A-1.</p>
+</dd>
+<dt class="label" id="id14"><span class="brackets">21</span></dt>
+<dd><p>C.J. Donlon. Copernicus Imaging Microwave Radiometer (CIMR) Mission Requirements Document. Version 3.0, 2019. [Online; accessed 1 September 2022]. URL: <a class="reference external" href="https://cimr.eu/sites/cimr.met.no/files/documents/CIMR-MRD-v3.0-20190930-Issued.pdf">https://cimr.eu/sites/cimr.met.no/files/documents/CIMR-MRD-v3.0-20190930-Issued.pdf</a>.</p>
+</dd>
+<dt class="label" id="id40"><span class="brackets">22</span></dt>
+<dd><p>Akira Shibata. Features of ocean microwave emission changed by wind at 6 ghz. <em>Journal of oceanography</em>, 62(3):321–330, 2006.</p>
+</dd>
+<dt class="label" id="id45"><span class="brackets">23</span></dt>
+<dd><p>F.J. Wentz and T. Meissner. Supplement 1 algorithm theoretical basis document for amsr-e ocean algorithms. 2007. RSS Technical Report 051707.</p>
+</dd>
+<dt class="label" id="id15"><span class="brackets">24</span></dt>
+<dd><p>Chelle L Gentemann, Thomas Meissner, and Frank J Wentz. Accuracy of satellite sea surface temperatures at 7 and 11 ghz. <em>IEEE Transactions on Geoscience and Remote Sensing</em>, 48(3):1009–1018, 2009.</p>
+</dd>
+<dt class="label" id="id8"><span class="brackets">25</span></dt>
+<dd><p>P.S. Chang, Z. Jelenak, and S. Alsweiss. Algorithm theoretical basis document: gcom-w1/amsr2 day-1 edr. 2015. Version 1.</p>
+</dd>
+<dt class="label" id="id2"><span class="brackets">26</span></dt>
+<dd><p>Emy Alerskans, Jacob L Høyer, Chelle L Gentemann, Leif Toudal Pedersen, Pia Nielsen-Englyst, and Craig Donlon. Construction of a climate data record of sea surface temperature from passive microwave measurements. <em>Remote Sensing of Environment</em>, 236:111485, 2020.</p>
+</dd>
+<dt class="label" id="id34"><span class="brackets">27</span></dt>
+<dd><p>Pia Nielsen-Englyst, Jacob L Høyer, Leif Toudal Pedersen, Chelle L Gentemann, Emy Alerskans, Tom Block, and Craig Donlon. Optimal estimation of sea surface temperature from amsr-e. <em>Remote Sensing</em>, 10(2):229, 2018.</p>
+</dd>
+<dt class="label" id="id32"><span class="brackets">28</span></dt>
+<dd><p>PJ Minnett, Aida Alvera-Azcárate, TM Chin, GK Corlett, CL Gentemann, Ioanna Karagali, X Li, A Marsouin, S Marullo, E Maturi, and others. Half a century of satellite remote sensing of sea-surface temperature. <em>Remote Sensing of Environment</em>, 233:111366, 2019.</p>
+</dd>
+<dt class="label" id="id30"><span class="brackets">29</span></dt>
+<dd><p>Christopher J Merchant, Stéphane Saux-Picart, and Joanne Waller. Bias correction and covariance parameters for optimal estimation by exploiting matched in-situ references. <em>Remote Sensing of Environment</em>, 237:111590, 2020.</p>
+</dd>
+<dt class="label" id="id28"><span class="brackets">30</span></dt>
+<dd><p>Thomas Meissner and Frank J Wentz. The emissivity of the ocean surface between 6 and 90 ghz over a large range of wind speeds and earth incidence angles. <em>IEEE Transactions on Geoscience and Remote Sensing</em>, 50(8):3004–3026, 2012.</p>
+</dd>
+<dt class="label" id="id35"><span class="brackets">31</span></dt>
+<dd><p>Pia Nielsen-Englyst, Jacob L Høyer, Emy Alerskans, Leif Toudal Pedersen, and Craig Donlon. Impact of channel selection on sst retrievals from passive microwave observations. <em>Remote Sensing of Environment</em>, 254:112252, 2021.</p>
+</dd>
+<dt class="label" id="id3"><span class="brackets">32</span></dt>
+<dd><p>P. Ashcroft and F.J. Wentz. Amsr-e/aqua l2a global swath spatially-resampled brightness temperatures. 2013. Version 3.</p>
+</dd>
+<dt class="label" id="id4"><span class="brackets">33</span></dt>
+<dd><p>R. Atlas, R.N. Hoffman, J. Ardizzone, S.M. Leidner, J.C. Jusem, D.K. Smith, and D. Gombos. A cross-calibrated, multiplatform ocean surface wind velocity product for meteorological and oceanographic applications. <em>Bulletin of the American Meteorological Society</em>, 2011. <a class="reference external" href="https://doi.org/10.1175/2010BAMS2946.1">doi:10.1175/2010BAMS2946.1</a>.</p>
+</dd>
+<dt class="label" id="id5"><span class="brackets">34</span></dt>
+<dd><p>T. Block, S. Embacher, C.J. Merchant, and C. Donlon. High-performance software framework for the calculation of satellite-to-satellite data matchups (mms version 1.2). <em>Geoscientific Model Development</em>, 2018. <a class="reference external" href="https://doi.org/10.5194/gmd-11-2419-2018">doi:10.5194/gmd-11-2419-2018</a>.</p>
+</dd>
+<dt class="label" id="id10"><span class="brackets">35</span></dt>
+<dd><p>D.P. Dee, S.M. Uppala, A.J. Simmons, P. Berrisford, P. Poli, S. Kobayashi, U. Andrae, M.A. Balmaseda, G. Balsamo, P. Bauer, P. Bechtold, A.C.M. Beljaars, L. van de Berg, J. Bidlot, N. Bormann, C. Delsol, R. Dragani, M. Fuentes, A.J. Geer, L. Haimberger, S.B. Healy, H. Hersbach, E.V. Hólm, L. Isaksen, P. Kållberg, M. Köhler, M. Matricardi, A.P. Mcnally, B.M. Monge-Sanz, J.J. Morcrette, B.K. Park, C. Peubey, P. de Rosnay, C. Tavolato, J.N. Thépaut, and F. Vitart. The era-interim reanalysis: configuration and performance of the data assimilation system. <em>Quarterly Journal of the Royal Meteorological Society</em>, 2011. <a class="reference external" href="https://doi.org/10.1002/qj.828">doi:10.1002/qj.828</a>.</p>
+</dd>
+<dt class="label" id="id11"><span class="brackets">36</span></dt>
+<dd><p>DMI. Ghrsst level 4 dmi_oi global foundation sea surface temperature analysis (gds version 2). 2007. Version 1.</p>
+</dd>
+<dt class="label" id="id13"><span class="brackets">37</span></dt>
+<dd><p>C.J. Donlon, K.S. Casey, C. Gentemann, P. LeBorgne, I.S. Robinson, R.W. Reynolds, C.J. Merchant, P.J. Minnett, J.-F. Piolle, P. Cornillon, N. Rayner, T. Brandon, J. Vazquez, R. Evans, C.T. Mutlow, A.W. Bingham, and A. Harris. Successes and challenges for the modern sea surface temperature observing system. In <em>Proceedings of OceanObs’09: Sustained Ocean Observations and Information for Society</em>, 1–45. Venice, Italy, 21-25 September 2009, Hall, J., Harrison, D.E. &amp; Stammer, D., Eds., ESA Publication WPP-306, 2009.</p>
+</dd>
+<dt class="label" id="id16"><span class="brackets">38</span></dt>
+<dd><p>GHRSST Science Team. The recommended ghrsst data specification (gds) 2.0. 2010. Revision 5.</p>
+</dd>
+<dt class="label" id="id17"><span class="brackets">39</span></dt>
+<dd><p>S.A. Good, M.J. Martin, and N.A Rayner. En4: quality controlled ocean temperature and salinity profiles and monthly objective analyses with uncertainty estimates. <em>Journal of Geophysical Research: Oceans</em>, 2013. <a class="reference external" href="https://doi.org/10.1002/2013JC009067">doi:10.1002/2013JC009067</a>.</p>
+</dd>
+<dt class="label" id="id18"><span class="brackets">40</span></dt>
+<dd><p>J.L. Høyer, I. Karagali, G. Dybkjær, and R. Tonboe. Multi sensor validation and error characteristics of arctic satellite sea surface temperature observations. <em>Remote Sensing of Environment</em>, 121:335–346, 6 2012. URL: <a class="reference external" href="http://linkinghub.elsevier.com/retrieve/pii/S0034425712000478">http://linkinghub.elsevier.com/retrieve/pii/S0034425712000478</a>, <a class="reference external" href="https://doi.org/10.1016/j.rse.2012.01.013">doi:10.1016/j.rse.2012.01.013</a>.</p>
+</dd>
+<dt class="label" id="id25"><span class="brackets">41</span></dt>
+<dd><p>S. Mackie, O. Embury, C. Old, C.J. Merchant, and P. Francis. Generalized bayesian cloud detection for satellite imagery. part 1: technique and validation for night-time imagery over land and sea. <em>International Journal of Remote Sensing</em>, 2010. <a class="reference external" href="https://doi.org/10.1080/01431160903051703">doi:10.1080/01431160903051703</a>.</p>
+</dd>
+<dt class="label" id="id26"><span class="brackets">42</span></dt>
+<dd><p>T. Maeda, Y. Taniguchi, and K. Imaoka. Gcom-w1 amsr2 level 1r product: dataset of brightness temperature modified using the antenna pattern matching technique. <em>IEEE Transactions on Geoscience and Remote Sensing</em>, 2016. <a class="reference external" href="https://doi.org/10.1109/TGRS.2015.2465170">doi:10.1109/TGRS.2015.2465170</a>.</p>
+</dd>
+<dt class="label" id="id27"><span class="brackets">43</span></dt>
+<dd><p>M.J. McPhaden, K. Ando, B. Bourl�s, H.P. Freitag, R. Lumpkin, Y. Masumoto, V.S.N Murty, P. Nobre, M. Ravichandran, J. Vialard, D. Vousden, and W. Yu. The global tropical moored buoy array. In <em>Proceedings of OceanObs’09: Sustained Ocean Observations and Information for Society</em>. Venice, Italy, 21-25 September 2009, Hall, J., Harrison, D.E. &amp; Stammer, D., Eds., ESA Publication WPP-306, 2010. <a class="reference external" href="https://doi.org/10.5270/oceanobs09.cwp.61">doi:10.5270/oceanobs09.cwp.61</a>.</p>
+</dd>
+<dt class="label" id="id37"><span class="brackets">44</span></dt>
+<dd><p>N. Rayner, S. Good, and T. Block. Sst cci product user guide, project document, sst_cci-pug-ukmo-201. 2015. Version 1. URL: <a class="reference external" href="http://www.esa-sst-cci.org/PUG/documents.htm.">http://www.esa-sst-cci.org/PUG/documents.htm.</a></p>
+</dd>
+<dt class="label" id="id38"><span class="brackets">45</span></dt>
+<dd><p>R.W. Reynolds. Impact of mount pinatubo aerosols on satellite-derived sea surface temperatures. <em>Journal of Climate</em>, 1993. <a class="reference external" href="https://doi.org/10.1175/1520-0442(1993)006&lt;0768:IOMPAO&gt;2.0.CO;2">doi:10.1175/1520-0442(1993)006&lt;0768:IOMPAO&gt;2.0.CO;2</a>.</p>
+</dd>
+<dt class="label" id="id47"><span class="brackets">46</span></dt>
+<dd><p>S.D. Woodruff, S.J. Worley, S.J Lubker, Z. Ji, J.E. Freeman, D.I. Berry, P. Brohan, E.C. Kent, R.W. Reynolds, S.R. Smith, and C. Wilkinson. Icoads release 2.5: extensions and enhancements to the surface marine meteorological archive. <em>International Journal of Climatology</em>, 2011. <a class="reference external" href="https://doi.org/10.1002/joc.2103">doi:10.1002/joc.2103</a>.</p>
+</dd>
+</dl>
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="ATBD_SST_retrieval_algorithm.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">SST retrieval algorithm v 0</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="annex.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Annex</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By CIMR Devalgo<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

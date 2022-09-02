@@ -1,0 +1,683 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Baseline Algorithm Definition &#8212; ATBD SST</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Algorithm Input and Output Data Definition (IODD)" href="algorithm_input_output_data_definition.html" />
+    <link rel="prev" title="Level-2 product definition" href="L2_product_definition.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="_static/logo.jpg" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">ATBD SST</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    ATBD SST
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="abstract.html">
+   Abstract
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="applicable_ref_docs.html">
+   Applicable and Reference Documents
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="acronyms.html">
+   Acronyms
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="definitions.html">
+   Definitions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="introduction_purpose_scope.html">
+   Introduction, purpose and scope
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="background_justification_algorithm.html">
+   Background and justification of selected algorithm
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="L2_product_definition.html">
+   Level-2 product definition
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Baseline Algorithm Definition
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="algorithm_input_output_data_definition.html">
+   Algorithm Input and Output Data Definition (IODD)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="algorithm_performance_assessment.html">
+   Algorithm Performance Assessment (Version 2 ATBD)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="ATBD_SST_retrieval_algorithm.html">
+   Notebook SST Retrieval Algorithm
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="references.html">
+   References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="annex.html">
+   Annex
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/CIMR-Algos/ATBD-SST"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/baseline_algorithm_definition.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#cimr-level-1b-re-sampling-approach">
+   CIMR Level-1b re-sampling approach
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#algorithm-assumptions-and-simplifications">
+   Algorithm Assumptions and Simplifications
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#level-2-end-to-end-algorithm-functional-flow-diagram">
+   Level-2 end to end algorithm functional flow diagram
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#retrieval-algorithm">
+   Retrieval algorithm
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#mathematical-description">
+     Mathematical description
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ws-retrieval-algorithm">
+       WS retrieval algorithm
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#st-stage-global-retrieval-algorithm">
+         1st-stage: Global retrieval algorithm
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#nd-stage-ws-loclised-retrieval-algorithm">
+         2nd-stage: WS loclised retrieval algorithm
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#sst-retrieval-algorithm">
+       SST retrieval algorithm
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#input-data">
+     Input data
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#output-data">
+     Output data
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#auxiliary-data">
+     Auxiliary data
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ancillary-data">
+     Ancillary data
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#validation-process">
+     Validation process
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Baseline Algorithm Definition</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#cimr-level-1b-re-sampling-approach">
+   CIMR Level-1b re-sampling approach
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#algorithm-assumptions-and-simplifications">
+   Algorithm Assumptions and Simplifications
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#level-2-end-to-end-algorithm-functional-flow-diagram">
+   Level-2 end to end algorithm functional flow diagram
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#retrieval-algorithm">
+   Retrieval algorithm
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#mathematical-description">
+     Mathematical description
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#ws-retrieval-algorithm">
+       WS retrieval algorithm
+      </a>
+      <ul class="nav section-nav flex-column">
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#st-stage-global-retrieval-algorithm">
+         1st-stage: Global retrieval algorithm
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#nd-stage-ws-loclised-retrieval-algorithm">
+         2nd-stage: WS loclised retrieval algorithm
+        </a>
+       </li>
+      </ul>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#sst-retrieval-algorithm">
+       SST retrieval algorithm
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#input-data">
+     Input data
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#output-data">
+     Output data
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#auxiliary-data">
+     Auxiliary data
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ancillary-data">
+     Ancillary data
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#validation-process">
+     Validation process
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="baseline-algorithm-definition">
+<h1>Baseline Algorithm Definition<a class="headerlink" href="#baseline-algorithm-definition" title="Permalink to this headline">#</a></h1>
+<section id="cimr-level-1b-re-sampling-approach">
+<h2>CIMR Level-1b re-sampling approach<a class="headerlink" href="#cimr-level-1b-re-sampling-approach" title="Permalink to this headline">#</a></h2>
+<p>Add text here.</p>
+</section>
+<section id="algorithm-assumptions-and-simplifications">
+<h2>Algorithm Assumptions and Simplifications<a class="headerlink" href="#algorithm-assumptions-and-simplifications" title="Permalink to this headline">#</a></h2>
+<p>In version 0 of the retrieval algorithm, AMSR2 data will be used as input instead of CIMR data, as it is not yet available. Because of this, the channel combinaiton used will not be the full CIMR suite, as AMSR2 does not include the 1.4 GHz channels, but a so-called CIMR-like combination.</p>
+</section>
+<section id="level-2-end-to-end-algorithm-functional-flow-diagram">
+<h2>Level-2 end to end algorithm functional flow diagram<a class="headerlink" href="#level-2-end-to-end-algorithm-functional-flow-diagram" title="Permalink to this headline">#</a></h2>
+<p>The CIMR SST retrieval algorithm consists of a WS retrieval algorithm followed by an SST retrieval algorithm. A flow diagram of the algorithm is shown in <a class="reference internal" href="#fig-algo-flow-diag"><span class="std std-numref">Fig. 1</span></a>.</p>
+<figure class="align-center" id="fig-algo-flow-diag">
+<img alt="_images/algo_flow_diagram.png" src="_images/algo_flow_diagram.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Set-up of the PMW SST retrieval algorithm using CIMR orbital data and ancillary data as input. <span class="math notranslate nohighlight">\(\boldsymbol{\mathrm{A}}\)</span>, <span class="math notranslate nohighlight">\(\boldsymbol{\mathrm{B}}\)</span> and <span class="math notranslate nohighlight">\(\boldsymbol{\mathrm{C}}\)</span> refer to the regression coefficients in Equations <a class="reference internal" href="#equation-eq-ws-global">(1)</a>, <a class="reference internal" href="#equation-eq-ws-local">(4)</a> and <a class="reference internal" href="#equation-eq-sst-global">(6)</a>, respectively.</span><a class="headerlink" href="#fig-algo-flow-diag" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="retrieval-algorithm">
+<h2>Retrieval algorithm<a class="headerlink" href="#retrieval-algorithm" title="Permalink to this headline">#</a></h2>
+<p>The retrieval algorithm is a statistically-based algorithm for retrieving SST given satellite brightness temperatures and ancillary data, such as e.g. wind speed. The main option is to use retrieved wind speed from the integrated OEM retrieval. Two additional options exist; the use of ancillary wind speed, from e.g. reanalysis data, or retrieval of wind speed using a 2-stage wind speed retrieval algorithm.</p>
+<section id="mathematical-description">
+<h3>Mathematical description<a class="headerlink" href="#mathematical-description" title="Permalink to this headline">#</a></h3>
+<section id="ws-retrieval-algorithm">
+<h4>WS retrieval algorithm<a class="headerlink" href="#ws-retrieval-algorithm" title="Permalink to this headline">#</a></h4>
+<p>Optionally, a statistical retrieval algorithm can be used to retrieve WS given satellite brightness temperatures and ancillary data. The WS retrieval algorithm is the two-stage algorithm based on multiple linear regression from <span id="id1">Alerskans <em>et al.</em> [<a class="reference internal" href="references.html#id2" title="Emy Alerskans, Jacob L Høyer, Chelle L Gentemann, Leif Toudal Pedersen, Pia Nielsen-Englyst, and Craig Donlon. Construction of a climate data record of sea surface temperature from passive microwave measurements. Remote Sensing of Environment, 236:111485, 2020.">2020</a>]</span>. In the first stage, an initial estimate of WS is retrieved using a so called global regression-based retrieval algorithm, i.e. the model uses one set of regression coefficient for all retrievals. In the second stage, a final estimate of WS is obtained through the use of localised algorithms, such that different sets of regression coefficients are used for the retrievals. Here, the retrieved wind speed from the 1st-stage retrieval is used to bin the data and regression coefficients are obtained for a set of pre-defined wind speed intervals. Hence, the 2nd-stage retrieval algorithm is trained to perform well over restricted WS domains.</p>
+<section id="st-stage-global-retrieval-algorithm">
+<h5>1st-stage: Global retrieval algorithm<a class="headerlink" href="#st-stage-global-retrieval-algorithm" title="Permalink to this headline">#</a></h5>
+<p>The first stage of the WS retrieval algorithm uses a global regression model to obtain regression coefficients based on all training examples in the training dataset. The WS retrieval algorithm is based on the NOAA AMSR2 WS retrieval algorithm <span id="id2">[<a class="reference internal" href="references.html#id8" title="P.S. Chang, Z. Jelenak, and S. Alsweiss. Algorithm theoretical basis document: gcom-w1/amsr2 day-1 edr. 2015. Version 1.">Chang <em>et al.</em>, 2015</a>]</span> and uses brightness temperatures (<span class="math notranslate nohighlight">\(T_{B}\)</span>) and Earth incidence angle (<span class="math notranslate nohighlight">\(\theta_{EIA}\)</span>) to obtain initial retrieved WS, <span class="math notranslate nohighlight">\(WS_a\)</span>,</p>
+<div class="math notranslate nohighlight" id="equation-eq-ws-global">
+<span class="eqno">(1)<a class="headerlink" href="#equation-eq-ws-global" title="Permalink to this equation">#</a></span>\[ WS_{a} = a_{0} + \sum_{i=1}^{N_{ch}} (a_{1i} t_{i} + a_{2i} t^{2}_{i} ) + a_{3} \theta,\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight" id="equation-eq-t11">
+<span class="eqno">(2)<a class="headerlink" href="#equation-eq-t11" title="Permalink to this equation">#</a></span>\[t_{i} = T_{Bi}-150\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight" id="equation-eq-theta">
+<span class="eqno">(3)<a class="headerlink" href="#equation-eq-theta" title="Permalink to this equation">#</a></span>\[\theta = \theta_{EIA} - 55.\]</div>
+<p>The summation index <span class="math notranslate nohighlight">\(i\)</span> represents the summation over the <span class="math notranslate nohighlight">\(N_{ch}=8\)</span> channels included in the retrieval algorithm: 6.9, 10.6, 18.7, and 36.5 (dual polarizations), and the coefficients <span class="math notranslate nohighlight">\(a_0\)</span> to <span class="math notranslate nohighlight">\(a_3\)</span> are the regression coefficients, here together referred to as <span class="math notranslate nohighlight">\(A\)</span>, determined using the least-squares method.</p>
+</section>
+<section id="nd-stage-ws-loclised-retrieval-algorithm">
+<h5>2nd-stage: WS loclised retrieval algorithm<a class="headerlink" href="#nd-stage-ws-loclised-retrieval-algorithm" title="Permalink to this headline">#</a></h5>
+<p>Localised WS retrieval algorithms are used in the second stage of the WS retrieval algorithm. Here, the algorithms are defined for local WS bins, such that separate regression coefficients are derived for each WS interval, where <span class="math notranslate nohighlight">\(WS_{a}\)</span> is used to select the correct WS bin. In order to obtain robust regression coefficients, the minimum number of matchups required were set to 100. The localised algorithms are defined for WS in the interval 0 to 20 ms<span class="math notranslate nohighlight">\(^{-1}\)</span>, with a bin size of 1 ms<span class="math notranslate nohighlight">\(^{-1}\)</span>, which gives a total of 20 localised algorithms. Like the 1st-stage retrieval, brightness temperature and incidence angle are used in the localised WS algorithm to obtain a final estimate of WS, <span class="math notranslate nohighlight">\(WS_r\)</span>,</p>
+<div class="math notranslate nohighlight" id="equation-eq-ws-local">
+<span class="eqno">(4)<a class="headerlink" href="#equation-eq-ws-local" title="Permalink to this equation">#</a></span>\[ WS_{rk} = b_{0k} + \sum_{i=1}^{N_{ch}} (b_{1ik} t_{i} + b_{2ik} t^{2}_{i} ) + b_{3k} \theta,\]</div>
+<p>where <span class="math notranslate nohighlight">\(t_{i}\)</span> is given by Equation <a class="reference internal" href="#equation-eq-t11">(2)</a> and <span class="math notranslate nohighlight">\(\theta\)</span> is defined by Equation <a class="reference internal" href="#equation-eq-theta">(3)</a>. The index <span class="math notranslate nohighlight">\(i\)</span> refers to the summation over all <span class="math notranslate nohighlight">\(N_{ch}\)</span> channels included in the retrieval algorithm, <span class="math notranslate nohighlight">\(k\)</span> refers to the reference WS bin and the coefficients <span class="math notranslate nohighlight">\(b_{0}\)</span> to <span class="math notranslate nohighlight">\(b_{3}\)</span> are regression coefficients, here together referred to as <span class="math notranslate nohighlight">\(B\)</span>, determined using the least-squares method. The final retrieved WS is found by performing a linear interpolation between <span class="math notranslate nohighlight">\(WS_{rk}\)</span> and the WS retrieved using the closest neighboring WS algorithm in order to avoid discontinuities</p>
+<div class="math notranslate nohighlight" id="equation-eq-ws-interpol">
+<span class="eqno">(5)<a class="headerlink" href="#equation-eq-ws-interpol" title="Permalink to this equation">#</a></span>\[ WS_{r} = \sum_{k=k_{0}}^{k_{0}+1} w_{k-k_{0}} WS_{rk}\]</div>
+<p>where the interpolation weights <span class="math notranslate nohighlight">\(w\)</span> are given by <span class="math notranslate nohighlight">\(w_{0}=1-\alpha\)</span> and <span class="math notranslate nohighlight">\(w_{1}=\alpha\)</span>, with <span class="math notranslate nohighlight">\(\alpha=\frac{WS_{\alpha}}{\Delta k}-k_{0}\)</span> and <span class="math notranslate nohighlight">\(k_{0}=floor(\frac{WS_{r}}{\Delta k})\)</span>, where <span class="math notranslate nohighlight">\(\Delta k=1~ms^{-1}\)</span> is the WS bin size.</p>
+</section>
+</section>
+<section id="sst-retrieval-algorithm">
+<h4>SST retrieval algorithm<a class="headerlink" href="#sst-retrieval-algorithm" title="Permalink to this headline">#</a></h4>
+<p>A statistical retrieval algorithm is used to retrieve SST given satellite brightness temperatures and ancillary data. The SST retrieval algorithm is based on multiple linear regression and uses a global regression model to obtain regression coefficients based on all training examples in the training dataset. The algorithm is inspired by the RSS AMSR-E SST retrieval algorithm <span id="id3">[<a class="reference internal" href="references.html#id44" title="F.J. Wentz and T. Meissner. Algorithm Theoretical Basis Document (ATBD): AMSR Ocean Algorithm. 2000. Version 2, RSS Tech. Proposal 121599A-1.">Wentz and Meissner, 2000</a>]</span> and the retrieval algortithm from <span id="id4">Alerskans <em>et al.</em> [<a class="reference internal" href="references.html#id2" title="Emy Alerskans, Jacob L Høyer, Chelle L Gentemann, Leif Toudal Pedersen, Pia Nielsen-Englyst, and Craig Donlon. Construction of a climate data record of sea surface temperature from passive microwave measurements. Remote Sensing of Environment, 236:111485, 2020.">2020</a>]</span>, in which the SST is retrieved using brightness temperatures, Earth incidence angle, retrieved wind speed and the relative angle between wind direction and satellite azimuth angle (<span class="math notranslate nohighlight">\(\phi_{rel}\)</span>)</p>
+<div class="math notranslate nohighlight" id="equation-eq-sst-global">
+<span class="eqno">(6)<a class="headerlink" href="#equation-eq-sst-global" title="Permalink to this equation">#</a></span>\[ SST_{r} = c_{0} + \sum_{i=1}^{N_{ch}} (c_{1i} t_{i} + c_{2i} t^{2}_{i} ) + c_{3} \theta + c_{4} WS_{r} + \sum_{j=1}^{2} [c_{5j} \cos (j \phi_{rel}) + c_{6j} \sin (j \phi_{rel}) ],\]</div>
+<p>where again <span class="math notranslate nohighlight">\(t_{i}\)</span> is given by Equation <a class="reference internal" href="#equation-eq-t11">(2)</a> and <span class="math notranslate nohighlight">\(\theta\)</span> is defined by Equation <a class="reference internal" href="#equation-eq-theta">(3)</a>. The index <span class="math notranslate nohighlight">\(i\)</span> refers to the summation over all <span class="math notranslate nohighlight">\(N_{ch}\)</span> channels included in the retrieval algorithm; 6.9, 10.6, 18.7 and 36.5 GHz (dual polarization), and the coefficients <span class="math notranslate nohighlight">\(c_{0}\)</span> to <span class="math notranslate nohighlight">\(c_{6}\)</span> are regression coefficients, here together referred to as <span class="math notranslate nohighlight">\(C\)</span>, determined using the least-squares method.</p>
+</section>
+</section>
+<section id="input-data">
+<h3>Input data<a class="headerlink" href="#input-data" title="Permalink to this headline">#</a></h3>
+<p>In the initial phase, a Multisensor Matchup Dataset (MMD) will be used for algorithm development, tuning and validation. It contains in situ observations from drifting buoys, ERA5 reanalysis data and brightness temperatures and auxiliary data from AMSR2. A CIMR-like channel selection will be used, based on <span id="id5">Nielsen-Englyst <em>et al.</em> [<a class="reference internal" href="references.html#id35" title="Pia Nielsen-Englyst, Jacob L Høyer, Emy Alerskans, Leif Toudal Pedersen, and Craig Donlon. Impact of channel selection on sst retrievals from passive microwave observations. Remote Sensing of Environment, 254:112252, 2021.">2021</a>]</span>. For this set-up, necessary PMW observations are:</p>
+<ul class="simple">
+<li><p>AMSR2 TB channels: 6.9, 10.6, 18.7 and 36.5 GHz (dual polarization)</p></li>
+</ul>
+<p>The next phase will see the use of CIMR orbital data and here the following input data are needed:</p>
+<ul class="simple">
+<li><p>CIMR TB channels: 1.4, 6.9, 10.6, 18.7 and 36.5 GHz (dual polarization)</p></li>
+</ul>
+</section>
+<section id="output-data">
+<h3>Output data<a class="headerlink" href="#output-data" title="Permalink to this headline">#</a></h3>
+<p>The outputs from the regression retrieval algorithm are:</p>
+<ul class="simple">
+<li><p>Sea surface temperature (<span class="math notranslate nohighlight">\(SST_{r}\)</span>), in Kelvin.</p></li>
+<li><p>Wind speed (<span class="math notranslate nohighlight">\(WS_{r}\)</span>), in <span class="math notranslate nohighlight">\(~ms^{1}\)</span> (optional).</p></li>
+</ul>
+</section>
+<section id="auxiliary-data">
+<h3>Auxiliary data<a class="headerlink" href="#auxiliary-data" title="Permalink to this headline">#</a></h3>
+<p>Data that is used as a complement to the retrieval, such as for flagging:</p>
+<ul class="simple">
+<li><p>Sea ice product</p></li>
+<li><p>Distance to coast</p></li>
+<li><p>Information for RFI flagging</p></li>
+</ul>
+</section>
+<section id="ancillary-data">
+<h3>Ancillary data<a class="headerlink" href="#ancillary-data" title="Permalink to this headline">#</a></h3>
+<p>Data necessary for the retrieval:</p>
+<ul class="simple">
+<li><p>Earth incidence angle (satellite zenith angle)</p></li>
+<li><p>Satellite azimuth angle</p></li>
+<li><p>Reanalysis surface winds</p></li>
+</ul>
+</section>
+<section id="validation-process">
+<h3>Validation process<a class="headerlink" href="#validation-process" title="Permalink to this headline">#</a></h3>
+<p>In the initial phase, a Multisensor Matchup Dataset (MMD) will be used for algorithm development, tuning and validation. It contains in situ observations from drifting buoys, ERA5 reanalysis data and brightness temperatures and auxiliary data from AMSR2. A CIMR-like channel selection will be used, based on <span id="id6">Nielsen-Englyst <em>et al.</em> [<a class="reference internal" href="references.html#id35" title="Pia Nielsen-Englyst, Jacob L Høyer, Emy Alerskans, Leif Toudal Pedersen, and Craig Donlon. Impact of channel selection on sst retrievals from passive microwave observations. Remote Sensing of Environment, 254:112252, 2021.">2021</a>]</span>.</p>
+<p>Furthermore, the validation process will also contain validation on Picasso scenese.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="L2_product_definition.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Level-2 product definition</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="algorithm_input_output_data_definition.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Algorithm Input and Output Data Definition (IODD)</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By CIMR Devalgo<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>
