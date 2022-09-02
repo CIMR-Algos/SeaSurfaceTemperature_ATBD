@@ -13,6 +13,7 @@ Here follows a glossary, or list of definitions
 | NASA | National Aeronautics Space Administration |
 | PSD | Product Specification Document |
 | PVP | Product Validation Plan |
+| RFI | Radio Frequency Interference |
 | RTM | Radiative Transfer Model |
 | SIC | Sea Ice Concentration |
 | SSS | Sea Surface Salinity |

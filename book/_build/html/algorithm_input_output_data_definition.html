@@ -50,8 +50,6 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
     <script>mermaid.initialize({startOnLoad:true});</script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -332,13 +330,6 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#input-data">
    Input data
   </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#preprocessing">
-     Preprocessing
-    </a>
-   </li>
-  </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#output-data">
@@ -378,13 +369,6 @@ title="Print to PDF"
   <a class="reference internal nav-link" href="#input-data">
    Input data
   </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#preprocessing">
-     Preprocessing
-    </a>
-   </li>
-  </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#output-data">
@@ -413,35 +397,60 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="algorithm-input-and-output-data-definition-iodd">
 <h1>Algorithm Input and Output Data Definition (IODD)<a class="headerlink" href="#algorithm-input-and-output-data-definition-iodd" title="Permalink to this headline">#</a></h1>
+<p>The processing of L2 SST requires both TB observations and ancillary data. Additional information such as e.g. a land mask, a sea ice product and information about RFI is needed to remove contaminated PMW observations. The input for the SST retrieval algorithm consists of TB’s at 1.4, 6.9, 10.6, 18.7 and 36.5 GHz (vertical and horizontal polarization) and additional satellite information as well as surface WS. The output is subskin SST and optionally surface WS, as described in this document.</p>
 <section id="input-data">
 <h2>Input data<a class="headerlink" href="#input-data" title="Permalink to this headline">#</a></h2>
-<ul class="simple">
-<li><p>CIMR TB channels: 1.4, 6.9, 10.6, 18.7 and 36.5 GHz (dual polarization)</p></li>
-<li><p>Earth incidence angle (satellite zenith angle)</p></li>
-<li><p>Satellite azimuth angle</p></li>
-<li><p>NWP surface winds</p></li>
-</ul>
-<section id="preprocessing">
-<h3>Preprocessing<a class="headerlink" href="#preprocessing" title="Permalink to this headline">#</a></h3>
-<p>The following pre-processing of input data is necessary:</p>
-<ul class="simple">
-<li><p>Calculation of NWP (meteorological) wind direction (<span class="math notranslate nohighlight">\(\phi_{WD}\)</span>) from the zonal (<span class="math notranslate nohighlight">\(u\)</span>) and meridional (<span class="math notranslate nohighlight">\(v\)</span>) surface wind components, following:</p></li>
-</ul>
-<div class="math notranslate nohighlight" id="equation-eq-preprocess-winddir">
-<span class="eqno">(7)<a class="headerlink" href="#equation-eq-preprocess-winddir" title="Permalink to this equation">#</a></span>\[\phi_{WD} = 180 + \frac{180}{\pi} atan2(u,v),\]</div>
-<ul class="simple">
-<li><p>Calculation of relative angle (<span class="math notranslate nohighlight">\(\phi_{REL}\)</span>) between satellite azimuth angle (<span class="math notranslate nohighlight">\(\phi_{SAT}\)</span>) and NWP wind direction, following:</p></li>
-</ul>
-<div class="math notranslate nohighlight" id="equation-eq-preprocess-phirel">
-<span class="eqno">(8)<a class="headerlink" href="#equation-eq-preprocess-phirel" title="Permalink to this equation">#</a></span>\[\phi_{REL} = \phi_{SAT} - \phi_{WD}\]</div>
-</section>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Shape/Amount</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>L1B TB L-band</p></td>
+<td><p>L1B Brightness Temperatures at 1.4 GHz (V and H polarization)</p></td>
+<td><p>Full swath or section of it (Nscans, Npos)</p></td>
+</tr>
+<tr class="row-odd"><td><p>L1B TB C-band</p></td>
+<td><p>L1B Brightness Temperatures at 6.9 GHz (V and H polarization)</p></td>
+<td><p>Full swath or section of it (Nscans, Npos)</p></td>
+</tr>
+<tr class="row-even"><td><p>L1B TB X-band</p></td>
+<td><p>L1B Brightness Temperatures at 10.6 GHz (V and H polarization)</p></td>
+<td><p>Full swath or section of it (Nscans, Npos)</p></td>
+</tr>
+<tr class="row-odd"><td><p>L1B TB K-band</p></td>
+<td><p>L1B Brightness Temperatures at 18.7 GHz (V and H polarization)</p></td>
+<td><p>Full swath or section of it (Nscans, Npos)</p></td>
+</tr>
+<tr class="row-even"><td><p>L1B TB Ka-band</p></td>
+<td><p>L1B Brightness Temperatures at 36.5 GHz (V and H polarization)</p></td>
+<td><p>Full swath or section of it (Nscans, Npos)</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="output-data">
 <h2>Output data<a class="headerlink" href="#output-data" title="Permalink to this headline">#</a></h2>
-<ul class="simple">
-<li><p>Retrieved SST</p></li>
-<li><p>Retrieved WS (optional)</p></li>
-</ul>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Shape/Amount</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>L2 SST</p></td>
+<td><p>Sea Surface Temperature</p></td>
+<td><p>Full swath or section of it (Nscans, Npos)</p></td>
+</tr>
+<tr class="row-odd"><td><p>L2 WS</p></td>
+<td><p>Wind Speed (optional)</p></td>
+<td><p>Full swath or section of it (Nscans, Npos)</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="auxiliary-data">
 <h2>Auxiliary data<a class="headerlink" href="#auxiliary-data" title="Permalink to this headline">#</a></h2>
