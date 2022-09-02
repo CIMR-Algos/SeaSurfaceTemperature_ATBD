@@ -42,11 +42,10 @@ conda install -c conda-forge sphinxcontrib-mermaid
 ```
 
 ### build the book
-Note here that currently, the structure of the book has been updated to make it easier to include the algorithm notebook (placed in the algorithm directory) in the book. This can be changed again if required.
 ```
 cd /path/to/local/repo/with/atbd/ # the root of the repo, with book/ algorithm/ data/ ...
-jupyter-book build .
-jupyter-book build --all . #(force rebuild everything)
+jupyter-book build book/
+jupyter-book build --all book/ #(force rebuild everything)
 ```
 
 ### develop the book and commit to GitHub

@@ -3,7 +3,7 @@
 
 title: ATBD SST
 author: CIMR Devalgo
-logo: book/logo.jpg
+logo: logo.jpg
 
 # Force re-execution of notebooks on each build.
 # See https://jupyterbook.org/content/execute.html
@@ -17,7 +17,7 @@ latex:
 
 # Add a bibtex file so that we can create citations
 bibtex_bibfiles:
-  - book/sst_cit.bib
+  - sst_cit.bib
 
 # Format the citation style
 sphinx:
