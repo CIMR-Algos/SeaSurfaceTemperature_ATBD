@@ -1,6 +1,7 @@
 # Data files
 *.nc
 *.npy
+*.mat
 
 # Python and notebook specifics
 __pycache__/

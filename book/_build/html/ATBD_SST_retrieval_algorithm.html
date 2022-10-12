@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>SST retrieval algorithm v 0 &#8212; ATBD SST</title>
     
@@ -34,7 +34,9 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
@@ -59,7 +61,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="next" title="References" href="references.html" />
     <link rel="prev" title="Algorithm Performance Assessment (Version 2 ATBD)" href="algorithm_performance_assessment.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
+    <meta name="docsearch:language" content="en">
     
 
     <!-- Google Analytics -->
@@ -380,8 +382,8 @@ title="Print to PDF"
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#retrieval-definition">
-   Retrieval definition
+  <a class="reference internal nav-link" href="#retrieval-definitions">
+   Retrieval definitions
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
@@ -404,27 +406,42 @@ title="Print to PDF"
      SST retrieval algorithm
     </a>
    </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#derivation-of-regression-coefficients">
+   Derivation of regression coefficients
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#performance-analysis">
+   Performance analysis
+  </a>
+  <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#derivation-of-regression-coefficients">
-     Derivation of regression coefficients
+    <a class="reference internal nav-link" href="#analysis-functions">
+     Analysis functions
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#performance-analysis">
-     Performance analysis
+    <a class="reference internal nav-link" href="#retrieval-of-sst">
+     Retrieval of SST
     </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#analysis-functions">
-       Analysis functions
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#retrievals">
-       Retrievals
-      </a>
-     </li>
-    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#overall-performance">
+     Overall performance
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#scatter-plot-results">
+     Scatter plot results
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#gridded-statistics">
+     Gridded statistics
+    </a>
    </li>
   </ul>
  </li>
@@ -470,8 +487,8 @@ title="Print to PDF"
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#retrieval-definition">
-   Retrieval definition
+  <a class="reference internal nav-link" href="#retrieval-definitions">
+   Retrieval definitions
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
@@ -494,27 +511,42 @@ title="Print to PDF"
      SST retrieval algorithm
     </a>
    </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#derivation-of-regression-coefficients">
+   Derivation of regression coefficients
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#performance-analysis">
+   Performance analysis
+  </a>
+  <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#derivation-of-regression-coefficients">
-     Derivation of regression coefficients
+    <a class="reference internal nav-link" href="#analysis-functions">
+     Analysis functions
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#performance-analysis">
-     Performance analysis
+    <a class="reference internal nav-link" href="#retrieval-of-sst">
+     Retrieval of SST
     </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#analysis-functions">
-       Analysis functions
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#retrievals">
-       Retrievals
-      </a>
-     </li>
-    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#overall-performance">
+     Overall performance
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#scatter-plot-results">
+     Scatter plot results
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#gridded-statistics">
+     Gridded statistics
+    </a>
    </li>
   </ul>
  </li>
@@ -529,23 +561,27 @@ title="Print to PDF"
               <div>
                 
   <section class="tex2jax_ignore mathjax_ignore" id="sst-retrieval-algorithm-v-0">
-<h1>SST retrieval algorithm v 0<a class="headerlink" href="#sst-retrieval-algorithm-v-0" title="Permalink to this headline">#</a></h1>
+<h1>SST retrieval algorithm v 0<a class="headerlink" href="#sst-retrieval-algorithm-v-0" title="Permalink to this heading">#</a></h1>
 <section id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">#</a></h2>
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">#</a></h2>
 <p>The retrieval algorithm is based on the regression retrieval algorithm developed in Alerskans et al., (2020). It consists of a global SST retrieval algorithm, which uses brightness temperatures and anciliary, such as wind speed. The wind speed information can be obtained from either the integrated OEM retrieval or anciliary data. In addition, an optional wind speed retriveal algorithm, based on the 2-stage retrieval algorithm developed in Alerskans et al., (2020) is included here.</p>
 <p>As a first version, the algorithm is developed and regression coefficients are derived using data from the ESA CCI Multisensor Matchup Dataset (MMD), which includes PMW observations from AMSR2 and anciliary data from the ERA5 reanalysis. A CIMR-like channel combination is used, following Nielsen-Englyst et al., (2021), which includes the following channels; 6.9, 10.6, 18.7 and 36.5 GHz (vertical and horizontal polarizations).</p>
 </section>
 <section id="imports-and-parameter-settings">
-<h2>Imports and parameter settings<a class="headerlink" href="#imports-and-parameter-settings" title="Permalink to this headline">#</a></h2>
+<h2>Imports and parameter settings<a class="headerlink" href="#imports-and-parameter-settings" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Library imports</span>
+<span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="nn">ccrs</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">netCDF4</span> <span class="k">as</span> <span class="nn">nc</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.ticker</span> <span class="k">as</span> <span class="nn">mticker</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1</span> <span class="kn">import</span> <span class="n">make_axes_locatable</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">scipy.io</span>
 <span class="kn">import</span> <span class="nn">sklearn</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 <span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">linear_model</span>
@@ -589,7 +625,7 @@ title="Print to PDF"
 </div>
 </section>
 <section id="read-input-data">
-<h2>Read input data<a class="headerlink" href="#read-input-data" title="Permalink to this headline">#</a></h2>
+<h2>Read input data<a class="headerlink" href="#read-input-data" title="Permalink to this heading">#</a></h2>
 <p>Read input data for the derivation of coefficients and subsequent retrieval of SST (and wind speed, if desired)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -907,7 +943,7 @@ title="Print to PDF"
 </div></div></div>
 </div>
 <section id="data-pre-processing">
-<h3>Data pre-processing<a class="headerlink" href="#data-pre-processing" title="Permalink to this headline">#</a></h3>
+<h3>Data pre-processing<a class="headerlink" href="#data-pre-processing" title="Permalink to this heading">#</a></h3>
 <p>Pre-processing of data includes:</p>
 <ul class="simple">
 <li><p>Quality control (currently only checks for NaNs as an initial QC already has been perfromed)</p></li>
@@ -934,8 +970,8 @@ title="Print to PDF"
 </div>
 </section>
 </section>
-<section id="retrieval-definition">
-<h2>Retrieval definition<a class="headerlink" href="#retrieval-definition" title="Permalink to this headline">#</a></h2>
+<section id="retrieval-definitions">
+<h2>Retrieval definitions<a class="headerlink" href="#retrieval-definitions" title="Permalink to this heading">#</a></h2>
 <p>The main algorithm is a model for retrieving SST, which is based on the regression model developed in Alerskans et al., (2020). It uses CIMR brightness temperatures (<span class="math notranslate nohighlight">\(T_B\)</span>), Earth incidence angle (<span class="math notranslate nohighlight">\(\theta_{EIA}\)</span>), wind speed (WS) and the relative angle between wind direction and satellite azimuth angle (<span class="math notranslate nohighlight">\(\phi_{rel}\)</span>)</p>
 <div class="math notranslate nohighlight">
 \[SST_{r} = c_{0} + \sum_{i=1}^{N_{ch}} (c_{1i} t_{i} + c_{2i} t^{2}_{i} ) + c_{3} \theta + c_{4} WS + \sum_{j=1}^{2} [c_{5j} \cos (j \phi_{rel}) + c_{6j} \sin (j \phi_{rel}) ],\]</div>
@@ -947,7 +983,7 @@ title="Print to PDF"
 <div class="math notranslate nohighlight">
 \[WS_{r} = b_{0} + \sum_{i=1}^{N_{ch}} (b_{1i} t_{i} + b_{2i} t^{2}_{i} ) + b_{3} \theta.\]</div>
 <section id="general-functions">
-<h3>General functions<a class="headerlink" href="#general-functions" title="Permalink to this headline">#</a></h3>
+<h3>General functions<a class="headerlink" href="#general-functions" title="Permalink to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">regression</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
@@ -1282,7 +1318,7 @@ title="Print to PDF"
 </div>
 </section>
 <section id="stage-1-wind-speed-retrieval-algorithm">
-<h3>Stage 1 wind speed retrieval algorithm<a class="headerlink" href="#stage-1-wind-speed-retrieval-algorithm" title="Permalink to this headline">#</a></h3>
+<h3>Stage 1 wind speed retrieval algorithm<a class="headerlink" href="#stage-1-wind-speed-retrieval-algorithm" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Derivation of 1st-stage wind speed regression coefficients</p></li>
 <li><p>Retrieval of 1st-stage wind speed</p></li>
@@ -1354,7 +1390,7 @@ title="Print to PDF"
 </div>
 </section>
 <section id="stage-2-wind-speed-retrieval-algorithm">
-<h3>Stage 2 wind speed retrieval algorithm<a class="headerlink" href="#stage-2-wind-speed-retrieval-algorithm" title="Permalink to this headline">#</a></h3>
+<h3>Stage 2 wind speed retrieval algorithm<a class="headerlink" href="#stage-2-wind-speed-retrieval-algorithm" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Derivation of 2nd-stage wind speed regression coefficients</p></li>
 <li><p>Retrieval of 2nd-stage wind speed</p></li>
@@ -1521,7 +1557,7 @@ title="Print to PDF"
 </div>
 </section>
 <section id="sst-retrieval-algorithm">
-<h3>SST retrieval algorithm<a class="headerlink" href="#sst-retrieval-algorithm" title="Permalink to this headline">#</a></h3>
+<h3>SST retrieval algorithm<a class="headerlink" href="#sst-retrieval-algorithm" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Derivation of SST regression coefficients</p></li>
 <li><p>Retrieval of SST</p></li>
@@ -1595,16 +1631,17 @@ title="Print to PDF"
 </div>
 </div>
 </section>
+</section>
 <section id="derivation-of-regression-coefficients">
-<h3>Derivation of regression coefficients<a class="headerlink" href="#derivation-of-regression-coefficients" title="Permalink to this headline">#</a></h3>
+<h2>Derivation of regression coefficients<a class="headerlink" href="#derivation-of-regression-coefficients" title="Permalink to this heading">#</a></h2>
 <p>Here, regression coefficients for the SST retrieval algorithm is derived.
 In addition, if the option is set to use retrieved wind speed in the SST algorithm, the 1st- and 2nd-stage wind speed coefficients are retrieved here as well.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Settings</span>
-<span class="n">derive_stage_1_ws_coeffs</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="n">derive_stage_2_ws_coeffs</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="n">derive_global_sst_coeffs</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">derive_stage_1_ws_coeffs</span> <span class="o">=</span> <span class="kc">False</span><span class="c1">#True</span>
+<span class="n">derive_stage_2_ws_coeffs</span> <span class="o">=</span> <span class="kc">False</span><span class="c1">#True</span>
+<span class="n">derive_global_sst_coeffs</span> <span class="o">=</span> <span class="kc">False</span><span class="c1">#True</span>
 
 
 <span class="k">if</span> <span class="n">ws_input</span> <span class="o">==</span> <span class="s2">&quot;retrieval&quot;</span><span class="p">:</span>
@@ -1648,28 +1685,22 @@ In addition, if the option is set to use retrieved wind speed in the SST algorit
 <span class="k">if</span> <span class="n">derive_global_sst_coeffs</span><span class="p">:</span>
     <span class="n">calculate_coeffs_global_sst</span><span class="p">(</span><span class="n">data_train</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
 
-<span class="c1">## Retrieve SSTr</span>
-<span class="c1">#SSTr = retrieve_global_sst(data_train,channel_comb)</span>
-<span class="c1">#data_train[&#39;SSTr_global&#39;] = SSTr</span>
+<span class="c1"># Retrieve SSTr</span>
+<span class="n">SSTr</span> <span class="o">=</span> <span class="n">retrieve_global_sst</span><span class="p">(</span><span class="n">data_train</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
+<span class="n">data_train</span><span class="p">[</span><span class="s1">&#39;SSTr_global&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SSTr</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;...Done!&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculate WS stage 1 coefficients
-</pre></div>
-</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieve stage 1 WS
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculate WS stage 2 coefficients
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieve stage 2 WS
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculate SST global coefficients
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieve global SST
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>...Done!
@@ -1679,10 +1710,10 @@ In addition, if the option is set to use retrieved wind speed in the SST algorit
 </div>
 </section>
 <section id="performance-analysis">
-<h3>Performance analysis<a class="headerlink" href="#performance-analysis" title="Permalink to this headline">#</a></h3>
+<h2>Performance analysis<a class="headerlink" href="#performance-analysis" title="Permalink to this heading">#</a></h2>
 <p>Use the test dataset to retrieve SST and evaluate the performance of the retrieval algorithm.</p>
 <section id="analysis-functions">
-<h4>Analysis functions<a class="headerlink" href="#analysis-functions" title="Permalink to this headline">#</a></h4>
+<h3>Analysis functions<a class="headerlink" href="#analysis-functions" title="Permalink to this heading">#</a></h3>
 <p>Define functions used for evaluating the performance of the algorithm.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1754,9 +1785,163 @@ In addition, if the option is set to use retrieved wind speed in the SST algorit
 </div>
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">gridded_statistics</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">Nmin</span><span class="p">,</span><span class="n">grid_size</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function for calculating statistics and the number of matchups in each latitude grid cell.</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    lat: 1D float array</span>
+<span class="sd">        In situ latitude</span>
+<span class="sd">    lon: 1D float array</span>
+<span class="sd">        In situ longitude</span>
+<span class="sd">    Nmin: int</span>
+<span class="sd">        Minimum number of matchuos required to calculate statistics in a grid cell</span>
+<span class="sd">    grid_size: int</span>
+<span class="sd">        Size of the grid</span>
+<span class="sd">    verbose: logical</span>
+<span class="sd">        Logical for verbosity of function</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    lat_grid: 2D float array</span>
+<span class="sd">        Gridded latitudes</span>
+<span class="sd">    lon_grid: 2D float array</span>
+<span class="sd">        Gridded longitudes</span>
+<span class="sd">    stat: 2D structured array</span>
+<span class="sd">        Gridded statistics (N, mean, std, RMSE)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Read in the land/sea/ice mask (matlab file)</span>
+    <span class="n">maskfile</span> <span class="o">=</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="s1">&#39;/Land_Ice_Water_Mask_dgrid_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">grid_size</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.mat&#39;</span>
+
+    <span class="c1"># Use scipy.io.loadmat to load the file</span>
+    <span class="n">data_dict</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="n">maskfile</span><span class="p">)</span>
+    <span class="n">land_sea_ice_mask</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;water_mask&#39;</span><span class="p">]</span>
+    <span class="n">lat_grid</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;latm&#39;</span><span class="p">]</span>
+    <span class="n">lon_grid</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;lonm&#39;</span><span class="p">]</span>
+    <span class="n">Nlat</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;Nlat&#39;</span><span class="p">])</span>
+    <span class="n">Nlon</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;Nlon&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Create structured data type</span>
+    <span class="n">var_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="s1">&#39;rmse&#39;</span><span class="p">]</span>
+    <span class="n">var_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">]</span>
+    <span class="n">array_type_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">var_names</span><span class="p">)):</span>
+        <span class="n">array_type_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">var_names</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">var_types</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+
+    <span class="c1"># Initialize structured array</span>
+    <span class="n">stat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">Nlat</span><span class="p">,</span><span class="n">Nlon</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">array_type_list</span><span class="p">)</span>
+    <span class="n">stat</span><span class="p">[</span><span class="s1">&#39;N&#39;</span><span class="p">][:,:]</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">stat</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">][:,:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">stat</span><span class="p">[</span><span class="s1">&#39;std&#39;</span><span class="p">][:,:]</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="n">stat</span><span class="p">[</span><span class="s1">&#39;rmse&#39;</span><span class="p">][:,:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Calculate the gridded statistics: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">grid_size</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;x&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">grid_size</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nlon</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nlat</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Calculating statistics. Longitude: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;  Latitude: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">))</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">land_sea_ice_mask</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="n">lat</span> <span class="o">&lt;</span>  <span class="p">(</span><span class="n">lat_grid</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">grid_size</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="p">)</span> <span class="o">&amp;</span> \
+                         <span class="p">(</span><span class="n">lat</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">lat_grid</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">grid_size</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="p">)</span> <span class="o">&amp;</span> \
+                         <span class="p">(</span><span class="n">lon</span> <span class="o">&lt;</span>  <span class="p">(</span><span class="n">lon_grid</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">grid_size</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="p">)</span> <span class="o">&amp;</span> \
+                         <span class="p">(</span><span class="n">lon</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">lon_grid</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">grid_size</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="p">)</span> <span class="p">)</span>
+                <span class="c1"># Check if wwe have enough matchups </span>
+                <span class="k">if</span> <span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">Nmin</span> <span class="p">):</span>
+                    <span class="n">stat</span><span class="p">[</span><span class="s1">&#39;N&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask</span> <span class="o">==</span> <span class="kc">True</span><span class="p">))</span>
+                    <span class="n">stat</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+                    <span class="n">stat</span><span class="p">[</span><span class="s1">&#39;std&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+                    <span class="n">stat</span><span class="p">[</span><span class="s1">&#39;rmse&#39;</span><span class="p">][</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">lat_grid</span><span class="p">,</span> <span class="n">lon_grid</span><span class="p">,</span> <span class="n">stat</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_gridded_statistics</span><span class="p">(</span><span class="n">lat_grid</span><span class="p">,</span><span class="n">lon_grid</span><span class="p">,</span><span class="n">stat</span><span class="p">,</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Funciton for plotting gridded statistics:</span>
+<span class="sd">    + No. of matchups, N</span>
+<span class="sd">    + Mean Error</span>
+<span class="sd">    + Standard deviation</span>
+<span class="sd">    + RMSE</span>
+<span class="sd">    </span>
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    lat_grid: 2D float array</span>
+<span class="sd">        Gridded latitudes</span>
+<span class="sd">    lon_grid: 2D float array</span>
+<span class="sd">        Gridded longitudes</span>
+<span class="sd">    stat: 2D structured array</span>
+<span class="sd">        Gridded statistics (N, mean, std, RMSE)</span>
+<span class="sd">    parameters: dictionary</span>
+<span class="sd">        Dictionary with plot options</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    [figure]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Read values form dictionary</span>
+    <span class="n">cb_min</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;cb_min&#39;</span><span class="p">]</span>
+    <span class="n">cb_max</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;cb_max&#39;</span><span class="p">]</span>
+    <span class="n">cb_step</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;cb_step&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Plot settings</span>
+    <span class="n">Lon_max</span> <span class="o">=</span> <span class="mf">180.</span>
+    <span class="n">Lon_min</span> <span class="o">=</span> <span class="o">-</span><span class="mf">180.</span>
+    <span class="n">Lon_step</span> <span class="o">=</span> <span class="mi">60</span>
+    <span class="n">Lat_max</span> <span class="o">=</span> <span class="mf">90.</span>
+    <span class="n">Lat_min</span> <span class="o">=</span> <span class="o">-</span><span class="mf">90.</span>
+    <span class="n">Lat_step</span> <span class="o">=</span> <span class="mi">30</span>
+
+    <span class="n">stat_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="s1">&#39;rmse&#39;</span><span class="p">]</span>   <span class="c1"># Statistics variables</span>
+    <span class="n">cmap_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">seismic</span><span class="p">,</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">YlOrRd</span><span class="p">,</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">YlOrRd</span><span class="p">]</span>
+    <span class="n">cb_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;No. of matchups&#39;</span><span class="p">,</span><span class="s1">&#39;Mean difference ($^{\circ}$C)&#39;</span><span class="p">,</span><span class="s1">&#39;Standard deviation ($^{\circ}$C)&#39;</span><span class="p">,</span><span class="s1">&#39;RMSE ($^{\circ}$C)&#39;</span><span class="p">]</span>
+    <span class="n">cb_ticks</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">cb_min</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cb_max</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">cb_step</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cb_step</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">cb_min</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cb_max</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">cb_step</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cb_step</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">cb_min</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">cb_max</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="n">cb_step</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">cb_step</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">cb_min</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">cb_max</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">+</span><span class="n">cb_step</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">cb_step</span><span class="p">[</span><span class="mi">3</span><span class="p">])]</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">stat_var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stat_vars</span><span class="p">):</span>
+        <span class="c1">#fig, ax = plt.subplots(figsize=[14, 7], projection=ccrs.PlateCarree())</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">14</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">())</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">lon_grid</span><span class="p">,</span><span class="n">lat_grid</span><span class="p">,</span><span class="n">stat</span><span class="p">[</span><span class="n">stat_var</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">(),</span>
+                           <span class="n">cmap</span><span class="o">=</span><span class="n">cmap_type</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">vmin</span><span class="o">=</span><span class="n">cb_min</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">vmax</span><span class="o">=</span><span class="n">cb_max</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="c1">#,latlon=True)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">coastlines</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_extent</span><span class="p">([</span><span class="n">Lon_min</span><span class="p">,</span> <span class="n">Lon_max</span><span class="p">,</span> <span class="n">Lat_min</span><span class="p">,</span> <span class="n">Lat_max</span><span class="p">])</span>
+        <span class="n">gl</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">gridlines</span><span class="p">(</span><span class="n">crs</span><span class="o">=</span><span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">(),</span> <span class="n">draw_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">top_labels</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">right_labels</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">xlocator</span> <span class="o">=</span> <span class="n">mticker</span><span class="o">.</span><span class="n">FixedLocator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">Lon_min</span><span class="p">,</span><span class="n">Lon_max</span><span class="o">+</span><span class="n">Lon_step</span><span class="p">,</span><span class="n">Lon_step</span><span class="p">))</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">ylocator</span> <span class="o">=</span> <span class="n">mticker</span><span class="o">.</span><span class="n">FixedLocator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">Lat_min</span><span class="p">,</span><span class="n">Lat_max</span><span class="o">+</span><span class="n">Lon_step</span><span class="p">,</span><span class="n">Lat_step</span><span class="p">))</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">xlabel_style</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">14</span><span class="p">}</span>
+        <span class="n">gl</span><span class="o">.</span><span class="n">ylabel_style</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">14</span><span class="p">}</span>
+        
+        <span class="c1"># Colorbar</span>
+        <span class="n">divider</span> <span class="o">=</span> <span class="n">make_axes_locatable</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+        <span class="n">cax</span> <span class="o">=</span> <span class="n">divider</span><span class="o">.</span><span class="n">append_axes</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;3%&quot;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="s2">&quot;2%&quot;</span><span class="p">,</span> <span class="n">axes_class</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">Axes</span><span class="p">)</span>
+        <span class="n">cb</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">)</span>
+        <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">cb_labels</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">labelpad</span><span class="o">=</span><span class="mf">20.0</span><span class="p">)</span>
+        <span class="n">cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">cb_min</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">cb_max</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">cb_ticks</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+        
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
 </section>
-<section id="retrievals">
-<h4>Retrievals<a class="headerlink" href="#retrievals" title="Permalink to this headline">#</a></h4>
+<section id="retrieval-of-sst">
+<h3>Retrieval of SST<a class="headerlink" href="#retrieval-of-sst" title="Permalink to this heading">#</a></h3>
 <p>Retrieve wind speed (if this option is set) and SST</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1803,6 +1988,10 @@ In addition, if the option is set to use retrieved wind speed in the SST algorit
 </div>
 </div>
 </div>
+</section>
+<section id="overall-performance">
+<h3>Overall performance<a class="headerlink" href="#overall-performance" title="Permalink to this heading">#</a></h3>
+<p>The overall performance of the SST retrieval algorithm for the test dataset, with respect to mean difference/bias, mean absolute error (MAE), standard deviation (st.d) and root mean square error (RMSE) is shown below .</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">TEST DATASET - Global SST retrieval&quot;</span><span class="p">)</span>
@@ -1824,6 +2013,10 @@ RMSE: 0.748 K.
 </div>
 </div>
 </div>
+</section>
+<section id="scatter-plot-results">
+<h3>Scatter plot results<a class="headerlink" href="#scatter-plot-results" title="Permalink to this heading">#</a></h3>
+<p>The retrieved PMW SST is plotted against the drifter in situ SST.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot scatter plot of retrieved vs in situ SST</span>
@@ -1835,10 +2028,49 @@ RMSE: 0.748 K.
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/ATBD_SST_retrieval_algorithm_35_0.png" src="_images/ATBD_SST_retrieval_algorithm_35_0.png" />
+<img alt="_images/ATBD_SST_retrieval_algorithm_39_0.png" src="_images/ATBD_SST_retrieval_algorithm_39_0.png" />
 </div>
 </div>
 </section>
+<section id="gridded-statistics">
+<h3>Gridded statistics<a class="headerlink" href="#gridded-statistics" title="Permalink to this heading">#</a></h3>
+<p>The geographical distribution of mean difference/bias, MAE, Std. and RMSE of the SST bias (retrieved PMW SST minus in situ SST) are shown below. The statistics have been gridded using a grid size of 5<span class="math notranslate nohighlight">\(^{\circ}\)</span>, with a minimum of 20 matchups per grid cell.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate gridded statistics</span>
+<span class="n">Nmin</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">grid_size</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data_test</span><span class="p">[</span><span class="s1">&#39;insitu_sst&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">-</span> <span class="n">data_test</span><span class="p">[</span><span class="s1">&#39;SSTr_global&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">lon</span> <span class="o">=</span> <span class="n">data_test</span><span class="p">[</span><span class="s1">&#39;lon&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">lat</span> <span class="o">=</span> <span class="n">data_test</span><span class="p">[</span><span class="s1">&#39;lat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">lat_grid</span><span class="p">,</span> <span class="n">lon_grid</span><span class="p">,</span> <span class="n">stat</span> <span class="o">=</span> <span class="n">gridded_statistics</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">Nmin</span><span class="p">,</span><span class="n">grid_size</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculate the gridded statistics: 5x5
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the gridded statistics</span>
+<span class="n">plot_parameters</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">plot_parameters</span><span class="p">[</span><span class="s1">&#39;cb_min&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>       <span class="c1"># Minimum value on colorbar</span>
+<span class="n">plot_parameters</span><span class="p">[</span><span class="s1">&#39;cb_max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2000</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mf">1.6</span><span class="p">]</span>  <span class="c1"># Maximum value on colorbar</span>
+<span class="n">plot_parameters</span><span class="p">[</span><span class="s1">&#39;cb_step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]</span> <span class="c1"># Step value on colorbar</span>
+<span class="n">plot_gridded_statistics</span><span class="p">(</span><span class="n">lat_grid</span><span class="p">,</span><span class="n">lon_grid</span><span class="p">,</span><span class="n">stat</span><span class="p">,</span><span class="n">plot_parameters</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/ATBD_SST_retrieval_algorithm_42_0.png" src="_images/ATBD_SST_retrieval_algorithm_42_0.png" />
+<img alt="_images/ATBD_SST_retrieval_algorithm_42_1.png" src="_images/ATBD_SST_retrieval_algorithm_42_1.png" />
+<img alt="_images/ATBD_SST_retrieval_algorithm_42_2.png" src="_images/ATBD_SST_retrieval_algorithm_42_2.png" />
+<img alt="_images/ATBD_SST_retrieval_algorithm_42_3.png" src="_images/ATBD_SST_retrieval_algorithm_42_3.png" />
+</div>
+</div>
 </section>
 </section>
 </section>

@@ -14,12 +14,16 @@
 
 
 # Library imports
+import cartopy.crs as ccrs
 import datetime
 import netCDF4 as nc
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 import pandas as pd
 import os
+import scipy.io
 import sklearn
 from sklearn.model_selection import train_test_split
 from sklearn import linear_model
@@ -112,7 +116,7 @@ data_train.reset_index(inplace=True)
 data_test.reset_index(inplace=True)
 
 
-# ## Retrieval definition
+# ## Retrieval definitions
 # The main algorithm is a model for retrieving SST, which is based on the regression model developed in Alerskans et al., (2020). It uses CIMR brightness temperatures ($T_B$), Earth incidence angle ($\theta_{EIA}$), wind speed (WS) and the relative angle between wind direction and satellite azimuth angle ($\phi_{rel}$)
 # 
 # $$SST_{r} = c_{0} + \sum_{i=1}^{N_{ch}} (c_{1i} t_{i} + c_{2i} t^{2}_{i} ) + c_{3} \theta + c_{4} WS + \sum_{j=1}^{2} [c_{5j} \cos (j \phi_{rel}) + c_{6j} \sin (j \phi_{rel}) ],$$
@@ -754,7 +758,7 @@ def retrieve_global_sst(data,channel_comb):
     return SSTr
 
 
-# ### Derivation of regression coefficients
+# ## Derivation of regression coefficients
 # Here, regression coefficients for the SST retrieval algorithm is derived.
 # In addition, if the option is set to use retrieved wind speed in the SST algorithm, the 1st- and 2nd-stage wind speed coefficients are retrieved here as well.
 
@@ -762,9 +766,9 @@ def retrieve_global_sst(data,channel_comb):
 
 
 # Settings
-derive_stage_1_ws_coeffs = True
-derive_stage_2_ws_coeffs = True
-derive_global_sst_coeffs = True
+derive_stage_1_ws_coeffs = False#True
+derive_stage_2_ws_coeffs = False#True
+derive_global_sst_coeffs = False#True
 
 
 if ws_input == "retrieval":
@@ -808,17 +812,17 @@ elif ws_input == "nwp":
 if derive_global_sst_coeffs:
     calculate_coeffs_global_sst(data_train,channel_comb)
 
-## Retrieve SSTr
-#SSTr = retrieve_global_sst(data_train,channel_comb)
-#data_train['SSTr_global'] = SSTr
+# Retrieve SSTr
+SSTr = retrieve_global_sst(data_train,channel_comb)
+data_train['SSTr_global'] = SSTr
 
 print("...Done!")
 
 
-# ### Performance analysis
+# ## Performance analysis
 # Use the test dataset to retrieve SST and evaluate the performance of the retrieval algorithm.
 
-# #### Analysis functions
+# ### Analysis functions
 # Define functions used for evaluating the performance of the algorithm.
 
 # In[18]:
@@ -889,10 +893,162 @@ def plot_scatter_data(data,pmin_sst,pmax_sst,pdsst):
     plt.show()
 
 
-# #### Retrievals
+# In[20]:
+
+
+def gridded_statistics(lat,lon,y,Nmin,grid_size,verbose=False):
+    """
+    Function for calculating statistics and the number of matchups in each latitude grid cell.
+    
+    Arguments
+    ---------
+    lat: 1D float array
+        In situ latitude
+    lon: 1D float array
+        In situ longitude
+    Nmin: int
+        Minimum number of matchuos required to calculate statistics in a grid cell
+    grid_size: int
+        Size of the grid
+    verbose: logical
+        Logical for verbosity of function
+    
+    Returns
+    -------
+    lat_grid: 2D float array
+        Gridded latitudes
+    lon_grid: 2D float array
+        Gridded longitudes
+    stat: 2D structured array
+        Gridded statistics (N, mean, std, RMSE)
+    """
+
+    # Read in the land/sea/ice mask (matlab file)
+    maskfile = DATA_PATH + '/Land_Ice_Water_Mask_dgrid_' + str(grid_size) + '.mat'
+
+    # Use scipy.io.loadmat to load the file
+    data_dict = scipy.io.loadmat(maskfile)
+    land_sea_ice_mask = data_dict['water_mask']
+    lat_grid = data_dict['latm']
+    lon_grid = data_dict['lonm']
+    Nlat = int(data_dict['Nlat'])
+    Nlon = int(data_dict['Nlon'])
+
+    # Create structured data type
+    var_names = ['N', 'mean', 'std', 'rmse']
+    var_types = ['f8', 'f8', 'f8', 'f8']
+    array_type_list = []
+    for i in range(len(var_names)):
+        array_type_list.append((var_names[i],var_types[i]))
+
+    # Initialize structured array
+    stat = np.zeros((Nlat,Nlon),dtype=array_type_list)
+    stat['N'][:,:]    = np.nan
+    stat['mean'][:,:] = np.nan
+    stat['std'][:,:]  = np.nan
+    stat['rmse'][:,:] = np.nan
+    
+    print('Calculate the gridded statistics: ' + str(grid_size) + 'x' + str(grid_size))
+
+    for i in range(Nlon):
+        for j in range(Nlat):
+            if verbose:
+                print('Calculating statistics. Longitude: ' + str(i) + '  Latitude: ' + str(j))
+            if (land_sea_ice_mask[i,j] > 0):
+                mask = ( (lat <  (lat_grid[i,j] + grid_size/2) ) & \
+                         (lat >= (lat_grid[i,j] - grid_size/2) ) & \
+                         (lon <  (lon_grid[i,j] + grid_size/2) ) & \
+                         (lon >= (lon_grid[i,j] - grid_size/2) ) )
+                # Check if wwe have enough matchups 
+                if ( np.sum(mask == True) > Nmin ):
+                    stat['N'][j,i]    = int(np.sum(mask == True))
+                    stat['mean'][j,i] = np.nanmean(y[mask])
+                    stat['std'][j,i]  = np.nanstd(y[mask])
+                    stat['rmse'][j,i] = np.sqrt(np.nanmean(y[mask]**2))
+
+    return lat_grid, lon_grid, stat
+
+
+# In[21]:
+
+
+def plot_gridded_statistics(lat_grid,lon_grid,stat,parameters):
+    """
+    Funciton for plotting gridded statistics:
+    + No. of matchups, N
+    + Mean Error
+    + Standard deviation
+    + RMSE
+    
+    Arguments
+    ---------
+    lat_grid: 2D float array
+        Gridded latitudes
+    lon_grid: 2D float array
+        Gridded longitudes
+    stat: 2D structured array
+        Gridded statistics (N, mean, std, RMSE)
+    parameters: dictionary
+        Dictionary with plot options
+        
+    Returns
+    -------
+    [figure]
+    """
+
+    # Read values form dictionary
+    cb_min = parameters['cb_min']
+    cb_max = parameters['cb_max']
+    cb_step = parameters['cb_step']
+
+    # Plot settings
+    Lon_max = 180.
+    Lon_min = -180.
+    Lon_step = 60
+    Lat_max = 90.
+    Lat_min = -90.
+    Lat_step = 30
+
+    stat_vars = ['N', 'mean', 'std', 'rmse']   # Statistics variables
+    cmap_type = [plt.cm.viridis,plt.cm.seismic,plt.cm.YlOrRd,plt.cm.YlOrRd]
+    cb_labels = ['No. of matchups','Mean difference ($^{\circ}$C)','Standard deviation ($^{\circ}$C)','RMSE ($^{\circ}$C)']
+    cb_ticks = [np.arange(cb_min[0], cb_max[0]+cb_step[0], cb_step[0]), \
+                np.arange(cb_min[1], cb_max[1]+cb_step[1], cb_step[1]), \
+                np.arange(cb_min[2], cb_max[2]+cb_step[2], cb_step[2]), \
+                np.arange(cb_min[3], cb_max[3]+cb_step[3], cb_step[3])]
+
+    for i,stat_var in enumerate(stat_vars):
+        #fig, ax = plt.subplots(figsize=[14, 7], projection=ccrs.PlateCarree())
+        fig = plt.figure(figsize=[14,7])
+        ax = fig.add_subplot(1,1,1, projection=ccrs.PlateCarree())
+        im = ax.pcolormesh(lon_grid,lat_grid,stat[stat_var].T, transform=ccrs.PlateCarree(),
+                           cmap=cmap_type[i], vmin=cb_min[i], vmax=cb_max[i])#,latlon=True)
+        ax.coastlines()
+        ax.set_extent([Lon_min, Lon_max, Lat_min, Lat_max])
+        gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True, linewidth=1, color='k', alpha=0.5, linestyle=':')
+        gl.top_labels = False
+        gl.right_labels = False
+        gl.xlocator = mticker.FixedLocator(np.arange(Lon_min,Lon_max+Lon_step,Lon_step))
+        gl.ylocator = mticker.FixedLocator(np.arange(Lat_min,Lat_max+Lon_step,Lat_step))
+        gl.xlabel_style = {'size': 14}
+        gl.ylabel_style = {'size': 14}
+        
+        # Colorbar
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="3%", pad="2%", axes_class=plt.Axes)
+        cb = fig.colorbar(im, cax=cax)
+        cb.set_label(label=cb_labels[i], fontsize=16, labelpad=20.0)
+        cb.ax.set_ylim(cb_min[i], cb_max[i])
+        cb.ax.set_yticks(cb_ticks[i])
+        cb.ax.tick_params(labelsize=14)
+        
+        plt.show()
+
+
+# ### Retrieval of SST
 # Retrieve wind speed (if this option is set) and SST
 
-# In[20]:
+# In[22]:
 
 
 # WS data
@@ -915,7 +1071,7 @@ SSTr = retrieve_global_sst(data_test,channel_comb)
 data_test['SSTr_global'] = SSTr
 
 
-# In[21]:
+# In[23]:
 
 
 # Only use the common data, i.e. remove any NaNs
@@ -924,7 +1080,10 @@ data_test = data_test.loc[good_data,:]
 data_test.reset_index(inplace=True,drop=True)
 
 
-# In[22]:
+# ### Overall performance
+# The overall performance of the SST retrieval algorithm for the test dataset, with respect to mean difference/bias, mean absolute error (MAE), standard deviation (st.d) and root mean square error (RMSE) is shown below .
+
+# In[24]:
 
 
 print("\nTEST DATASET - Global SST retrieval")
@@ -932,7 +1091,10 @@ print("======================================")
 print_stats(data_test,data_test['SSTr_global'])
 
 
-# In[23]:
+# ### Scatter plot results
+# The retrieved PMW SST is plotted against the drifter in situ SST.
+
+# In[25]:
 
 
 # Plot scatter plot of retrieved vs in situ SST
@@ -940,6 +1102,32 @@ pmin_sst = -5
 pmax_sst = 45
 pdsst = 5
 plot_scatter_data(data_test,pmin_sst,pmax_sst,pdsst)
+
+
+# ### Gridded statistics
+# The geographical distribution of mean difference/bias, MAE, Std. and RMSE of the SST bias (retrieved PMW SST minus in situ SST) are shown below. The statistics have been gridded using a grid size of 5$^{\circ}$, with a minimum of 20 matchups per grid cell.
+
+# In[26]:
+
+
+# Calculate gridded statistics
+Nmin = 20
+grid_size = 5
+y = data_test['insitu_sst'].values - data_test['SSTr_global'].values
+lon = data_test['lon'].values
+lat = data_test['lat'].values
+lat_grid, lon_grid, stat = gridded_statistics(lat,lon,y,Nmin,grid_size,verbose=False)
+
+
+# In[27]:
+
+
+# Plot the gridded statistics
+plot_parameters = {}
+plot_parameters['cb_min'] = [0, -1., 0., 0]       # Minimum value on colorbar
+plot_parameters['cb_max'] = [2000, 1., 1.4, 1.6]  # Maximum value on colorbar
+plot_parameters['cb_step'] = [200, 0.2, 0.2, 0.2] # Step value on colorbar
+plot_gridded_statistics(lat_grid,lon_grid,stat,plot_parameters)
 
 
 # In[ ]:

@@ -25,7 +25,6 @@ sphinx:
     bibtex_reference_style: author_year
   extra_extensions:
     - sphinxcontrib.mermaid
-    - sphinxcontrib.blockdiag
 
 # Information about where the book exists on the web
 repository:

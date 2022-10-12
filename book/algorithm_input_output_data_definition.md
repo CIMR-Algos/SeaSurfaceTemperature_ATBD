@@ -14,7 +14,7 @@ The processing of L2 SST requires both TB observations and ancillary data. Addit
 | L1B TB L-band | L1B Brightness Temperatures at 1.4 GHz (V and H polarization)| Full swath or section of it (Nscans, Npos) |
 | L1B TB C-band | L1B Brightness Temperatures at 6.9 GHz (V and H polarization)| Full swath or section of it (Nscans, Npos) |
 | L1B TB X-band | L1B Brightness Temperatures at 10.6 GHz (V and H polarization)| Full swath or section of it (Nscans, Npos) |
-| L1B TB K-band | L1B Brightness Temperatures at 18.7 GHz (V and H polarization)| Full swath or section of it (Nscans, Npos) |
+| L1B TB Ku-band | L1B Brightness Temperatures at 18.7 GHz (V and H polarization)| Full swath or section of it (Nscans, Npos) |
 | L1B TB Ka-band | L1B Brightness Temperatures at 36.5 GHz (V and H polarization)| Full swath or section of it (Nscans, Npos) |
 
 
@@ -34,4 +34,4 @@ Data as a complement to the retrieval, e.g. for flagging:
 Data that is necessary for the retrieval:
 - Earth incidence angle (satellite zenith angle)
 - Satellite azimuth angle
-- Reanalysis surface winds
+- Ocean surface winds

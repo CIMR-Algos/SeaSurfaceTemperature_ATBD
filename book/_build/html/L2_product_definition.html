@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Level-2 product definition &#8212; ATBD SST</title>
     
@@ -34,7 +34,9 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
@@ -50,6 +52,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
     <script>mermaid.initialize({startOnLoad:true});</script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -57,7 +61,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="next" title="Baseline Algorithm Definition" href="baseline_algorithm_definition.html" />
     <link rel="prev" title="Background and justification of selected algorithm" href="background_justification_algorithm.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
+    <meta name="docsearch:language" content="en">
     
 
     <!-- Google Analytics -->
@@ -329,8 +333,27 @@ title="Print to PDF"
               <div>
                 
   <section class="tex2jax_ignore mathjax_ignore" id="level-2-product-definition">
-<h1>Level-2 product definition<a class="headerlink" href="#level-2-product-definition" title="Permalink to this headline">#</a></h1>
-<p>Definition</p>
+<h1>Level-2 product definition<a class="headerlink" href="#level-2-product-definition" title="Permalink to this heading">#</a></h1>
+<p>The Level-2b SST product is obtained through application of the SST retrieval algorithm, given the Level-1b brightness temperatures. The product is provided in the native grid of the CIMR instrument, where each swath contains 135 samples per scan, <code class="docutils literal notranslate"><span class="pre">n_scans</span></code>, multiplied by the number of scans for each orbit, <code class="docutils literal notranslate"><span class="pre">n_samples_earth</span></code>. The product is provided in netCDF format and contains the variables listed in <a class="reference internal" href="#l2-product-variables"><span class="std std-numref">Table 1</span></a> .</p>
+<table class="table" id="l2-product-variables">
+<caption><span class="caption-number">Table 1 </span><span class="caption-text">Level-2 SST product variables</span><a class="headerlink" href="#l2-product-variables" title="Permalink to this table">#</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable name</p></th>
+<th class="head"><p>Unit</p></th>
+<th class="head"><p>Dimensions</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>sea_surface_temperature</p></td>
+<td><p>Kelvin</p></td>
+<td><p>n_scans * n_samples_earth</p></td>
+</tr>
+<tr class="row-odd"><td><p>wind_speed</p></td>
+<td><p>ms<span class="math notranslate nohighlight">\(^{-1}\)</span></p></td>
+<td><p>n_scans * n_samples_earth</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 
     <script type="text/x-thebe-config">
