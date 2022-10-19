@@ -2,7 +2,7 @@
 # Learn more at https://jupyterbook.org/customize/config.html
 
 title: ATBD SST
-author: CIMR Devalgo
+author: Emy Alerskans, Ioanna Karagali and Jacob Høyer
 logo: logo.jpg
 
 # Force re-execution of notebooks on each build.

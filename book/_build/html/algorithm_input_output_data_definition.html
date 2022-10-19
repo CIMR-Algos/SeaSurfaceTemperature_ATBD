@@ -170,7 +170,7 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="ATBD_SST_retrieval_algorithm.html">
-   Notebook SST Retrieval Algorithm
+   SST Retrieval Algorithm Implementation
   </a>
  </li>
  <li class="toctree-l1">
@@ -399,7 +399,7 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="algorithm-input-and-output-data-definition-iodd">
 <h1>Algorithm Input and Output Data Definition (IODD)<a class="headerlink" href="#algorithm-input-and-output-data-definition-iodd" title="Permalink to this heading">#</a></h1>
-<p>The processing of L2 SST requires both TB observations and ancillary data. Additional information such as e.g. a land mask, a sea ice product and information about RFI is needed to remove contaminated PMW observations. The input for the SST retrieval algorithm consists of TB’s at 1.4, 6.9, 10.6, 18.7 and 36.5 GHz (vertical and horizontal polarization) and additional satellite information as well as surface WS. The output is subskin SST and optionally surface WS, as described in this document.</p>
+<p>The processing of L2 <a class="reference internal" href="acronyms.html#term-SST"><span class="xref std std-term">SST</span></a> requires both <a class="reference internal" href="acronyms.html#term-TB"><span class="xref std std-term">TB</span></a> observations and ancillary data. Additional information such as e.g. a land mask, a sea ice product and information about <a class="reference internal" href="acronyms.html#term-RFI"><span class="xref std std-term">RFI</span></a> is needed to remove contaminated <a class="reference internal" href="acronyms.html#term-PMW"><span class="xref std std-term">PMW</span></a> observations. The input for the <a class="reference internal" href="acronyms.html#term-SST"><span class="xref std std-term">SST</span></a> retrieval algorithm consists of <a class="reference internal" href="acronyms.html#term-TB"><span class="xref std std-term">TB</span></a>s at 1.4, 6.9, 10.6, 18.7 and 36.5 GHz (vertical and horizontal polarization) and additional satellite information as well as surface <a class="reference internal" href="acronyms.html#term-WS"><span class="xref std std-term">WS</span></a>. The output is subskin <a class="reference internal" href="acronyms.html#term-SST"><span class="xref std std-term">SST</span></a> and optionally surface <a class="reference internal" href="acronyms.html#term-WS"><span class="xref std std-term">WS</span></a>, as described in this document.</p>
 <section id="input-data">
 <h2>Input data<a class="headerlink" href="#input-data" title="Permalink to this heading">#</a></h2>
 <table class="table">
@@ -460,7 +460,8 @@ title="Print to PDF"
 <ul class="simple">
 <li><p>Sea ice product</p></li>
 <li><p>Distance to coast</p></li>
-<li><p>Information for RFI flagging</p></li>
+<li><p>Sun glint information</p></li>
+<li><p>Information for <a class="reference internal" href="acronyms.html#term-RFI"><span class="xref std std-term">RFI</span></a> flagging</p></li>
 </ul>
 </section>
 <section id="ancillary-data">
@@ -469,7 +470,7 @@ title="Print to PDF"
 <ul class="simple">
 <li><p>Earth incidence angle (satellite zenith angle)</p></li>
 <li><p>Satellite azimuth angle</p></li>
-<li><p>Ocean surface winds</p></li>
+<li><p>Surface winds</p></li>
 </ul>
 </section>
 </section>
@@ -522,7 +523,7 @@ title="Print to PDF"
     <div class="footer-content row">
         <footer class="col footer"><p>
   
-    By CIMR Devalgo<br/>
+    By Emy Alerskans, Ioanna Karagali and Jacob Høyer<br/>
   
       &copy; Copyright 2022.<br/>
 </p>

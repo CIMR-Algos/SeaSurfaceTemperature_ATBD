@@ -25,7 +25,7 @@ chapters:
 - file: algorithm_performance_assessment
   title: Algorithm Performance Assessment
 - file: ATBD_SST_retrieval_algorithm
-  title: Notebook SST Retrieval Algorithm
+  title: SST Retrieval Algorithm Implementation
 - file: references
   title: References
 - file: annex

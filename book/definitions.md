@@ -1,30 +1,18 @@
 # Definitions used in this ATBD
 
-Here follows a glossary, or list of definitions
+```{glossary}
+Brightness Temperature
+  The Brightness Temperature is the temperature of a surface as seen by a passive microwave sensor. It is a measure of the amount of energy emitted by a surface. It is usually expressed in Kelvin.
 
-| | |
-| --- | --- |
-| AMSR-E | Advanced Scanning Microwave Radiometer - Earth Observing System |
-| AMSR2 | Advanced Scanning Microwave Radiometer 2 |
-| ATBD | Algorithm Theoretical Basis Document |
-| CIMR | Copernicus Imaging Microwave Radiometer |
-| ESA | European Space Agency |
-| GCOM-W1 | Global Change Observing Mission 1dt - Water |
-| IODD | Input/Ouput Data Definition |
-| IR | Infrared |
-| NASA | National Aeronautics Space Administration |
-| NWP | Numerical Weather Prediction |
-| OEM | Optimal Estimation Model |
-| PMW | Passive Microwave |
-| PSD | Product Specification Document |
-| PVP | Product Validation Plan |
-| RFI | Radio Frequency Interference |
-| RSS | Remote Sensing Systems |
-| RTM | Radiative Transfer Model |
-| SIC | Sea Ice Concentration |
-| SSS | Sea Surface Salinity |
-| SST | Sea Surface Temperature |
-| SMMR | Scanning Multichannel Microwave Radiometer |
-| TRMM | Tropical Rainfall Measurement Mission |
-| TB | Brightness Temperature |
-| WS  | Wind Speed     |
+Copernicus Imaging Microwave Radiometer
+  The Copernicus Imaging Microwave Radiometer is a microwave radiometer which launch is planned by ESA in 2028.
+
+Sea Ice Concentration
+  The Sea Ice Concentration is the fraction of the sea surface covered by sea ice. It is a measure of the amount of sea ice in a given area. It is usually expressed as a percentage.
+
+Sea Surface Salinity
+  The Sea Surface Salinity is the salinity of the surface of the sea. It is usually expressed in practical salinity units (psu).
+
+Sea Surface Temperature
+  The Sea Surface Temperature is the temperature of the surface of the sea. It is usually expressed in Kelvin.
+```

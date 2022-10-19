@@ -1,11 +1,5 @@
 # Algorithm Input and Output Data Definition (IODD)
-[//]: # "This section should include the following:"
-[//]: # "- Define and describe the content and format of input data required for the Level-2 ATBD."
-[//]: # "- Define and describe the content and format of output data required for the Level2 ATBD (NetCDF CF-complaint containers are assumed)."
-[//]: # "- Define and describe the content and format of auxiliary data required for the Level-2 ATBD."
-[//]: # "- Define and describe the content and format of ancillary data required for the Level-2 ATBD."
-[//]: # "- Define any other aspect considered relevant to the ATBD IODD."
-The processing of L2 SST requires both TB observations and ancillary data. Additional information such as e.g. a land mask, a sea ice product and information about RFI is needed to remove contaminated PMW observations. The input for the SST retrieval algorithm consists of TB's at 1.4, 6.9, 10.6, 18.7 and 36.5 GHz (vertical and horizontal polarization) and additional satellite information as well as surface WS. The output is subskin SST and optionally surface WS, as described in this document.
+The processing of L2 {term}`SST` requires both {term}`TB` observations and ancillary data. Additional information such as e.g. a land mask, a sea ice product and information about {term}`RFI` is needed to remove contaminated {term}`PMW` observations. The input for the {term}`SST` retrieval algorithm consists of {term}`TB`s at 1.4, 6.9, 10.6, 18.7 and 36.5 GHz (vertical and horizontal polarization) and additional satellite information as well as surface {term}`WS`. The output is subskin {term}`SST` and optionally surface {term}`WS`, as described in this document.
 
 
 ## Input data
@@ -28,10 +22,11 @@ The processing of L2 SST requires both TB observations and ancillary data. Addit
 Data as a complement to the retrieval, e.g. for flagging:
 - Sea ice product
 - Distance to coast
-- Information for RFI flagging
+- Sun glint information
+- Information for {term}`RFI` flagging
 
 ## Ancillary data
 Data that is necessary for the retrieval:
 - Earth incidence angle (satellite zenith angle)
 - Satellite azimuth angle
-- Ocean surface winds
+- Surface winds

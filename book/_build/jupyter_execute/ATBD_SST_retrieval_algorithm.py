@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # SST retrieval algorithm v 0
+# # SST Retrieval Algorithm
 # 
 # ## Introduction
 # The retrieval algorithm is based on the regression retrieval algorithm developed in Alerskans et al., (2020). It consists of a global SST retrieval algorithm, which uses brightness temperatures and anciliary, such as wind speed. The wind speed information can be obtained from either the integrated OEM retrieval or anciliary data. In addition, an optional wind speed retriveal algorithm, based on the 2-stage retrieval algorithm developed in Alerskans et al., (2020) is included here.
