@@ -11,7 +11,7 @@ Sea Ice Concentration
   The Sea Ice Concentration is the fraction of the sea surface covered by sea ice. It is a measure of the amount of sea ice in a given area. It is usually expressed as a percentage.
 
 Sea Surface Salinity
-  The Sea Surface Salinity is the salinity of the surface of the sea. It is usually expressed in practical salinity units (psu).
+  The Sea Surface Salinity is the salinity of the sea. It is usually expressed in practical salinity units (psu).
 
 Sea Surface Temperature
   The Sea Surface Temperature is the temperature of the surface of the sea. It is usually expressed in Kelvin.

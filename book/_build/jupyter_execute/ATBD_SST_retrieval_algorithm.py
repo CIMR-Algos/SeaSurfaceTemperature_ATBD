@@ -52,15 +52,6 @@ Nlim = 100    # Minimum number of matchups required for robust coefficients
 # Wind speed
 ws_min, ws_max, dws = 0, 20, 1 # Minimum, maximum and step wind speed
 ws_bins = np.arange(ws_min,ws_max,dws, dtype=int)
-# Latitude
-lat_min, lat_max, dlat = -72, 84, 2 # Minimum, maximum and step latitude
-lat_bins = np.arange(lat_min,lat_max,dlat, dtype=int)
-# SST
-sst_min, sst_max, dsst = -2, 36, 2 # Minimum, maximum and step SST
-sst_bins = np.arange(sst_min,sst_max,dsst, dtype=int)
-# Orbit
-orb_asc, orb_desc = 0, 1 # Ascending and descending orbit
-orb_bins = np.array([orb_asc, orb_desc]).astype(int)
 
 
 # ## Read input data
@@ -259,7 +250,7 @@ def sst_algorithm_selection(data,channel_comb):
     """
     nmatchups = data.shape[0]
     if channel_comb == 'cimr_like':
-        # Construct input data for AMSR-E configuration
+        # Construct input data for AMSR-2 CIMR like configuration
         ninput = 22
         X = np.full((nmatchups,ninput), fill_value=np.nan)
 
@@ -286,7 +277,7 @@ def sst_algorithm_selection(data,channel_comb):
         X[:,20] = np.cos(2*data['era5_phi_rel'])
         X[:,21] = np.sin(2*data['era5_phi_rel'])
     elif channel_comb == 'cimr':
-        # Construct input data for AMSR-E configuration
+        # Construct input data for CIMR configuration
         ninput = 26
         X = np.full((nmatchups,ninput), fill_value=np.nan)
 

@@ -41,6 +41,11 @@ conda install -c conda-forge matplotlib numpy
 conda install -c conda-forge sphinxcontrib-mermaid
 ```
 
+### alternatively, install the necessary dependencies from devalgo-ENV.yml
+```
+conda env create -n devalgo --file devalgo-ENV.yml
+```
+
 ### build the book
 ```
 cd /path/to/local/repo/with/atbd/ # the root of the repo, with book/ algorithm/ data/ ...

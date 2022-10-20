@@ -1,0 +1,16 @@
+# run: conda env create -n devalgo --file devalgo-ENV.yml
+name: devalgo
+channels:
+  - conda-forge
+dependencies:
+  - python=3.8
+  - numpy
+  - matplotlib
+  - pandas
+  - cartopy
+  - scipy
+  - scikit-learn
+  - sphinxcontrib-mermaid
+  - pip
+  - pip:
+      - jupyter-book

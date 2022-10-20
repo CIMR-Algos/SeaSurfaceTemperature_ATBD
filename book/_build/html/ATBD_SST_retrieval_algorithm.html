@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>SST Retrieval Algorithm &#8212; ATBD SST</title>
     
@@ -34,9 +34,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
@@ -61,7 +59,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="next" title="References" href="references.html" />
     <link rel="prev" title="Algorithm Performance Assessment (Version 2 ATBD)" href="algorithm_performance_assessment.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
+    <meta name="docsearch:language" content="None">
     
 
     <!-- Google Analytics -->
@@ -561,14 +559,14 @@ title="Print to PDF"
               <div>
                 
   <section class="tex2jax_ignore mathjax_ignore" id="sst-retrieval-algorithm">
-<h1>SST Retrieval Algorithm<a class="headerlink" href="#sst-retrieval-algorithm" title="Permalink to this heading">#</a></h1>
+<h1>SST Retrieval Algorithm<a class="headerlink" href="#sst-retrieval-algorithm" title="Permalink to this headline">#</a></h1>
 <section id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">#</a></h2>
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">#</a></h2>
 <p>The retrieval algorithm is based on the regression retrieval algorithm developed in Alerskans et al., (2020). It consists of a global SST retrieval algorithm, which uses brightness temperatures and anciliary, such as wind speed. The wind speed information can be obtained from either the integrated OEM retrieval or anciliary data. In addition, an optional wind speed retriveal algorithm, based on the 2-stage retrieval algorithm developed in Alerskans et al., (2020) is included here.</p>
 <p>As a first version, the algorithm is developed and regression coefficients are derived using data from the ESA CCI Multisensor Matchup Dataset (MMD), which includes PMW observations from AMSR2 and anciliary data from the ERA5 reanalysis. A CIMR-like channel combination is used, following Nielsen-Englyst et al., (2021), which includes the following channels; 6.9, 10.6, 18.7 and 36.5 GHz (vertical and horizontal polarizations).</p>
 </section>
 <section id="imports-and-parameter-settings">
-<h2>Imports and parameter settings<a class="headerlink" href="#imports-and-parameter-settings" title="Permalink to this heading">#</a></h2>
+<h2>Imports and parameter settings<a class="headerlink" href="#imports-and-parameter-settings" title="Permalink to this headline">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Library imports</span>
@@ -610,22 +608,13 @@ title="Print to PDF"
 <span class="c1"># Wind speed</span>
 <span class="n">ws_min</span><span class="p">,</span> <span class="n">ws_max</span><span class="p">,</span> <span class="n">dws</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span> <span class="c1"># Minimum, maximum and step wind speed</span>
 <span class="n">ws_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ws_min</span><span class="p">,</span><span class="n">ws_max</span><span class="p">,</span><span class="n">dws</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-<span class="c1"># Latitude</span>
-<span class="n">lat_min</span><span class="p">,</span> <span class="n">lat_max</span><span class="p">,</span> <span class="n">dlat</span> <span class="o">=</span> <span class="o">-</span><span class="mi">72</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">2</span> <span class="c1"># Minimum, maximum and step latitude</span>
-<span class="n">lat_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">lat_min</span><span class="p">,</span><span class="n">lat_max</span><span class="p">,</span><span class="n">dlat</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-<span class="c1"># SST</span>
-<span class="n">sst_min</span><span class="p">,</span> <span class="n">sst_max</span><span class="p">,</span> <span class="n">dsst</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="mi">2</span> <span class="c1"># Minimum, maximum and step SST</span>
-<span class="n">sst_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">sst_min</span><span class="p">,</span><span class="n">sst_max</span><span class="p">,</span><span class="n">dsst</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-<span class="c1"># Orbit</span>
-<span class="n">orb_asc</span><span class="p">,</span> <span class="n">orb_desc</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="c1"># Ascending and descending orbit</span>
-<span class="n">orb_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">orb_asc</span><span class="p">,</span> <span class="n">orb_desc</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 </section>
 <section id="read-input-data">
-<h2>Read input data<a class="headerlink" href="#read-input-data" title="Permalink to this heading">#</a></h2>
+<h2>Read input data<a class="headerlink" href="#read-input-data" title="Permalink to this headline">#</a></h2>
 <p>Read input data for the derivation of coefficients and subsequent retrieval of SST (and wind speed, if desired)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -943,7 +932,7 @@ title="Print to PDF"
 </div></div></div>
 </div>
 <section id="data-pre-processing">
-<h3>Data pre-processing<a class="headerlink" href="#data-pre-processing" title="Permalink to this heading">#</a></h3>
+<h3>Data pre-processing<a class="headerlink" href="#data-pre-processing" title="Permalink to this headline">#</a></h3>
 <p>Pre-processing of data includes:</p>
 <ul class="simple">
 <li><p>Quality control (currently only checks for NaNs as an initial QC already has been perfromed)</p></li>
@@ -971,7 +960,7 @@ title="Print to PDF"
 </section>
 </section>
 <section id="retrieval-definitions">
-<h2>Retrieval definitions<a class="headerlink" href="#retrieval-definitions" title="Permalink to this heading">#</a></h2>
+<h2>Retrieval definitions<a class="headerlink" href="#retrieval-definitions" title="Permalink to this headline">#</a></h2>
 <p>The main algorithm is a model for retrieving SST, which is based on the regression model developed in Alerskans et al., (2020). It uses CIMR brightness temperatures (<span class="math notranslate nohighlight">\(T_B\)</span>), Earth incidence angle (<span class="math notranslate nohighlight">\(\theta_{EIA}\)</span>), wind speed (WS) and the relative angle between wind direction and satellite azimuth angle (<span class="math notranslate nohighlight">\(\phi_{rel}\)</span>)</p>
 <div class="math notranslate nohighlight">
 \[SST_{r} = c_{0} + \sum_{i=1}^{N_{ch}} (c_{1i} t_{i} + c_{2i} t^{2}_{i} ) + c_{3} \theta + c_{4} WS + \sum_{j=1}^{2} [c_{5j} \cos (j \phi_{rel}) + c_{6j} \sin (j \phi_{rel}) ],\]</div>
@@ -983,7 +972,7 @@ title="Print to PDF"
 <div class="math notranslate nohighlight">
 \[WS_{r} = b_{0} + \sum_{i=1}^{N_{ch}} (b_{1i} t_{i} + b_{2i} t^{2}_{i} ) + b_{3} \theta.\]</div>
 <section id="general-functions">
-<h3>General functions<a class="headerlink" href="#general-functions" title="Permalink to this heading">#</a></h3>
+<h3>General functions<a class="headerlink" href="#general-functions" title="Permalink to this headline">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">regression</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">):</span>
@@ -1110,7 +1099,7 @@ title="Print to PDF"
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">nmatchups</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">channel_comb</span> <span class="o">==</span> <span class="s1">&#39;cimr_like&#39;</span><span class="p">:</span>
-        <span class="c1"># Construct input data for AMSR-E configuration</span>
+        <span class="c1"># Construct input data for AMSR-2 CIMR like configuration</span>
         <span class="n">ninput</span> <span class="o">=</span> <span class="mi">22</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">nmatchups</span><span class="p">,</span><span class="n">ninput</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
@@ -1137,7 +1126,7 @@ title="Print to PDF"
         <span class="n">X</span><span class="p">[:,</span><span class="mi">20</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;era5_phi_rel&#39;</span><span class="p">])</span>
         <span class="n">X</span><span class="p">[:,</span><span class="mi">21</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;era5_phi_rel&#39;</span><span class="p">])</span>
     <span class="k">elif</span> <span class="n">channel_comb</span> <span class="o">==</span> <span class="s1">&#39;cimr&#39;</span><span class="p">:</span>
-        <span class="c1"># Construct input data for AMSR-E configuration</span>
+        <span class="c1"># Construct input data for CIMR configuration</span>
         <span class="n">ninput</span> <span class="o">=</span> <span class="mi">26</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">nmatchups</span><span class="p">,</span><span class="n">ninput</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
@@ -1318,7 +1307,7 @@ title="Print to PDF"
 </div>
 </section>
 <section id="stage-1-wind-speed-retrieval-algorithm">
-<h3>Stage 1 wind speed retrieval algorithm<a class="headerlink" href="#stage-1-wind-speed-retrieval-algorithm" title="Permalink to this heading">#</a></h3>
+<h3>Stage 1 wind speed retrieval algorithm<a class="headerlink" href="#stage-1-wind-speed-retrieval-algorithm" title="Permalink to this headline">#</a></h3>
 <ul class="simple">
 <li><p>Derivation of 1st-stage wind speed regression coefficients</p></li>
 <li><p>Retrieval of 1st-stage wind speed</p></li>
@@ -1390,7 +1379,7 @@ title="Print to PDF"
 </div>
 </section>
 <section id="stage-2-wind-speed-retrieval-algorithm">
-<h3>Stage 2 wind speed retrieval algorithm<a class="headerlink" href="#stage-2-wind-speed-retrieval-algorithm" title="Permalink to this heading">#</a></h3>
+<h3>Stage 2 wind speed retrieval algorithm<a class="headerlink" href="#stage-2-wind-speed-retrieval-algorithm" title="Permalink to this headline">#</a></h3>
 <ul class="simple">
 <li><p>Derivation of 2nd-stage wind speed regression coefficients</p></li>
 <li><p>Retrieval of 2nd-stage wind speed</p></li>
@@ -1557,7 +1546,7 @@ title="Print to PDF"
 </div>
 </section>
 <section id="id1">
-<h3>SST retrieval algorithm<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<h3>SST retrieval algorithm<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h3>
 <ul class="simple">
 <li><p>Derivation of SST regression coefficients</p></li>
 <li><p>Retrieval of SST</p></li>
@@ -1633,7 +1622,7 @@ title="Print to PDF"
 </section>
 </section>
 <section id="derivation-of-regression-coefficients">
-<h2>Derivation of regression coefficients<a class="headerlink" href="#derivation-of-regression-coefficients" title="Permalink to this heading">#</a></h2>
+<h2>Derivation of regression coefficients<a class="headerlink" href="#derivation-of-regression-coefficients" title="Permalink to this headline">#</a></h2>
 <p>Here, regression coefficients for the SST retrieval algorithm is derived.
 In addition, if the option is set to use retrieved wind speed in the SST algorithm, the 1st- and 2nd-stage wind speed coefficients are retrieved here as well.</p>
 <div class="cell docutils container">
@@ -1710,10 +1699,10 @@ In addition, if the option is set to use retrieved wind speed in the SST algorit
 </div>
 </section>
 <section id="performance-analysis">
-<h2>Performance analysis<a class="headerlink" href="#performance-analysis" title="Permalink to this heading">#</a></h2>
+<h2>Performance analysis<a class="headerlink" href="#performance-analysis" title="Permalink to this headline">#</a></h2>
 <p>Use the test dataset to retrieve SST and evaluate the performance of the retrieval algorithm.</p>
 <section id="analysis-functions">
-<h3>Analysis functions<a class="headerlink" href="#analysis-functions" title="Permalink to this heading">#</a></h3>
+<h3>Analysis functions<a class="headerlink" href="#analysis-functions" title="Permalink to this headline">#</a></h3>
 <p>Define functions used for evaluating the performance of the algorithm.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1941,7 +1930,7 @@ In addition, if the option is set to use retrieved wind speed in the SST algorit
 </div>
 </section>
 <section id="retrieval-of-sst">
-<h3>Retrieval of SST<a class="headerlink" href="#retrieval-of-sst" title="Permalink to this heading">#</a></h3>
+<h3>Retrieval of SST<a class="headerlink" href="#retrieval-of-sst" title="Permalink to this headline">#</a></h3>
 <p>Retrieve wind speed (if this option is set) and SST</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1990,7 +1979,7 @@ In addition, if the option is set to use retrieved wind speed in the SST algorit
 </div>
 </section>
 <section id="overall-performance">
-<h3>Overall performance<a class="headerlink" href="#overall-performance" title="Permalink to this heading">#</a></h3>
+<h3>Overall performance<a class="headerlink" href="#overall-performance" title="Permalink to this headline">#</a></h3>
 <p>The overall performance of the SST retrieval algorithm for the test dataset, with respect to mean difference/bias, mean absolute error (MAE), standard deviation (st.d) and root mean square error (RMSE) is shown below .</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2015,7 +2004,7 @@ RMSE: 0.748 K.
 </div>
 </section>
 <section id="scatter-plot-results">
-<h3>Scatter plot results<a class="headerlink" href="#scatter-plot-results" title="Permalink to this heading">#</a></h3>
+<h3>Scatter plot results<a class="headerlink" href="#scatter-plot-results" title="Permalink to this headline">#</a></h3>
 <p>The retrieved PMW SST is plotted against the drifter in situ SST.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2033,7 +2022,7 @@ RMSE: 0.748 K.
 </div>
 </section>
 <section id="gridded-statistics">
-<h3>Gridded statistics<a class="headerlink" href="#gridded-statistics" title="Permalink to this heading">#</a></h3>
+<h3>Gridded statistics<a class="headerlink" href="#gridded-statistics" title="Permalink to this headline">#</a></h3>
 <p>The geographical distribution of mean difference/bias, MAE, Std. and RMSE of the SST bias (retrieved PMW SST minus in situ SST) are shown below. The statistics have been gridded using a grid size of 5<span class="math notranslate nohighlight">\(^{\circ}\)</span>, with a minimum of 20 matchups per grid cell.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
