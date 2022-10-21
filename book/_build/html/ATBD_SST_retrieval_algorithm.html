@@ -1628,9 +1628,9 @@ In addition, if the option is set to use retrieved wind speed in the SST algorit
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Settings</span>
-<span class="n">derive_stage_1_ws_coeffs</span> <span class="o">=</span> <span class="kc">False</span><span class="c1">#True</span>
-<span class="n">derive_stage_2_ws_coeffs</span> <span class="o">=</span> <span class="kc">False</span><span class="c1">#True</span>
-<span class="n">derive_global_sst_coeffs</span> <span class="o">=</span> <span class="kc">False</span><span class="c1">#True</span>
+<span class="n">derive_stage_1_ws_coeffs</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">derive_stage_2_ws_coeffs</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">derive_global_sst_coeffs</span> <span class="o">=</span> <span class="kc">True</span>
 
 
 <span class="k">if</span> <span class="n">ws_input</span> <span class="o">==</span> <span class="s2">&quot;retrieval&quot;</span><span class="p">:</span>
@@ -1683,10 +1683,19 @@ In addition, if the option is set to use retrieved wind speed in the SST algorit
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculate WS stage 1 coefficients
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieve stage 1 WS
 </pre></div>
 </div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculate WS stage 2 coefficients
+</pre></div>
+</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieve stage 2 WS
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Calculate SST global coefficients
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieve global SST
@@ -1952,6 +1961,8 @@ In addition, if the option is set to use retrieved wind speed in the SST algorit
 <span class="c1"># Retrieve SSTr</span>
 <span class="n">SSTr</span> <span class="o">=</span> <span class="n">retrieve_global_sst</span><span class="p">(</span><span class="n">data_test</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
 <span class="n">data_test</span><span class="p">[</span><span class="s1">&#39;SSTr_global&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SSTr</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;...Done!&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1963,6 +1974,9 @@ In addition, if the option is set to use retrieved wind speed in the SST algorit
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Retrieve global SST
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>...Done!
 </pre></div>
 </div>
 </div>
@@ -1992,7 +2006,9 @@ In addition, if the option is set to use retrieved wind speed in the SST algorit
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>TEST DATASET - Global SST retrieval
 ======================================
-PMW retrievals - drifter observations
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>PMW retrievals - drifter observations
 -------------------------------------
 Mean: 0.0 K.
 MAE:  0.555 K.

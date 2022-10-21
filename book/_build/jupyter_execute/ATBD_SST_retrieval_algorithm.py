@@ -757,9 +757,9 @@ def retrieve_global_sst(data,channel_comb):
 
 
 # Settings
-derive_stage_1_ws_coeffs = False#True
-derive_stage_2_ws_coeffs = False#True
-derive_global_sst_coeffs = False#True
+derive_stage_1_ws_coeffs = True
+derive_stage_2_ws_coeffs = True
+derive_global_sst_coeffs = True
 
 
 if ws_input == "retrieval":
@@ -1060,6 +1060,8 @@ elif ws_input == "nwp":
 # Retrieve SSTr
 SSTr = retrieve_global_sst(data_test,channel_comb)
 data_test['SSTr_global'] = SSTr
+
+print("...Done!")
 
 
 # In[23]:
