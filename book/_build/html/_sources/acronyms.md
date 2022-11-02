@@ -10,11 +10,17 @@ AMSR2
 ATBD
   Algorithm Theoretical Basis Document
 
+CCI
+  Climate Change Initiative
+
 CIMR
   {term}`Copernicus Imaging Microwave Radiometer`
 
 ESA
   European Space Agency
+
+GCOM-W1
+  Global Change Observing Mission 1st - Water
 
 IODD
   Input/Ouput Data Definition
@@ -22,8 +28,23 @@ IODD
 IR
   Infrared
 
+MMD
+  Multisensor Matchup Dataset
+
+NASA
+  National Aeronautics Space Administration
+
+NOAA
+  National Oceanic and Atmospheric Administration
+
 NWP
   Numerical Weather Prediction
+
+OE
+  Optimal Estimation
+
+OEM
+  Optimal Estimation Model
 
 PMW
   Passive Microwave
@@ -36,6 +57,9 @@ PVP
 
 RFI
   Radio Frequency Interference
+
+RSS
+  Remote Sensing System
 
 RTM
   Radiative Transfer Model
@@ -53,7 +77,7 @@ SMMR
   Scanning Multichannel Microwave Radiometer
 
 TMI
-  TRMM Microwave Imager
+  {term}`TRMM` Microwave Imager
 
 TRMM
   Tropical Rainfall Measurement Mission

@@ -73,6 +73,13 @@
 \definecolor{darkpurple}{RGB}{102,0,104}
 \definecolor{orange}{RGB}{252,144,4}
 
+\definecolor{lightsalmonpink}{RGB}{255,154,162}
+\definecolor{paleyellow}{RGB}{249,249,162}
+\definecolor{magicmint}{RGB}{120,255,178}
+\definecolor{nonphotoblue}{RGB}{149,223,243}
+\definecolor{vodka}{RGB}{198,183,241}
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -121,58 +128,6 @@
 % DOCUMENT
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
-
-\centering
-\scalebox{0.6}{
-    \begin{tikzpicture}[yscale=-1]
-      % Input data
-      \node[rectangle, draw, thick, fill=darkred, text=white, text width=6.0cm, align=center, font={\Large\bfseries}, minimum height=2.5cm, rounded corners=0.6cm] (in) at (0,0)
-          {Read:\vspace{-5pt}
-           \begin{itemize}\compresslist
-               \item CIMR orbital data
-               \item Auxiliary data
-           \end{itemize}
-          };
-      % WS1-stage
-      \node[rectangle, draw, thick, fill=darkgreen,text=white, align=center,font={\Large\bfseries}, minimum width=6.4cm, minimum height=2.0cm, rounded corners=0.6cm] (ws1) at (0,3.5)
-          {WS retrieval 1st stage:\\Global algorithm};
-      % Regression coefficients, A
-      \node[rectangle, draw, thick, fill=darkblue, text=white, align=center, font={\Large\bfseries}, minimum width=1.5cm, minimum height=1.0cm, rounded corners=0.4cm] (A) at (-5.2,3.5) {$\boldsymbol{\mathrm{A}}$};
-      % Arrows
-      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (in) -- (ws1);
-      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (A) -- (ws1);
-      % WS2-stage
-      \node[rectangle, draw, thick, fill=darkgreen,text=white, align=center,font={\Large\bfseries}, minimum width=6.8cm, minimum height=2.0cm, rounded corners=0.6cm] (ws2) at (0,7)
-          {WS retrieval 2nd stage:\\Localized WS algorithms};
-      % Regression coefficients, B
-      \node[rectangle, draw, thick, fill=darkblue, text=white, align=center, font={\Large\bfseries}, minimum width=1.5cm, minimum height=1.0cm, rounded corners=0.4cm] (B) at (-5.2,7) {$\boldsymbol{\mathrm{B}}$};
-      % Arrows
-      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (ws1) -- (ws2);
-      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (B) -- (ws2);
-      % SST
-      \node[rectangle, draw, thick, fill=darkgreen,text=white, align=center,font={\Large\bfseries}, minimum width=5.4cm, minimum height=2.0cm, rounded corners=0.6cm] (sst) at (0,10.5)
-          {SST retrieval:\\Global algorithm};
-      % Regression coefficients, B
-      \node[rectangle, draw, thick, fill=darkblue, text=white, align=center, font={\Large\bfseries}, minimum width=1.5cm, minimum height=1.0cm, rounded corners=0.4cm] (C) at (-5.2,10.5) {$\boldsymbol{\mathrm{C}}$};
-      % Arrows
-      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (ws2) -- (sst);
-      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (C) -- (sst);
-      % Output
-      \node[rectangle, draw, thick, fill=darkpurple, text=white, text width=4.5cm, align=center, font={\Large\bfseries}, minimum height=2.6cm, rounded corners=0.6cm] (out) at (0,14)
-          {Output data:\vspace{-5pt}
-          \begin{itemize}\compresslist
-              \item $\boldsymbol{\mathrm{WS_r}}$
-              \item $\boldsymbol{\mathrm{SST_r}}$
-          \end{itemize}
-          };
-      % Arrows
-      \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (sst) -- (out);
-
-    \end{tikzpicture}
-}
-
-\newpage\clearpage
-
 
 \centering
 \scalebox{0.6}{
@@ -235,5 +190,134 @@
 
     \end{tikzpicture}
 }
+
+
+
+\newpage\clearpage
+
+\centering
+\begin{tikzpicture}[yscale=-1]
+   % Input data - CIMR orbital data
+   \node[rectangle, draw, thick, fill=white, text=black, text width=4.0cm, align=center, font={\Large\bfseries}, minimum height=1.5cm, rounded corners=0.4cm] (cimr_data) at (-2.5,0)
+       {CIMR\\orbital data};
+   % Input data - Ancillary data
+   \node[rectangle, draw, thick, fill=white, text=black, text width=4.0cm, align=center, font={\Large\bfseries}, minimum height=1.5cm, rounded corners=0.4cm] (anc_data) at (2.5,0)
+       {Ancillary data};
+   % Input data - Integrated OEM data
+   \node[rectangle, draw, thick, fill=white, text=black, text width=4.0cm, align=center, font={\Large\bfseries}, minimum height=1.5cm, rounded corners=0.4cm] (oem_data) at (7.5,0)
+       {Integrated OEM data};
+   % Choice of wind speed input - retrieval
+   \node[rectangle, draw, thick, fill=white, text=black, text width=6.0cm, align=center, font={\Large\bfseries}, minimum height=1.0cm, rounded corners=0.1cm] (ws_input_retrieval) at (0,3.0)
+       {ws\_input = retrieval?};
+   % Choice of wind speed input - OEM
+   \node[rectangle, draw, thick, fill=white, text=black, text width=5.2cm, align=center, font={\Large\bfseries}, minimum height=1.0cm, rounded corners=0.1cm] (ws_input_oem) at (7.5,3.0)
+       {ws\_input = OEM?};
+   % WS1-stage
+   \node[rectangle, draw, thick, fill=white,text=black, align=center,font={\Large\bfseries}, minimum width=6.4cm, minimum height=2.0cm, rounded corners=0.6cm] (ws1) at (0,5.5)
+       {WS retrieval 1st stage:\\Global algorithm};
+   % Regression coefficients, A
+   \node[rectangle, draw, thick, fill=white, text=black, align=center, font={\Large\bfseries}, minimum width=1.5cm, minimum height=1.0cm, rounded corners=0.4cm] (A) at (-5.2,5.5) {$\boldsymbol{\mathrm{A}}$};
+   % Arrows
+   \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (cimr_data) -- (ws_input_retrieval);
+   \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (anc_data) -- (ws_input_retrieval);
+   \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (ws_input_retrieval) -- (ws1) node[midway, anchor=west] {{\Large\textbf{YES}}};
+   \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (oem_data) -- (ws_input_oem);
+   \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (A) -- (ws1);
+   % WS2-stage
+   \node[rectangle, draw, thick, fill=white,text=black, align=center,font={\Large\bfseries}, minimum width=6.8cm, minimum height=2.0cm, rounded corners=0.6cm] (ws2) at (0,8.5)
+       {WS retrieval 2nd stage:\\Localized WS algorithms};
+   % Regression coefficients, B
+   \node[rectangle, draw, thick, fill=white, text=black, align=center, font={\Large\bfseries}, minimum width=1.5cm, minimum height=1.0cm, rounded corners=0.4cm] (B) at (-5.2,8.5) {$\boldsymbol{\mathrm{B}}$};
+   % Arrows
+   \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (ws1) -- (ws2);
+   \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (B) -- (ws2);
+   % SST
+   \node[rectangle, draw, thick, fill=white,text=black, align=center,font={\Large\bfseries}, minimum width=5.4cm, minimum height=2.0cm, rounded corners=0.6cm] (sst) at (0,11.5)
+       {SST retrieval:\\Global algorithm};
+   % Regression coefficients, C
+   \node[rectangle, draw, thick, fill=white, text=black, align=center, font={\Large\bfseries}, minimum width=1.5cm, minimum height=1.0cm, rounded corners=0.4cm] (C) at (-5.2,11.5) {$\boldsymbol{\mathrm{C}}$};
+   % Arrows
+   \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (ws2) -- (sst);
+   \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (C) -- (sst);
+%     \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (ws_input_retrieval) to [out=180,in=200] (sst);
+   \draw[black,  shorten >= 4pt,line width=0.5mm,-latex] (ws_input_retrieval.east) -- ++(1.0,0)  |- (sst)  node[pos=0.23,anchor=west] {{\Large\textbf{NO}}};
+   \draw[black, shorten >= 4pt, line width=0.5mm,-latex] (ws_input_oem.south) -- ++(0,0.0)  |- (sst)  node[pos=0.212,anchor=west] {{\Large\textbf{YES}}};
+   % Output
+   \node[rectangle, draw, thick, fill=white, text=black, text width=5.0cm, align=center, font={\Large\bfseries}, minimum height=2.6cm, rounded corners=0.6cm] (out) at (0,16)
+       {Output data:\vspace{-5pt}
+       \begin{itemize}\compresslist
+           \item $\boldsymbol{\mathrm{WS_r}}$ (optional)
+           \item $\boldsymbol{\mathrm{SST_r}}$
+       \end{itemize}
+       };
+   % Arrows
+   \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (sst) -- (out);
+
+\end{tikzpicture}
+
+
+
+\newpage\clearpage
+
+
+\centering
+\begin{tikzpicture}[yscale=-1]
+  % Input data - CIMR orbital data
+  \node[rectangle, draw, thick, fill=lightsalmonpink, text=black, text width=4.0cm, align=center, font={\LARGE\bfseries}, minimum height=1.6cm, rounded corners=0.4cm] (cimr_data) at (-2.5,0)
+      {CIMR\\orbital data};
+  % Input data - Ancillary data
+  \node[rectangle, draw, thick, fill=lightsalmonpink, text=black, text width=4.0cm, align=center, font={\LARGE\bfseries}, minimum height=1.6cm, rounded corners=0.4cm] (anc_data) at (2.5,0)
+      {Ancillary data};
+  % Input data - Integrated OEM data
+  \node[rectangle, draw, thick, fill=lightsalmonpink, text=black, text width=4.0cm, align=center, font={\LARGE\bfseries}, minimum height=1.6cm, rounded corners=0.4cm] (oem_data) at (7.5,0)
+      {Integrated OEM data};
+  % Choice of wind speed input - retrieval
+  \node[rectangle, draw, thick, fill=paleyellow, text=black, text width=6.0cm, align=center, font={\LARGE\bfseries}, minimum height=1.6cm, rounded corners=0.1cm] (ws_input_retrieval) at (0,3.0)
+      {ws\_input = retrieval?};
+  % Choice of wind speed input - OEM
+  \node[rectangle, draw, thick, fill=paleyellow, text=black, text width=5.2cm, align=center, font={\LARGE\bfseries}, minimum height=1.6cm, rounded corners=0.1cm] (ws_input_oem) at (7.5,3.0)
+      {ws\_input = OEM?};
+  % WS1-stage
+  \node[rectangle, draw, thick, fill=magicmint,text=black, align=center,font={\LARGE\bfseries}, minimum width=8.0cm, minimum height=2.0cm, rounded corners=0.6cm] (ws1) at (0,6.0)
+      {WS retrieval 1st stage:\\Global algorithm};
+  % Regression coefficients, A
+  \node[rectangle, draw, thick, fill=nonphotoblue, text=black, align=center, font={\LARGE\bfseries}, minimum width=1.5cm, minimum height=1.0cm, rounded corners=0.4cm] (A) at (-5.5,6.0) {$\boldsymbol{\mathrm{A}}$};
+  % Arrows
+  \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (cimr_data) -- (ws_input_retrieval);
+  \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (anc_data) -- (ws_input_retrieval);
+  \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (ws_input_retrieval) -- (ws1) node[midway, anchor=west] {{\Large\textbf{YES}}};
+  \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (oem_data) -- (ws_input_oem);
+  \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (A) -- (ws1);
+  % WS2-stage
+  \node[rectangle, draw, thick, fill=magicmint,text=black, align=center,font={\LARGE\bfseries}, minimum width=8.0cm, minimum height=2.0cm, rounded corners=0.6cm] (ws2) at (0,9.0)
+      {WS retrieval 2nd stage:\\Localized WS algorithms};
+  % Regression coefficients, B
+  \node[rectangle, draw, thick, fill=nonphotoblue, text=black, align=center, font={\LARGE\bfseries}, minimum width=1.5cm, minimum height=1.0cm, rounded corners=0.4cm] (B) at (-5.5,9.0) {$\boldsymbol{\mathrm{B}}$};
+  % Arrows
+  \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (ws1) -- (ws2);
+  \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (B) -- (ws2);
+  % SST
+  \node[rectangle, draw, thick, fill=magicmint,text=black, align=center,font={\LARGE\bfseries}, minimum width=6.0cm, minimum height=2.0cm, rounded corners=0.6cm] (sst) at (0,12.0)
+      {SST retrieval:\\Global algorithm};
+  % Regression coefficients, C
+  \node[rectangle, draw, thick, fill=nonphotoblue, text=black, align=center, font={\LARGE\bfseries}, minimum width=1.5cm, minimum height=1.0cm, rounded corners=0.4cm] (C) at (-5.5,12.0) {$\boldsymbol{\mathrm{C}}$};
+  % Arrows
+  \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (ws2) -- (sst);
+  \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (C) -- (sst);
+%     \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (ws_input_retrieval) to [out=180,in=200] (sst);
+  \draw[black,  shorten >= 4pt,line width=0.5mm,-latex] (ws_input_retrieval.east) -- ++(1.0,0)  |- (sst)  node[pos=0.24,anchor=west] {{\LARGE\textbf{NO}}};
+  \draw[black, shorten >= 4pt, line width=0.5mm,-latex] (ws_input_oem.south) -- ++(0,0.0)  |- (sst)  node[pos=0.212,anchor=west] {{\LARGE\textbf{YES}}};
+  % Output
+  \node[rectangle, draw, thick, fill=vodka, text=black, text width=6.0cm, align=center, font={\LARGE\bfseries}, minimum height=2.6cm, rounded corners=0.6cm] (out) at (0,16)
+      {Output data:\vspace{-5pt}
+      \begin{itemize}\compresslist
+          \item $\boldsymbol{\mathrm{WS_r}}$ (optional)
+          \item $\boldsymbol{\mathrm{SST_r}}$
+      \end{itemize}
+      };
+  % Arrows
+  \draw[shorten <= 4pt, shorten >= 4pt, line width=0.5mm, ->] (sst) -- (out);
+
+\end{tikzpicture}
 
 \end{document}

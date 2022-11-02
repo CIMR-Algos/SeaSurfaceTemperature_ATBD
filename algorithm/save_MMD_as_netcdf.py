@@ -15,7 +15,9 @@ from read_mmd import read_mmd
 
 if __name__ == "__main__":
     # Paths
-    data_dir = "/media/ea/Elements SE/Emy/Projects/PhD/Data/ML_PMW_SST/"
+    HOME = os.environ['HOME']
+    in_data_dir = "/data/users/ea/ESA_CCI/MMD/AMSR2"
+    out_data_dir = HOME + "/Projects/CIMR/DEVALGO/ATBD_SST/data"
 
     # Settings
     sensor = 'amsr2'
@@ -24,13 +26,13 @@ if __name__ == "__main__":
     year = 2015
 
     print("Read the data from mat-file format")
-    data_file = data_dir + "MMD" + mmd_type + "_drifter_" + str(year) + "_era5.mat"
+    data_file = in_data_dir + "/MMD" + mmd_type + "_drifter_" + str(year) + "_era5.mat"
     MMD = read_mmd(data_file,sensor,data_type,year,year)
 
     # Number of matchups
     nmatchups = MMD.shape[0]
 
-    # Only keep some of the columns 
+    # Only keep some of the columns
     cols_to_keep = ['orbit', 'lat', 'lon', 'solza', 'satza', 'solaz', 'sataz', 'era5_wind_dir', \
                     'ccmp_wind_dir', 'era5_phi_rel', 'era5_wind_speed', 'ccmp_wind_speed', 'era5_sst', 'era5_tcwv', 'era5_clwt', \
                     'tb6vpol', 'tb6hpol', 'tb10vpol', 'tb10hpol', 'tb18vpol', 'tb18hpol', 'tb23vpol', 'tb23hpol', 'tb36vpol', \
@@ -40,7 +42,7 @@ if __name__ == "__main__":
     # Rename columns
     rename_dict = {'era5_wind_speed':'era5_ws', 'ccmp_wind_speed':'ccmp_ws'}
     MMD.rename(columns=rename_dict, inplace=True)
-    
+
 
     # MMD variables
     mmd_vars = list(MMD.columns)
@@ -48,7 +50,7 @@ if __name__ == "__main__":
 
     print("Create netCDF file")
     # netCDF file
-    ncfile = data_dir + "MMD" + mmd_type + "_drifter_" + str(year) + ".nc"
+    ncfile = out_data_dir + "/MMD" + mmd_type + "_drifter_" + str(year) + ".nc"
 
     # Create as empty if it doesn't exist
     ncid = nc.Dataset(ncfile, mode='w', format="NETCDF4_CLASSIC")
@@ -83,14 +85,14 @@ if __name__ == "__main__":
     # Units
     nc_units = ['', 'degree_north', 'degree_east', 'degree', 'degree', 'degree', 'degree', 'degree', 'degree', 'degree', 'm s-1', 'm s-1', 'Kelvin', 'kg m-2', 'g m-3', \
                 'Kelvin', 'Kelvin', 'Kelvin', 'Kelvin', 'Kelvin', 'Kelvin', 'Kelvin', 'Kelvin', 'Kelvin', 'Kelvin', \
-                'Kelvin', 'Kelvin', 'degree', 'g kg-1', 'Kelvin', 'seconds']
+                'Kelvin', 'Kelvin', 'degree', 'g kg-1', 'Kelvin', 'seconds since 1970-01-01 00:00:00 UTC']
 
     # Type
     nc_var_types = [np.int32, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32, \
                     np.float32, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32, \
                     np.float32, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32, np.float32, np.float64]
 
-    
+
     # Add variables
     for ivar,var_name in enumerate(nc_vars):
         var = ncid.createVariable(var_name, nc_var_types[ivar], ('matchups'))
@@ -98,4 +100,5 @@ if __name__ == "__main__":
         var.standard_name = nc_standard_name[ivar]
         var.long_name = nc_long_name[ivar]
         var[:] = MMD[var_name].to_numpy()
-    
+
+    print("Script finalized correctly")

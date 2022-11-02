@@ -1,5 +1,5 @@
 # Level-2 product definition
-The Level-2b {term}`SST` product is obtained through application of the {term}`SST` retrieval algorithm, given the Level-1b brightness temperatures. The product is provided in the native grid of the {term}`CIMR` instrument, where each swath contains 135 samples per scan, `n_scans`, multiplied by the number of scans for each orbit, `n_samples_earth`. The product is provided in netCDF format and contains the variables listed in {numref}`l2-product-variables` .
+The Level-2b {term}`SST` product is obtained through application of the {term}`SST` retrieval algorithm, given the Level-1b {term}`TB`s. The product is provided in the native grid of the {term}`CIMR` instrument, where each swath contains 135 samples per scan, `n_scans`, multiplied by the number of scans for each orbit, `n_samples_earth`. The product is provided in netCDF format and contains the variables listed in {numref}`l2-product-variables` .
 
 ```{table} Level-2 SST product variables
 :name: l2-product-variables
