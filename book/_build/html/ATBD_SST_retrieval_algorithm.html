@@ -618,23 +618,25 @@ title="Print to PDF"
 <p>Read input data for the derivation of coefficients and subsequent retrieval of SST (and wind speed, if desired)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Data</span>
-<span class="n">data_file</span> <span class="o">=</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="s2">&quot;/MMD&quot;</span> <span class="o">+</span> <span class="n">mmd_type</span> <span class="o">+</span> <span class="s2">&quot;_drifter_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span>
-<span class="n">ncid</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">data_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;NETCDF4_CLASSIC&quot;</span><span class="p">)</span>
-
-<span class="c1"># Number of matchups</span>
-<span class="n">nmatchups</span> <span class="o">=</span> <span class="n">ncid</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;matchups&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
-
-<span class="c1"># Variable names</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Variable names</span>
 <span class="n">var_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;orbit&#39;</span><span class="p">,</span> <span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="s1">&#39;satza&#39;</span><span class="p">,</span> <span class="s1">&#39;sataz&#39;</span><span class="p">,</span> <span class="s1">&#39;era5_wind_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;era5_phi_rel&#39;</span><span class="p">,</span> <span class="s1">&#39;era5_ws&#39;</span><span class="p">,</span> <span class="s1">&#39;era5_sst&#39;</span><span class="p">,</span> \
              <span class="s1">&#39;era5_tcwv&#39;</span><span class="p">,</span> <span class="s1">&#39;era5_clwt&#39;</span><span class="p">,</span> <span class="s1">&#39;tb6vpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb6hpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb10vpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb10hpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb18vpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb18hpol&#39;</span><span class="p">,</span> \
              <span class="s1">&#39;tb23vpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb23hpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb36vpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb36hpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb89vpol&#39;</span><span class="p">,</span> <span class="s1">&#39;tb89hpol&#39;</span><span class="p">,</span> <span class="s1">&#39;sga&#39;</span><span class="p">,</span> <span class="s1">&#39;sss&#39;</span><span class="p">,</span> <span class="s1">&#39;insitu_sst&#39;</span><span class="p">,</span> \
              <span class="s1">&#39;insitu_time&#39;</span><span class="p">]</span>
+
+<span class="c1"># Read the data</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Yearly file from: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">year</span><span class="p">))</span>
+<span class="n">data_file</span> <span class="o">=</span> <span class="n">DATA_PATH</span> <span class="o">+</span> <span class="s2">&quot;/MMD&quot;</span> <span class="o">+</span> <span class="n">mmd_type</span> <span class="o">+</span> <span class="s2">&quot;_drifter_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span>
+<span class="n">ncid</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">data_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;NETCDF4_CLASSIC&quot;</span><span class="p">)</span>
+    
+<span class="c1"># Number of matchup</span>
+<span class="n">nmatchups</span> <span class="o">=</span> <span class="n">ncid</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;matchups&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+    
 <span class="c1"># Get the data</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nmatchups</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">ivar</span><span class="p">,</span><span class="n">var_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">var_names</span><span class="p">):</span>
     <span class="n">data</span><span class="p">[</span><span class="n">var_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ncid</span><span class="p">[</span><span class="n">var_name</span><span class="p">][:]</span>
-
+        
 <span class="c1"># Close the netCDF file</span>
 <span class="n">ncid</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
@@ -644,6 +646,9 @@ title="Print to PDF"
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Yearly file from: 2015
+</pre></div>
+</div>
 <div class="output text_html"><div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -953,6 +958,8 @@ title="Print to PDF"
 <span class="n">data_train</span><span class="p">,</span> <span class="n">data_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">rnseed</span><span class="p">)</span>
 <span class="n">data_train</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">data_test</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">del</span> <span class="n">data</span>
 </pre></div>
 </div>
 </div>
@@ -2006,12 +2013,14 @@ In addition, if the option is set to use retrieved wind speed in the SST algorit
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>TEST DATASET - Global SST retrieval
 ======================================
-PMW retrievals - drifter observations
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>PMW retrievals - drifter observations
 -------------------------------------
 Mean: 0.0 K.
-MAE:  0.555 K.
-St.d: 0.748 K.
-RMSE: 0.748 K.
+MAE:  0.552 K.
+St.d: 0.745 K.
+RMSE: 0.745 K.
 </pre></div>
 </div>
 </div>

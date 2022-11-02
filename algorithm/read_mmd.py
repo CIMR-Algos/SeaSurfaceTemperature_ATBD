@@ -33,7 +33,7 @@ def get_vars2extract(sensor):
                      'amsre__Sun_Glint_Angle', 'amsre__cmems__sea_surface_salinity', 'drifter___sst_insitu__sea_surface_temperature', 'drifter___sst_insitu__time']
 
     elif sensor == "amsr2":
-        var_names = ['orbit', 'lat', 'lon', 'solza', 'satza', 'solaz', 'sataz', 
+        var_names = ['orbit', 'lat', 'lon', 'solza', 'satza', 'solaz', 'sataz',
                      'pixel_quality6', 'land_ocean_flag6', 'land_ocean_flag10', 'land_ocean_flag23', 'land_ocean_flag36', 'seaice_fraction',
                      'era5_uwind', 'era5_vwind', 'ccmp_uwind', 'ccmp_vwind', 'era5_sst', 'era5_tcwv', 'era5_clwt', 'tb6vpol', 'tb6hpol', \
                      'tb7vpol', 'tb7hpol', 'tb10vpol', 'tb10hpol', 'tb18vpol', 'tb18hpol', 'tb23vpol', 'tb23hpol', 'tb36vpol', 'tb36hpol', \
@@ -193,7 +193,7 @@ def find_rfi_ascension(xlon_ob,xlat_ob):
     the main reflector, it was transmitting and getting into the hot load or
     cold mirror somehow. Better to flag entire scans using cold mirror
     check." - Chelle
-   
+
     Output:
     + irfi: mask for Ascension Island RFI (=0 NO RFI, ==1 RFI)
     Input:
@@ -204,7 +204,7 @@ def find_rfi_ascension(xlon_ob,xlat_ob):
     # Ascension Island area latitude and longitude
     lon_ascension = np.array([-24, -6])
     lat_ascension = np.array([-18, -2])
-    
+
     # Get lengths of arrays
     N_ascension=len(lon_ascension)
     Nmatchups=xlon_ob.shape[0]
@@ -216,12 +216,6 @@ def find_rfi_ascension(xlon_ob,xlat_ob):
     mask = ( (xlon_ob >= lon_ascension[0]) & (xlon_ob <= lon_ascension[1]) & \
              (xlat_ob >= lat_ascension[0]) & (xlat_ob <= lat_ascension[1]) )
     irfi[mask] = 1
-    
-#    for i in range(Nmatchups):
-#        # Check if amsr2 observation location at ascension island rfi location
-#        if ( (xlon_ob[i] >= lon_ascension[0]) & (xlon_ob[i] <= lon_ascension[1]) & \
-#             (xlat_ob[i] >= lat_ascension[0]) & (xlat_ob[i] <= lat_ascension[1]) ):
-#            irfi[i] = 1
 
     return irfi
 
@@ -240,11 +234,11 @@ def find_diurnal_warming(wspd,sol_zeni,wspd_max):
 
     # Number of matchups
     Nmatchups = wspd.shape[0]
-    
+
     # Initialize output array
     idw = np.zeros(Nmatchups)
     idw[:] = True
-    
+
     # Find the contaminated data
     contaminated_mask = ( (np.abs(sol_zeni) < 90. ) & (wspd < wspd_max) )
     idw[contaminated_mask] = False
@@ -292,7 +286,7 @@ def nwpis_sigma_filter(SSTnwp,SSTi,time,year0,year1,goodidx):
 def flagging_bad_data_mmd06c_drifter(MMDall,year0,year1):
     """
     Function for flagging erroneous NWP/in situ/AMSR-E data
-    
+
     Input:
     + MMDall: Pandas DataFrame with the AMSR-E MMD dataset
     + year0: Start year in the time period we're looking at
@@ -436,7 +430,7 @@ def flagging_bad_data_mmd06c_drifter(MMDall,year0,year1):
 
     # Get the good indices
     goodidx = idx_array[init_good_mask]
-    
+
 
     # Start execution time taking
     start_time = time.time()
@@ -447,7 +441,7 @@ def flagging_bad_data_mmd06c_drifter(MMDall,year0,year1):
     # End execution time taking
     end_time = time.time()
     print(" --- Execution time: %s seconds ---" % (end_time - start_time))
-    
+
     # Get the common indices between the good data in init_good_mask and the indices from the 3-sigma filter
     good_data_idx = np.intersect1d(icheck_nwpis,goodidx)
 
@@ -465,7 +459,7 @@ def flagging_bad_data_mmd06c_drifter(MMDall,year0,year1):
 def flagging_bad_data_mmd06b_drifter(MMDall,year0,year1):
     """
     Function for flagging erroneous NWP/in situ/AMSR2 data
-    
+
     Input:
     + MMDall: Pandas DataFrame with the AMSR2 MMD dataset
     + year0: Start year in the time period we're looking at
@@ -520,7 +514,7 @@ def flagging_bad_data_mmd06b_drifter(MMDall,year0,year1):
     start_time = time.time()
 
     print(' - Find RFI contaminated matchups')
-    # C-band RFI can be detected using the v polarized 6 and 7 GHZ channels.
+    # C-band RFI can be detected using the 6 and 7 GHZ channels.
     # If the difference between the two channels >= RFImax --> flag as RFI
     # contaminated (source: Alsweiss et al. 2016 - Remote Sensing of Sea
     # Surface Temperatrue Using AMSR-2 Measurements)
@@ -529,8 +523,8 @@ def flagging_bad_data_mmd06b_drifter(MMDall,year0,year1):
                  (np.abs(MMDall['tb7hpol'] - MMDall['tb6hpol']) < RFImax) )] = 0;
     # Need to mask out Ascension Island --> gives a lot of RFI
     irfi = find_rfi_ascension(MMDall['lon'],MMDall['lat'])
-    asc_idx = (irfi == 0)
-    icheck_rfi[asc_idx] = 0
+    asc_idx = (irfi == 1)
+    icheck_rfi[asc_idx] = 1
 
     # Get the RFI mask - good data = 0
     rfi_mask = (icheck_rfi == 0)
@@ -614,7 +608,7 @@ def flagging_bad_data_mmd06b_drifter(MMDall,year0,year1):
 
     # Get the good indices
     goodidx = idx_array[init_good_mask]
-    
+
 
     # Start execution time taking
     start_time = time.time()
@@ -625,7 +619,7 @@ def flagging_bad_data_mmd06b_drifter(MMDall,year0,year1):
     # End execution time taking
     end_time = time.time()
     print(" --- Execution time: %s seconds ---" % (end_time - start_time))
-    
+
     # Get the common indices between the good data in init_good_mask and the indices from the 3-sigma filter
     good_data_idx = np.intersect1d(icheck_nwpis,goodidx)
 

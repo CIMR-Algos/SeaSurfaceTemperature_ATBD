@@ -60,23 +60,25 @@ ws_bins = np.arange(ws_min,ws_max,dws, dtype=int)
 # In[2]:
 
 
-# Data
-data_file = DATA_PATH + "/MMD" + mmd_type + "_drifter_" + str(year) + ".nc"
-ncid = nc.Dataset(data_file, mode='r', format="NETCDF4_CLASSIC")
-
-# Number of matchups
-nmatchups = ncid.dimensions['matchups'].size
-
 # Variable names
 var_names = ['orbit', 'lat', 'lon', 'satza', 'sataz', 'era5_wind_dir', 'era5_phi_rel', 'era5_ws', 'era5_sst', \
              'era5_tcwv', 'era5_clwt', 'tb6vpol', 'tb6hpol', 'tb10vpol', 'tb10hpol', 'tb18vpol', 'tb18hpol', \
              'tb23vpol', 'tb23hpol', 'tb36vpol', 'tb36hpol', 'tb89vpol', 'tb89hpol', 'sga', 'sss', 'insitu_sst', \
              'insitu_time']
+
+# Read the data
+print("Yearly file from: {}".format(year))
+data_file = DATA_PATH + "/MMD" + mmd_type + "_drifter_" + str(year) + ".nc"
+ncid = nc.Dataset(data_file, mode='r', format="NETCDF4_CLASSIC")
+    
+# Number of matchup
+nmatchups = ncid.dimensions['matchups'].size
+    
 # Get the data
 data = pd.DataFrame(index=np.arange(nmatchups))
 for ivar,var_name in enumerate(var_names):
     data[var_name] = ncid[var_name][:]
-
+        
 # Close the netCDF file
 ncid.close()
 
@@ -105,6 +107,8 @@ data.dropna(axis=0,inplace=True)
 data_train, data_test = train_test_split(data, test_size=0.3, random_state=rnseed)
 data_train.reset_index(inplace=True)
 data_test.reset_index(inplace=True)
+
+del data
 
 
 # ## Retrieval definitions
