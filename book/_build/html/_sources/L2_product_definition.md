@@ -4,8 +4,8 @@ The Level-2b {term}`SST` product is obtained through application of the {term}`S
 ```{table} Level-2 SST product variables
 :name: l2-product-variables
 
-| Variable name | Unit | Dimensions |
-| --- | --- | --- |
-| sea_surface_temperature | Kelvin | n_scans * n_samples_earth |
-| wind_speed | ms$^{-1}$ | n_scans * n_samples_earth |
+| name | description | units | dimensions |
+| --- | --- | --- | --- |
+| sea_surface_temperature | sea surface temperature | Kelvin | n_scans * n_samples_earth |
+| wind_speed | surface wind speed | ms$^{-1}$ | n_scans * n_samples_earth |
 ```
