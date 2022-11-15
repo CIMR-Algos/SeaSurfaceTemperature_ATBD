@@ -398,7 +398,7 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="algorithm-input-and-output-data-definition-iodd">
 <h1>Algorithm Input and Output Data Definition (IODD)<a class="headerlink" href="#algorithm-input-and-output-data-definition-iodd" title="Permalink to this headline">#</a></h1>
-<p>The processing of L2 <a class="reference internal" href="acronyms.html#term-SST"><span class="xref std std-term">SST</span></a> requires both <a class="reference internal" href="acronyms.html#term-TB"><span class="xref std std-term">TB</span></a> observations and ancillary data. Additional information such as e.g. a land mask, a sea ice product and information about <a class="reference internal" href="acronyms.html#term-RFI"><span class="xref std std-term">RFI</span></a> is needed to remove contaminated <a class="reference internal" href="acronyms.html#term-PMW"><span class="xref std std-term">PMW</span></a> observations. The input for the <a class="reference internal" href="acronyms.html#term-SST"><span class="xref std std-term">SST</span></a> retrieval algorithm consists of <a class="reference internal" href="acronyms.html#term-TB"><span class="xref std std-term">TB</span></a>s at 1.4, 6.9, 10.6, 18.7 and 36.5 GHz (vertical and horizontal polarization) and additional satellite information as well as surface <a class="reference internal" href="acronyms.html#term-WS"><span class="xref std std-term">WS</span></a>. The output is subskin <a class="reference internal" href="acronyms.html#term-SST"><span class="xref std std-term">SST</span></a> and optionally surface <a class="reference internal" href="acronyms.html#term-WS"><span class="xref std std-term">WS</span></a>, as described in this document.</p>
+<p>The processing of L2 <a class="reference internal" href="acronyms.html#term-SST"><span class="xref std std-term">SST</span></a> requires both <a class="reference internal" href="acronyms.html#term-TB"><span class="xref std std-term">TB</span></a> observations and ancillary data. Additional information such as e.g. a land mask, a sea ice product and information about <a class="reference internal" href="acronyms.html#term-RFI"><span class="xref std std-term">RFI</span></a> is needed to remove contaminated <a class="reference internal" href="acronyms.html#term-PMW"><span class="xref std std-term">PMW</span></a> observations. The input for the <a class="reference internal" href="acronyms.html#term-SST"><span class="xref std std-term">SST</span></a> retrieval algorithm consists of <a class="reference internal" href="acronyms.html#term-TB"><span class="xref std std-term">TB</span></a>s at 1.4, 6.9, 10.6, 18.7 and 36.5 GHz (vertical and horizontal polarization) and additional satellite information as well as surface <a class="reference internal" href="acronyms.html#term-WS"><span class="xref std std-term">WS</span></a>. The output is <a class="reference internal" href="acronyms.html#term-SST"><span class="xref std std-term">SST</span></a>, the associated <a class="reference internal" href="acronyms.html#term-SST"><span class="xref std std-term">SST</span></a> uncertainty, a status flag and optionally surface <a class="reference internal" href="acronyms.html#term-WS"><span class="xref std std-term">WS</span></a>, as described in this document.</p>
 <section id="input-data">
 <h2>Input data<a class="headerlink" href="#input-data" title="Permalink to this headline">#</a></h2>
 <table class="colwidths-auto table">
@@ -444,6 +444,14 @@ title="Print to PDF"
 <tbody>
 <tr class="row-even"><td><p>L2 SST</p></td>
 <td><p>Sea Surface Temperature</p></td>
+<td><p>Full swath or section of it (Nscans, Npos)</p></td>
+</tr>
+<tr class="row-odd"><td><p>SST uncertainty</p></td>
+<td><p>Retrieval uncertainty</p></td>
+<td><p>Full swath or section of it (Nscans, Npos)</p></td>
+</tr>
+<tr class="row-even"><td><p>Status flag</p></td>
+<td><p>A flag indicating the status of the retrieval</p></td>
 <td><p>Full swath or section of it (Nscans, Npos)</p></td>
 </tr>
 <tr class="row-odd"><td><p>L2 WS</p></td>

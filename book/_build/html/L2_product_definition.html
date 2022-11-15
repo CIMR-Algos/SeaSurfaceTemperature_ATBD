@@ -333,7 +333,7 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="level-2-product-definition">
 <h1>Level-2 product definition<a class="headerlink" href="#level-2-product-definition" title="Permalink to this headline">#</a></h1>
-<p>The Level-2b <a class="reference internal" href="acronyms.html#term-SST"><span class="xref std std-term">SST</span></a> product is obtained through application of the <a class="reference internal" href="acronyms.html#term-SST"><span class="xref std std-term">SST</span></a> retrieval algorithm, given the Level-1b <a class="reference internal" href="acronyms.html#term-TB"><span class="xref std std-term">TB</span></a>s. The product is provided in the native grid of the <a class="reference internal" href="acronyms.html#term-CIMR"><span class="xref std std-term">CIMR</span></a> instrument, where each swath contains 135 samples per scan, <code class="docutils literal notranslate"><span class="pre">n_scans</span></code>, multiplied by the number of scans for each orbit, <code class="docutils literal notranslate"><span class="pre">n_samples_earth</span></code>. The product is provided in netCDF format and contains the variables listed in <a class="reference internal" href="#l2-product-variables"><span class="std std-numref">Table 1</span></a> .</p>
+<p>The Level-2b <a class="reference internal" href="acronyms.html#term-SST"><span class="xref std std-term">SST</span></a> product is obtained through application of the <a class="reference internal" href="acronyms.html#term-SST"><span class="xref std std-term">SST</span></a> retrieval algorithm, given the Level-1b <a class="reference internal" href="acronyms.html#term-TB"><span class="xref std std-term">TB</span></a>s. The product is provided in the native grid of the <a class="reference internal" href="acronyms.html#term-CIMR"><span class="xref std std-term">CIMR</span></a> instrument, where each swath contains <code class="docutils literal notranslate"><span class="pre">n_samples</span></code> samples per scan, multiplied by the number of scans for each orbit, <code class="docutils literal notranslate"><span class="pre">n_samples_earth</span></code>. The product is provided in netCDF format and contains the variables listed in <a class="reference internal" href="#l2-product-variables"><span class="std std-numref">Table 1</span></a> .</p>
 <table class="colwidths-auto table" id="l2-product-variables">
 <caption><span class="caption-number">Table 1 </span><span class="caption-text">Level-2 SST product variables</span><a class="headerlink" href="#l2-product-variables" title="Permalink to this table">#</a></caption>
 <thead>
@@ -347,6 +347,16 @@ title="Print to PDF"
 <tr class="row-even"><td><p>sea_surface_temperature</p></td>
 <td><p>sea surface temperature</p></td>
 <td><p>Kelvin</p></td>
+<td><p>n_scans * n_samples_earth</p></td>
+</tr>
+<tr class="row-odd"><td><p>sea_surface_temperature uncertainty</p></td>
+<td><p>sea surface temperature uncertainty</p></td>
+<td><p>Kelvin</p></td>
+<td><p>n_scans * n_samples_earth</p></td>
+</tr>
+<tr class="row-even"><td><p>status_flag</p></td>
+<td><p>A flag indicating the quality of the SST retrieval</p></td>
+<td><p>n/a</p></td>
 <td><p>n_scans * n_samples_earth</p></td>
 </tr>
 <tr class="row-odd"><td><p>wind_speed</p></td>

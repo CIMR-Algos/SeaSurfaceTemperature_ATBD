@@ -34,6 +34,9 @@ MMD
 NASA
   National Aeronautics Space Administration
 
+NEdT
+  Noise equivalent differential temperature
+
 NOAA
   National Oceanic and Atmospheric Administration
 
