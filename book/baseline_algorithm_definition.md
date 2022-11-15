@@ -13,13 +13,13 @@ The re-sampling approach for the {term}`CIMR` Level-1b data is to be investigate
 In version 1 of the retrieval algorithm, {term}`AMSR2` data will be used as input instead of {term}`CIMR` data, as it is not yet available. Because of this, the channel combination used will not be the full {term}`CIMR` suite, as {term}`AMSR2` does not include the 1.4 GHz channels, but a so-called {term}`CIMR`-like combination, as investigated in {cite:t}`Nielsen2021`.
 
 ## Level-2 end to end algorithm functional flow diagram
-The {term}`CIMR` {term}`SST` retrieval algorithm consists of an optional {term}`WS` retrieval algorithm followed by an {term}`SST` retrieval algorithm. A flow diagram of the algorithm is shown in {numref}`fig-algo-flow-diag`.
+The {term}`CIMR` {term}`SST` retrieval algorithm consists of an optional {term}`WS` retrieval algorithm followed by an {term}`SST` retrieval algorithm and associated uncertainty retrieval. A flow diagram of the algorithm is shown in {numref}`fig-algo-flow-diag`.
 ```{figure} figures/algo_flow_diagram/algo_flow_diagram.png
 ----
 align: center
 name: fig-algo-flow-diag
 ----
-Set-up of the {term}`PMW` {term}`SST` retrieval algorithm using {term}`CIMR` orbital data and ancillary data as input. $\boldsymbol{\mathrm{A}}$, $\boldsymbol{\mathrm{B}}$ and $\boldsymbol{\mathrm{C}}$ refer to the regression coefficients in Equations {eq}`eq_ws_global`, {eq}`eq_ws_local` and {eq}`eq_sst_global`, respectively.
+Set-up of the {term}`PMW` {term}`SST` retrieval algorithm using {term}`CIMR` orbital data and ancillary data as input. $\boldsymbol{\mathrm{A}}$, $\boldsymbol{\mathrm{B}}$, $\boldsymbol{\mathrm{C}}$ and $\boldsymbol{\mathrm{D}}$ refer to the regression coefficients in Equations {eq}`eq_ws_global`, {eq}`eq_ws_local`, {eq}`eq_sst_global` and {eq}`eq_sst_uncert`, respectively.
 ```
 
 ## Retrieval algorithm
@@ -28,7 +28,7 @@ The retrieval algorithm is a statistically-based algorithm for retrieving {term}
 ### Mathematical description
 
 #### WS retrieval algorithm
-Optionally, a statistical retrieval algorithm can be used to retrieve {term}`WS` given satellite {term}`TB`s and ancillary data. The {term}`WS` retrieval algorithm is a two-stage algorithm based on the multiple linear regression model from {cite:t}`Alerskans2020`. In the first stage, an initial estimate of {term}`WS` is retrieved using a so called global regression-based retrieval algorithm, i.e. the model uses one set of regression coefficient for all retrievals. In the second stage, a final estimate of {term}`WS` is obtained through the use of localized algorithms, such that different sets of regression coefficients are used for the retrievals. Here, the retrieved {term}`WS` from the 1st-stage retrieval is used to bin the data and regression coefficients are obtained for a set of pre-defined {term}`WS` intervals. Hence, the 2nd-stage retrieval algorithm is trained to perform well over restricted {term}`WS` domains.
+Optionally, a statistical retrieval algorithm can be used to retrieve {term}`WS` given satellite {term}`TB`s and ancillary data. The {term}`WS` retrieval algorithm is a two-stage algorithm based on the multiple linear regression model from {cite:t}`Alerskans2020`. In the first stage, an initial estimate of {term}`WS` is retrieved using a so called global regression-based retrieval algorithm, i.e. the model uses one set of regression coefficient for all retrievals. In the second stage, a final estimate of {term}`WS` is obtained through the use of localized algorithms, such that different sets of regression coefficients are used for the retrievals. Here, the retrieved {term}`WS` from the 1st-stage retrieveq_sst_uncertal is used to bin the data and regression coefficients are obtained for a set of pre-defined {term}`WS` intervals. Hence, the 2nd-stage retrieval algorithm is trained to perform well over restricted {term}`WS` domains.
 
 ##### 1st-stage: Global retrieval algorithm
 The first stage of the {term}`WS` retrieval algorithm uses a global regression model to obtain regression coefficients based on all training examples in the training dataset. The {term}`WS` retrieval algorithm is based on the {term}`NOAA` {term}`AMSR2` {term}`WS` retrieval algorithm {cite:p}`Chang2015` and uses {term}`TB`s and Earth incidence angle ($\theta_{EIA}$) to obtain initial retrieved {term}`WS`, $WS_a$,
@@ -73,6 +73,52 @@ A statistical retrieval algorithm is used to retrieve {term}`SST` given satellit
  where again $t_{i}$ is given by Equation {eq}`eq_t11` and $\theta$ is defined by Equation {eq}`eq_theta`. The index $i$ refers to the summation over all $N_{ch}$ channels included in the retrieval algorithm; 6.9, 10.6, 18.7 and 36.5 GHz (dual polarization), and the coefficients $c_{0}$ to $c_{6}$ are regression coefficients, here together referred to as $C$, determined using the least-squares method.
 
 
+#### SST uncertainty retrieval algorithm
+Following the approach used within the {term}`ESA`{term}`CCI` {term}`SST` project, the total uncertainty of the retrieved {term}`SST`, $\varepsilon_{SST}$ is a combination of three uncertainty components; a random uncertainty component, $\varepsilon_{rand}$, a local systematic uncertainty component, $\varepsilon_{local}$, and a global systematic uncertainty component, $\varepsilon_{global}$
+
+```{math}
+  :label: eq_tot_uncert
+  \varepsilon_{SST} = \sqrt{ \varepsilon_{rand}^2 + \varepsilon_{local}^2 + \varepsilon_{global}^2 }
+```
+The local systematic and the random uncertainty components are obtained through the use of a regression model, based on the algorithm developed and applied in {cite:t}`Alerskans2020`. The algorithm uses retrieved {term}`SST`, (retrieved) {term}`WS`, solar zenith angle ($\theta_{sza}$) and latitude ($\varphi_{lat}$)
+```{math}
+  :label: eq_sst_uncert
+  \begin{equation}
+    \begin{split}
+      \varepsilon_{SST} & = d_{0} + d_{1} SST_{r} + d_{2} SST_{r}^{2} + d_{3} WS + d_{4} WS^{2} + d_{5} \theta_{sza} + d_{6} \theta_{sza}^{2} \\
+                        & + \sum_{p=1}^{4} \left( d_{7p} \cos \left( \frac{\varphi_{lat}}{p} \right) + d_{8p} \sin \left( \frac{\varphi_{lat}}{p} \right) \right),
+    \end{split}
+  \end{equation}
+```
+where the coefficients $d_0$ to $d_8$ are regression coefficients, here together referred to as $D$, determined using the least-squares method. One set of regression coefficients are obtained for the random uncertainty component and another set of coefficients are obtained for the local systematic uncertainty component. The global uncertainty component, however, is assumed to be small and therefore set to zero, following {cite:t}`Alerskans2020`.
+
+The random uncertainty component is related to the {term}`NEdT` and therefore, to estimate it the {term}`NEdT` of the {term}`TB`s is propagated through the {term}`SST` retrieval algorithm to obtain a new set of {term}`SST`s, called $SST_{r,rnd}$. In order to obtain the regression coefficients, a pre-binning of the training data is performed for {term}`SST`, {term}`WS`, solar zenith angle and latitude according to {numref}`tab_sst_uncert_perbin`. Based on this, two standard deviation estimates are computed; (i) $\sigma_{\Delta SST_r}$, which is the standard deviation of $SST_r$ minus the in situ {term}`SST` and is used to represent local effects and also includes the in situ uncertainty and sampling effects, and (ii) $\sigma_{\Delta SST_{r,rnd}}$, which is the standard deviation of $SST_r$ minus $SST_{r,rnd}$ and is used to represent random effects. The regression coefficients for the random uncertainty component are obtained through training of the algorithm against $\sigma_{\Delta SST_{r,rnd}}$, whereas the corresponding regression coefficients for the local systematic uncertainty component are obtained through training against local variations in $\sigma_{\Delta SST_r}$ only.
+
+```{table} Pre-binning intervals and bin sizes for the SST uncertainty retrieval algorithm
+  :name: tab_sst_uncert_perbin
+  | variable       | bin size      | min            | max             |
+  | -------------- | ------------- | -------------- | --------------- |
+  | SST            | $2^{\circ}$C  | $-1^{\circ}$C  | $33^{\circ}$C   |
+  | WS             | $2$ ms$^{-1}$ | $-1$ ms$^{-1}$ | $33$ ms$^{-1}$  |
+  | $\varphi_{lat}$| $10^{\circ}$  | $-85^{\circ}$  | $85^{\circ}$    |
+  | $\theta_{sza}$ | $15^{\circ}$  | $7.5^{\circ}$  | $172.5^{\circ}$ |
+```
+
+
+### Status flag
+The retrieved {term}`SST`s are each assigned a status flag according to {numref}`tab_sst_status_flags` to indicate the quality of the individual retrievals.
+```{table} SST status flags
+  :name: tab_sst_status_flags
+  | level | definition                |
+  | ----- | ------------------------- |
+  | 0     | no data                   |
+  | 1     | bad data                  |
+  | 2     | worst-quality usable data |
+  | 3     | low quality data          |
+  | 4     | acceptable quality data   |
+  | 5     | best quality data         |
+```
+
 ### Input data
 In the initial phase, the {term}`ESA` {term}`CCI` {term}`MMD` will be used for algorithm development and tuning. The {term}`ESA` {term}`CCI` {term}`MMD`, previously described in {cite:t}`Nielsen2018` and {cite:t}`Alerskans2020`, contains {term}`TB`s from the {term}`AMSR-E` level 2A and {term}`AMSR2` level 1R swath data products {cite:p}`Ashcroft2013,Maeda2016`. It also includes quality controlled in situ {term}`SST` observations from the  International Comprehensive Ocean-Atmosphere DataSet version 2.5.1 {cite:p}`Woodruff2011` and the Met Office Hadley Centre Ensembles dataset version 4.2.0 {cite:p}`Good2013`. Additional data include reanalysis data from the ERA-Interim {cite:p}`Dee2011` and ERA5 reanalyses {cite:p}`Hersbach2020`. The {term}`MMD` includes temporally matched and collocated matchups from the period June 2002 - October 2011 and July 2012 - December 2016.
 
@@ -87,8 +133,10 @@ The next phase will see the use of {term}`CIMR` orbital data and here the follow
 
 ### Output data
 The outputs from the regression retrieval algorithm are:
-- Sea surface temperature ($SST_{r}$), in Kelvin.
-- Wind speed ($WS_{r}$), in $~ms^{1}$ (optional).
+- Sea surface temperature ($SST_{r}$), in Kelvin
+- Sea surface temperature uncertainty ($\varepsilon_{SST}$), in Kelvin
+- Status flag
+- Wind speed ($WS_{r}$), in ms$^{-1}$ (optional)
 
 ### Auxiliary data
 Data that is used as a complement to the retrieval, such as for flagging:
@@ -104,6 +152,6 @@ Data necessary for the retrieval:
 - Reanalysis surface winds
 
 ### Validation process
-Validation of the Level-2 {term}`SST` product is based on comparison of retrieved {term}`SST` with collocated and temporally matched in situ observations. In the initial phase, the {term}`ESA` {term}`CCI` {term}`MMD` is used for evaluation of the {term}`CIMR` {term}`SST` algorithm performance. The metrics used for the validation are standard verification metrics such as bias, standard deviation, root mean square error (RMSE) and coefficient of correlation (r).
+Validation of the Level-2 {term}`SST` product is based on comparison of retrieved {term}`SST` with collocated and temporally matched in situ observations. In the initial phase, the {term}`ESA` {term}`CCI` {term}`MMD` is used for evaluation of the {term}`CIMR` {term}`SST` algorithm performance. The metrics used for the validation are standard verification metrics such as bias, standard deviation, root mean square error (RMSE) and coefficient of correlation.
 
 Furthermore, the validation process will also include validation on Picasso scenes.

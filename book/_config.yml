@@ -27,6 +27,12 @@ sphinx:
   extra_extensions:
     - sphinxcontrib.mermaid
 
+# Enable parsing og LaTeX-style match blocks
+parse:
+    myst_enable_extensions:
+        - amsmath
+        - dollarmath
+
 # Information about where the book exists on the web
 repository:
   url: https://github.com/CIMR-Algos/ATBD-SST  # Online location of your book

@@ -6,3 +6,9 @@
 # Python and notebook specifics
 __pycache__/
 .ipynb_checkpoints/
+
+# Tex figures
+book/figures/*/build/
+book/figures/*/*.pdf
+book/figures/*/*.synctex.gz
+book/figures/*/*.xcf
