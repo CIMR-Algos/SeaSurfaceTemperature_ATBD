@@ -654,20 +654,20 @@ def calculate_angles(sataz,nwp_u10,nwp_v10):
 
     # Get satellite azimuth angle in range [0, 360]
     theta_sat = sataz
-    theta_sat[theta_sat < 0] += 360
+    theta_sat = np.mod(theta_sat,360)
 
     # Calculate direction the wind is blowing TOWARDS relative to north (in degrees)
     theta_w = 90. - ( np.arctan2(nwp_v10,nwp_u10) * 180./np.pi )
 #    # % Calculate direction the wind is blowing FROM relative to north (in degrees)
 #    theta_w = 270. - ( np.arctan2(nwp_v10,nwp_u10) * 180/np.pi )
     # Get theta_w on range [0, 360]
-    theta_w[theta_w < 0] += 360
+    theta_w = np.mod(theta_w,360)
 
 
     # Calculate the relative angle
     theta_rel = theta_sat - theta_w;
     # Get theta_w on range [0, 360]
-    theta_rel[theta_rel < 0] += 360
+    theta_rel = np.mod(theta_rel,360)
 
     return theta_rel, theta_w, theta_sat
 
