@@ -179,7 +179,7 @@ def ws_algorithm_selection(data,channel_comb):
     """
     nmatchups = data.shape[0]
     if channel_comb == 'cimr_like':
-        # Construct input data for AMSR2 CIMR-like configuration
+        # CIMR-like configuration (based on AMSR-2 channels)
         ninput = 17
         X = np.full((nmatchups,ninput), fill_value=np.nan)
 
@@ -201,7 +201,7 @@ def ws_algorithm_selection(data,channel_comb):
         X[:,15] = (data['tb36hpol'] - 150)**2
         X[:,16] = data['look_angle']
     elif channel_comb == 'cimr':
-        # Construct input data for CIMR configuration
+        # CIMR configuration
         ninput = 21
         X = np.full((nmatchups,ninput), fill_value=np.nan)
 
@@ -254,7 +254,7 @@ def sst_algorithm_selection(data,channel_comb):
     """
     nmatchups = data.shape[0]
     if channel_comb == 'cimr_like':
-        # Construct input data for AMSR-2 CIMR like configuration
+        # CIMR-like configuration (based on AMSR-2 channels)
         ninput = 22
         X = np.full((nmatchups,ninput), fill_value=np.nan)
 
@@ -280,8 +280,30 @@ def sst_algorithm_selection(data,channel_comb):
         X[:,19] = np.sin(data['era5_phi_rel'])
         X[:,20] = np.cos(2*data['era5_phi_rel'])
         X[:,21] = np.sin(2*data['era5_phi_rel'])
+    elif channel_comb == 'cimr_like_simple':
+        # CIMR-like configuration (based on AMSR-2 channels),
+        # using only brighness temperature 
+        ninput = 16
+        X = np.full((nmatchups,ninput), fill_value=np.nan)
+
+        X[:,0]  =  data['tb6vpol'] - 150
+        X[:,1]  = (data['tb6vpol'] - 150)**2
+        X[:,2]  =  data['tb6hpol'] - 150
+        X[:,3]  = (data['tb6hpol'] - 150)**2
+        X[:,4]  =  data['tb10vpol'] - 150
+        X[:,5]  = (data['tb10vpol'] - 150)**2
+        X[:,6]  =  data['tb10hpol'] - 150
+        X[:,7]  = (data['tb10hpol'] - 150)**2
+        X[:,8]  =  data['tb18vpol'] - 150
+        X[:,9]  = (data['tb18vpol'] - 150)**2
+        X[:,10] =  data['tb18hpol'] - 150
+        X[:,11] = (data['tb18hpol'] - 150)**2
+        X[:,12] =  data['tb36vpol'] - 150
+        X[:,13] = (data['tb36vpol'] - 150)**2
+        X[:,14] =  data['tb36hpol'] - 150
+        X[:,15] = (data['tb36hpol'] - 150)**2
     elif channel_comb == 'cimr':
-        # Construct input data for CIMR configuration
+        # CIMR configuration
         ninput = 26
         X = np.full((nmatchups,ninput), fill_value=np.nan)
 
@@ -342,7 +364,8 @@ def calculate_coeffs_ws(data,channel_comb):
     # Predictand
     Y = data['era5_ws'].values
 
-    # the try...continue structure is to account for cases where we don't have data in a particular bin, then the code moves on
+    # the try...continue structure is to account for cases where we
+    # don't have data in a particular bin, then the code moves on
     try:
         # Calculate linear regression coefficients
         intercept, coeffs = regression(X,Y)
@@ -377,7 +400,8 @@ def calculate_coeffs_sst(data,channel_comb):
     # Predictand
     Y = data['insitu_sst'].values
 
-    # the try...continue structure is to account for cases where we don't have data in a particular bin, then the code moves on
+    # the try...continue structure is to account for cases where we
+    # don't have data in a particular bin, then the code moves on
     try:
         # Calculate linear regression coefficients
         intercept, coeffs = regression(X,Y)
@@ -486,7 +510,7 @@ def calculate_coeffs_stage_1_ws(data,channel_comb,verbose=False):
     if not np.all(np.isnan(coeffs_all)):
         if verbose:
             print("Save WS stage 1 coefficients")
-        coeffs_file = COEFF_PATH + "/ws/coeffs_ws_stage_1.npy"
+        coeffs_file = "{}/ws/coeffs_{}_ws_stage_1.npy".format(COEFF_PATH,channel_comb)
         np.save(coeffs_file,coeffs_all)
 
 
@@ -512,7 +536,7 @@ def retrieve_stage_1_ws(data,channel_comb):
     print("\nRetrieve stage 1 WS")
 
     # Load coefficients
-    coeffs_file = COEFF_PATH + "/ws/coeffs_ws_stage_1.npy"
+    coeffs_file = "{}/ws/coeffs_{}_ws_stage_1.npy".format(COEFF_PATH,channel_comb)
     A = np.load(coeffs_file)
 
     # Retrieve WS
@@ -568,7 +592,7 @@ def calculate_coeffs_stage_2_ws(data,ws_bins,channel_comb,verbose=False):
             if not np.all(np.isnan(coeffs_all)):
                 if verbose:
                     print("Save WS stage 2 coefficients for wind speed bin {}-{} ms-1".format(iws,iws+1))
-                coeffs_file = COEFF_PATH + "/ws/coeffs_ws_stage_2_wsbin_"+str(iws)+".npy"
+                coeffs_file = "{}/ws/coeffs_{}_ws_stage_2_wsbin_{:02d}.npy".format(COEFF_PATH,channel_comb,iws)
                 np.save(coeffs_file,coeffs_all)
 
 
@@ -616,7 +640,7 @@ def retrieve_stage_2_ws(data,ws_bins,channel_comb,verbose=False):
             data_sub.reset_index(inplace=True,drop=True)
 
             # Load the appropriate coefficient file
-            coeffs_file = COEFF_PATH + "/ws/coeffs_ws_stage_2_wsbin_"+str(iws)+".npy"
+            coeffs_file = "{}/ws/coeffs_{}_ws_stage_2_wsbin_{:02d}.npy".format(COEFF_PATH,channel_comb,iws)
             if os.path.isfile(coeffs_file):
                 B1 = np.load(coeffs_file)
                 isnan_B1 = False
@@ -643,7 +667,7 @@ def retrieve_stage_2_ws(data,ws_bins,channel_comb,verbose=False):
                     data_int = data_sub.loc[mask_int]
 
                 # Check if there are coefficients for that bin and load
-                coeffs_file_near = COEFF_PATH + "/ws/coeffs_ws_stage_2_wsbin_"+str(iws_near)+".npy"
+                coeffs_file_near = "{}/ws/coeffs_{}_ws_stage_2_wsbin_{:02d}.npy".format(COEFF_PATH,channel_comb,iws_near)
                 if os.path.isfile(coeffs_file_near):
                     B2 = np.load(coeffs_file_near)
                     isnan_B2 = False
@@ -714,11 +738,11 @@ def calculate_coeffs_global_sst(data,channel_comb,verbose=False):
 
     # Get coefficients
     coeffs_all = calculate_coeffs_sst(data_sub,channel_comb)
-
+    
     if not np.all(np.isnan(coeffs_all)):
         if verbose:
             print("Save SST global coefficients")
-        coeffs_file = COEFF_PATH + "/sst/coeffs_sst_global.npy"
+        coeffs_file = "{}/sst/coeffs_{}_sst_global.npy".format(COEFF_PATH,channel_comb)
         np.save(coeffs_file,coeffs_all)
 
 
@@ -744,7 +768,7 @@ def retrieve_global_sst(data,channel_comb):
     print("\nRetrieve global SST")
 
     # Load coefficients
-    coeffs_file = COEFF_PATH + "/sst/coeffs_sst_global.npy"
+    coeffs_file = "{}/sst/coeffs_{}_sst_global.npy".format(COEFF_PATH,channel_comb)
     A = np.load(coeffs_file)
 
     # Retrieve SST
