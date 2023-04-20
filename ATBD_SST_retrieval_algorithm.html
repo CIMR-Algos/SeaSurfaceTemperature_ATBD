@@ -1032,7 +1032,7 @@ title="Print to PDF"
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">nmatchups</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">channel_comb</span> <span class="o">==</span> <span class="s1">&#39;cimr_like&#39;</span><span class="p">:</span>
-        <span class="c1"># Construct input data for AMSR2 CIMR-like configuration</span>
+        <span class="c1"># CIMR-like configuration (based on AMSR-2 channels)</span>
         <span class="n">ninput</span> <span class="o">=</span> <span class="mi">17</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">nmatchups</span><span class="p">,</span><span class="n">ninput</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
@@ -1054,7 +1054,7 @@ title="Print to PDF"
         <span class="n">X</span><span class="p">[:,</span><span class="mi">15</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
         <span class="n">X</span><span class="p">[:,</span><span class="mi">16</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;look_angle&#39;</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">channel_comb</span> <span class="o">==</span> <span class="s1">&#39;cimr&#39;</span><span class="p">:</span>
-        <span class="c1"># Construct input data for CIMR configuration</span>
+        <span class="c1"># CIMR configuration</span>
         <span class="n">ninput</span> <span class="o">=</span> <span class="mi">21</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">nmatchups</span><span class="p">,</span><span class="n">ninput</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
@@ -1108,7 +1108,7 @@ title="Print to PDF"
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">nmatchups</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">channel_comb</span> <span class="o">==</span> <span class="s1">&#39;cimr_like&#39;</span><span class="p">:</span>
-        <span class="c1"># Construct input data for AMSR-2 CIMR like configuration</span>
+        <span class="c1"># CIMR-like configuration (based on AMSR-2 channels)</span>
         <span class="n">ninput</span> <span class="o">=</span> <span class="mi">22</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">nmatchups</span><span class="p">,</span><span class="n">ninput</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
@@ -1134,8 +1134,30 @@ title="Print to PDF"
         <span class="n">X</span><span class="p">[:,</span><span class="mi">19</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;era5_phi_rel&#39;</span><span class="p">])</span>
         <span class="n">X</span><span class="p">[:,</span><span class="mi">20</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;era5_phi_rel&#39;</span><span class="p">])</span>
         <span class="n">X</span><span class="p">[:,</span><span class="mi">21</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;era5_phi_rel&#39;</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">channel_comb</span> <span class="o">==</span> <span class="s1">&#39;cimr_like_simple&#39;</span><span class="p">:</span>
+        <span class="c1"># CIMR-like configuration (based on AMSR-2 channels),</span>
+        <span class="c1"># using only brighness temperature </span>
+        <span class="n">ninput</span> <span class="o">=</span> <span class="mi">16</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">nmatchups</span><span class="p">,</span><span class="n">ninput</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb6hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">5</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">6</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">7</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb10hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">8</span><span class="p">]</span>  <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">9</span><span class="p">]</span>  <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">11</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb18hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">12</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">13</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36vpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span>  <span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span>
+        <span class="n">X</span><span class="p">[:,</span><span class="mi">15</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;tb36hpol&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">150</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
     <span class="k">elif</span> <span class="n">channel_comb</span> <span class="o">==</span> <span class="s1">&#39;cimr&#39;</span><span class="p">:</span>
-        <span class="c1"># Construct input data for CIMR configuration</span>
+        <span class="c1"># CIMR configuration</span>
         <span class="n">ninput</span> <span class="o">=</span> <span class="mi">26</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">nmatchups</span><span class="p">,</span><span class="n">ninput</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
@@ -1197,7 +1219,8 @@ title="Print to PDF"
     <span class="c1"># Predictand</span>
     <span class="n">Y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;era5_ws&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
-    <span class="c1"># the try...continue structure is to account for cases where we don&#39;t have data in a particular bin, then the code moves on</span>
+    <span class="c1"># the try...continue structure is to account for cases where we</span>
+    <span class="c1"># don&#39;t have data in a particular bin, then the code moves on</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Calculate linear regression coefficients</span>
         <span class="n">intercept</span><span class="p">,</span> <span class="n">coeffs</span> <span class="o">=</span> <span class="n">regression</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">)</span>
@@ -1233,7 +1256,8 @@ title="Print to PDF"
     <span class="c1"># Predictand</span>
     <span class="n">Y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;insitu_sst&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
-    <span class="c1"># the try...continue structure is to account for cases where we don&#39;t have data in a particular bin, then the code moves on</span>
+    <span class="c1"># the try...continue structure is to account for cases where we</span>
+    <span class="c1"># don&#39;t have data in a particular bin, then the code moves on</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Calculate linear regression coefficients</span>
         <span class="n">intercept</span><span class="p">,</span> <span class="n">coeffs</span> <span class="o">=</span> <span class="n">regression</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">Y</span><span class="p">)</span>
@@ -1348,7 +1372,7 @@ title="Print to PDF"
     <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">coeffs_all</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Save WS stage 1 coefficients&quot;</span><span class="p">)</span>
-        <span class="n">coeffs_file</span> <span class="o">=</span> <span class="n">COEFF_PATH</span> <span class="o">+</span> <span class="s2">&quot;/ws/coeffs_ws_stage_1.npy&quot;</span>
+        <span class="n">coeffs_file</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/ws/coeffs_</span><span class="si">{}</span><span class="s2">_ws_stage_1.npy&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">COEFF_PATH</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
         <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">coeffs_file</span><span class="p">,</span><span class="n">coeffs_all</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1375,7 +1399,7 @@ title="Print to PDF"
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Retrieve stage 1 WS&quot;</span><span class="p">)</span>
 
     <span class="c1"># Load coefficients</span>
-    <span class="n">coeffs_file</span> <span class="o">=</span> <span class="n">COEFF_PATH</span> <span class="o">+</span> <span class="s2">&quot;/ws/coeffs_ws_stage_1.npy&quot;</span>
+    <span class="n">coeffs_file</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/ws/coeffs_</span><span class="si">{}</span><span class="s2">_ws_stage_1.npy&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">COEFF_PATH</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
     <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">coeffs_file</span><span class="p">)</span>
 
     <span class="c1"># Retrieve WS</span>
@@ -1435,7 +1459,7 @@ title="Print to PDF"
             <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">coeffs_all</span><span class="p">)):</span>
                 <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Save WS stage 2 coefficients for wind speed bin </span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2"> ms-1&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">iws</span><span class="p">,</span><span class="n">iws</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
-                <span class="n">coeffs_file</span> <span class="o">=</span> <span class="n">COEFF_PATH</span> <span class="o">+</span> <span class="s2">&quot;/ws/coeffs_ws_stage_2_wsbin_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">iws</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.npy&quot;</span>
+                <span class="n">coeffs_file</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/ws/coeffs_</span><span class="si">{}</span><span class="s2">_ws_stage_2_wsbin_</span><span class="si">{:02d}</span><span class="s2">.npy&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">COEFF_PATH</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">,</span><span class="n">iws</span><span class="p">)</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">coeffs_file</span><span class="p">,</span><span class="n">coeffs_all</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1484,7 +1508,7 @@ title="Print to PDF"
             <span class="n">data_sub</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="c1"># Load the appropriate coefficient file</span>
-            <span class="n">coeffs_file</span> <span class="o">=</span> <span class="n">COEFF_PATH</span> <span class="o">+</span> <span class="s2">&quot;/ws/coeffs_ws_stage_2_wsbin_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">iws</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.npy&quot;</span>
+            <span class="n">coeffs_file</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/ws/coeffs_</span><span class="si">{}</span><span class="s2">_ws_stage_2_wsbin_</span><span class="si">{:02d}</span><span class="s2">.npy&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">COEFF_PATH</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">,</span><span class="n">iws</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">coeffs_file</span><span class="p">):</span>
                 <span class="n">B1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">coeffs_file</span><span class="p">)</span>
                 <span class="n">isnan_B1</span> <span class="o">=</span> <span class="kc">False</span>
@@ -1511,7 +1535,7 @@ title="Print to PDF"
                     <span class="n">data_int</span> <span class="o">=</span> <span class="n">data_sub</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_int</span><span class="p">]</span>
 
                 <span class="c1"># Check if there are coefficients for that bin and load</span>
-                <span class="n">coeffs_file_near</span> <span class="o">=</span> <span class="n">COEFF_PATH</span> <span class="o">+</span> <span class="s2">&quot;/ws/coeffs_ws_stage_2_wsbin_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">iws_near</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.npy&quot;</span>
+                <span class="n">coeffs_file_near</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/ws/coeffs_</span><span class="si">{}</span><span class="s2">_ws_stage_2_wsbin_</span><span class="si">{:02d}</span><span class="s2">.npy&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">COEFF_PATH</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">,</span><span class="n">iws_near</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">coeffs_file_near</span><span class="p">):</span>
                     <span class="n">B2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">coeffs_file_near</span><span class="p">)</span>
                     <span class="n">isnan_B2</span> <span class="o">=</span> <span class="kc">False</span>
@@ -1586,11 +1610,11 @@ title="Print to PDF"
 
     <span class="c1"># Get coefficients</span>
     <span class="n">coeffs_all</span> <span class="o">=</span> <span class="n">calculate_coeffs_sst</span><span class="p">(</span><span class="n">data_sub</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
-
+    
     <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">coeffs_all</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Save SST global coefficients&quot;</span><span class="p">)</span>
-        <span class="n">coeffs_file</span> <span class="o">=</span> <span class="n">COEFF_PATH</span> <span class="o">+</span> <span class="s2">&quot;/sst/coeffs_sst_global.npy&quot;</span>
+        <span class="n">coeffs_file</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/sst/coeffs_</span><span class="si">{}</span><span class="s2">_sst_global.npy&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">COEFF_PATH</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
         <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">coeffs_file</span><span class="p">,</span><span class="n">coeffs_all</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1617,7 +1641,7 @@ title="Print to PDF"
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Retrieve global SST&quot;</span><span class="p">)</span>
 
     <span class="c1"># Load coefficients</span>
-    <span class="n">coeffs_file</span> <span class="o">=</span> <span class="n">COEFF_PATH</span> <span class="o">+</span> <span class="s2">&quot;/sst/coeffs_sst_global.npy&quot;</span>
+    <span class="n">coeffs_file</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/sst/coeffs_</span><span class="si">{}</span><span class="s2">_sst_global.npy&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">COEFF_PATH</span><span class="p">,</span><span class="n">channel_comb</span><span class="p">)</span>
     <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">coeffs_file</span><span class="p">)</span>
 
     <span class="c1"># Retrieve SST</span>
