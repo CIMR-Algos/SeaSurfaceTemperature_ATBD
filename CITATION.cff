@@ -1,0 +1,28 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: CIMR L2 Sea Surface Temperature
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Emy
+    family-names: Alerskans
+    orcid: 'https://orcid.org/0000-0001-8206-5999'
+    affiliation: Danish Meteorological Institute
+  - given-names: Ioanna
+    family-names: Karagali
+    orcid: 'https://orcid.org/0000-0002-8695-7190'
+    affiliation: Danish Meteorological Institute
+  - given-names: Jacob
+    family-names: Høyer
+    affiliation: Danish Meteorological Institute
+repository-code: 'https://github.com/CIMR-Algos/SeaSurfaceTemperature_ATBD'
+url: >-
+  https://cimr-algos.github.io/SeaSurfaceTemperature_ATBD/intro.html
+keywords:
+  - Copernicus Imaging Microwave Radiometer (CIMR)
+  - ESA DEVALGO
+version: '1'
